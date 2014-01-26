@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <property>
+    <name>corgi.task.name</name>
+    <value>step1</value>
+  </property>
+
+  <property>
+    <name>mapred.job.name</name>
+    <value>${corgi.task.name}</value>
+  </property>
+
+  <property>
+    <name>mapred.input.dir</name>
+    <value>/group/tbalgo-rank-dev/menglong.tml/corgi-example/wordcount/input/*</value>
+  </property>
+
+  <property>
+    <name>mapred.output.dir</name>
+    <value>/group/tbalgo-rank-dev/menglong.tml/corgi-example/wordcount/output/step1</value>
+  </property>
+
+  <property>
+    <name>mapper</name>
+    <value>wordcount/step1/mapper.pl</value>
+  </property>
+
+  <property>
+    <name>reducer</name>
+    <value>wordcount/step1/reducer.pl</value>
+  </property>
+
+</configuration>
