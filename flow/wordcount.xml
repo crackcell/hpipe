@@ -2,22 +2,20 @@
 
 <flow name="wordcount">
 
-  <task>
+  <node>
     <name>step1</name>
     <resource>wordcount/step1.xml</resource>
-  </task>
+  </node>
 
-  <!--
-  <task>
+  <node>
     <name>step2</name>
     <resource>wordcount/step2.xml</resource>
-  </task>
+  </node>
 
-  <task>
+  <node>
     <name>step3</name>
     <resource>wordcount/step3.xml</resource>
     <dependencies>step1,step2</dependencies>
-  </task>
-  -->
+  </node>
 
 </flow>

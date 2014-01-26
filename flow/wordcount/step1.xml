@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 
-<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+<configuration>
 
   <property>
-    <name>corgi.task.name</name>
+    <name>corgi.configuration.name</name>
     <value>step1</value>
   </property>
 
   <property>
     <name>mapred.job.name</name>
-    <value>${corgi.task.name}</value>
+    <value>${corgi.configuration.name}</value>
   </property>
 
   <property>

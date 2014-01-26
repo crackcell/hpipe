@@ -29,11 +29,22 @@ class Flow(object):
 
     def __init__(self, name=""):
         self.name = name
-        self.flow_children = []
-        self.task_children = []
+        self.nodes = []
 
     def debug_string(self):
-        print "Flow:\n" + \
-            "  name: " + self.name;
-        for task in self.task_children:
-            print task.debug_string()
+        str = "Flow:\n" + "  name: " + self.name;
+        for node in self.nodes:
+            str = str + task.debug_string()
+        return str
+
+class Node(object):
+    """Node"""
+
+    def __init__(self, name="", resource=""):
+        self.name = name
+        self.resource = resource
+
+    def debug_string(self):
+        return "Node:\n" + \
+            "  name: " + self.name + "\n" + \
+            "  resource: " + self.resource
