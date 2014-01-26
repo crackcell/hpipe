@@ -4,11 +4,7 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-import logging
-import sys
+from log import logger
+from task_manager import TaskManager
 
-logger = logging.getLogger("corgi")
-formatter = logging.Formatter('%(name)-12s %(asctime)s %(levelname)-8s %(message)s',
-                              '%a, %d %b %Y %H:%M:%S',)
-stream_handler = logging.StreamHandler(sys.stderr)
-logger.addHandler(stream_handler)
+VERSION = "1.0.0"
