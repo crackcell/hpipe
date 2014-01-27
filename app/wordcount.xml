@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<flow name="wordcount">
+
+  <node>
+    <name>step1</name>
+    <resource>wordcount/step1.xml</resource>
+  </node>
+
+  <node>
+    <name>step2</name>
+    <resource>wordcount/step2.xml</resource>
+  </node>
+
+  <node>
+    <name>step3</name>
+    <resource>wordcount/step3.xml</resource>
+    <dependencies>step1,step2</dependencies>
+  </node>
+
+</flow>
