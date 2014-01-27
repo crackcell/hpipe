@@ -14,7 +14,7 @@ from corgi import JobManager
 logger = logging.getLogger("corgi")
 
 def main():
-    load_conf()
+    logger.setLevel(int(os.environ["corgi_log_level"]))
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hv", ["help", "version"])
     except getopt.GetoptError as err:
@@ -36,12 +36,6 @@ def main():
     job_manager = JobManager()
     job_manager.load_conf(flow)
     job_manager.launch()
-
-def load_conf():
-    rootdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
-    sys.path.append(rootdir + "/conf")
-    import config
-    logger.setLevel(config.log_level)
 
 def usage():
     print "Usage: run.py [-h --help] [-v --version] FLOW"

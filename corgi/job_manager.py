@@ -8,8 +8,8 @@ from xml.etree import ElementTree as ET
 
 from datetime import datetime, timedelta
 
+from job_launcher import JobLauncher
 from entity import Node, JobConf
-from envrion import Environ
 
 import os
 import logging
@@ -21,8 +21,8 @@ class JobManager(object):
     """Job Manager"""
 
     def __init__(self):
-        self.environ = {}
         self.root = Node()
+        self.launcher = JobLauncher()
 
     def load_conf(self, conf_file):
         parse_file(self.root, conf_file)
@@ -31,6 +31,7 @@ class JobManager(object):
 
     def launch(self):
         logger.info("launching jobs")
+        
 
 def parse_file(node, conf_file):
     xmlroot = ET.parse(conf_file).getroot()
@@ -53,7 +54,7 @@ def parse_flow(node, xmlroot):
     deps = {}
     for child in xmlroot.iter("node"):
         node_name, node_res, node_deps = parse_node_info(child)
-        #{node_name : [node_object, deps_dict, depended_by_others]}
+        # format: {node_name : [node_object, deps_dict, depended_by_others]}
         deps[node_name] = [Node(node_name, node_res), node_deps, False]
 
     for name, dep in deps.iteritems():
@@ -94,10 +95,6 @@ def parse_node_info(xmlroot):
     return name, res, deps
 
 pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
-
-def calc_value(orig, properties):
-    pass
-
 def parse_jobconf(node, xmlroot):
     jobconf = JobConf()
 
@@ -122,7 +119,7 @@ def parse_jobconf(node, xmlroot):
             elif var in os.environ:
                 resolved_value = os.environ[var]
             else:
-                raise RuntimeError("invalid property, undefined or unresolved"
+                raise RuntimeError("invalid property, undefined or unresolved "
                                    "variable: ${%s}" %
                                    var)
 

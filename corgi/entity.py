@@ -4,6 +4,22 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
+class Node(object):
+    """Node"""
+
+    def __init__(self, name="", resource=""):
+        self.name = name
+        self.resource = resource
+        self.jobconf = None
+        self.depends = []
+
+    def __repr__(self):
+        str = self.name
+        if self.jobconf != None:
+            str += " mapper:" + self.jobconf.properties["mapper"] + \
+            " reducer:" + self.jobconf.properties["reducer"]
+        return str
+
 class JobConf(object):
     """Job Config"""
 
@@ -22,16 +38,3 @@ class JobConf(object):
         for p in checklist:
             if not p in self.properties.keys():
                 raise RuntimeError(p)
-
-class Node(object):
-    """Node"""
-
-    def __init__(self, name="", resource=""):
-        self.name = name
-        self.resource = resource
-        self.jobconf = None
-        self.depends = []
-
-    def __repr__(self):
-#        return self.name + self.jobconf.__repr__()
-        return self.name
