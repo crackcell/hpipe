@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<flow name="subflow">
+
+  <node>
+    <name>step6</name>
+    <resource>flow/wordcount/step6.xml</resource>
+  </node>
+
+</flow>

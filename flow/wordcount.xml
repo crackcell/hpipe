@@ -4,18 +4,35 @@
 
   <node>
     <name>step1</name>
-    <resource>wordcount/step1.xml</resource>
+    <resource>flow/wordcount/step1.xml</resource>
   </node>
 
   <node>
     <name>step2</name>
-    <resource>wordcount/step2.xml</resource>
+    <resource>flow/wordcount/step2.xml</resource>
   </node>
 
   <node>
     <name>step3</name>
-    <resource>wordcount/step3.xml</resource>
+    <resource>flow/wordcount/step3.xml</resource>
     <dependencies>step1,step2</dependencies>
+  </node>
+
+  <node>
+    <name>step4</name>
+    <resource>flow/wordcount/step4.xml</resource>
+  </node>
+
+  <node>
+    <name>step5</name>
+    <resource>flow/wordcount/step5.xml</resource>
+    <dependencies>step4</dependencies>
+  </node>
+
+  <node>
+    <name>subflow</name>
+    <resource>flow/wordcount/subflow.xml</resource>
+    <dependencies>step5</dependencies>
   </node>
 
 </flow>

@@ -9,7 +9,7 @@ import sys
 import getopt
 import logging
 
-from corgi import TaskManager
+from corgi import JobManager
 
 logger = logging.getLogger("corgi")
 
@@ -33,8 +33,9 @@ def main():
     flow = sys.argv[len(opts) + 1]
     logger.info("flow: %s", flow)
 
-    task_manager = TaskManager()
-    task_manager.load_conf(flow)
+    job_manager = JobManager()
+    job_manager.load_conf(flow)
+    job_manager.launch()
 
 def setenv():
     rootdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))

@@ -4,38 +4,24 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-class Task(object):
-    """Leave node in dependence tree"""
+class JobConf(object):
+    """Job Config"""
 
-    def __init__(self, name="", mapper="", reducer=""):
-        self.name = name
-        self.mapper = mapper
-        self.reducer = reducer
-        self.files = []
+    def __init__(self):
+        self.properties = {}
 
-    def add_file(self, filename):
-        self.files.append(filename)
-
-    def debug_string(self):
-        print "Task:\n" + \
-            "  name: " + self.task_name + \
-            "  mapper: " + self.mapper + \
-            "  reducer: " + self.reducer
-        for filename in self.files:
-            print "  file: " + filename
-
-class Flow(object):
-    """Root and middle node in dependence tree"""
-
-    def __init__(self, name=""):
-        self.name = name
-        self.nodes = []
-
-    def debug_string(self):
-        str = "Flow:\n" + "  name: " + self.name;
-        for node in self.nodes:
-            str = str + task.debug_string()
+    def __repr__(self):
+        str = "JobConf:{"
+        for k, v in self.properties.iteritems():
+            str += " " * 10  + k + ":" + v + ","
+        str += "}"
         return str
+
+    def validate(self):
+        checklist = ["mapper", "reducer"]
+        for p in checklist:
+            if not p in self.properties.keys():
+                raise RuntimeError(p)
 
 class Node(object):
     """Node"""
@@ -43,8 +29,9 @@ class Node(object):
     def __init__(self, name="", resource=""):
         self.name = name
         self.resource = resource
+        self.jobconf = None
+        self.depends = []
 
-    def debug_string(self):
-        return "Node:\n" + \
-            "  name: " + self.name + "\n" + \
-            "  resource: " + self.resource
+    def __repr__(self):
+#        return self.name + self.jobconf.__repr__()
+        return self.name

@@ -5,6 +5,6 @@
 #
 
 from log import logger
-from task_manager import TaskManager
+from job_manager import JobManager
 
 VERSION = "1.0.0"
