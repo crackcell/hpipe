@@ -6,9 +6,12 @@
 
 from xml.etree import ElementTree as ET
 
-from entity import Node, JobConf
-from envrion import Envrion
+from datetime import datetime, timedelta
 
+from entity import Node, JobConf
+from envrion import Environ
+
+import os
 import logging
 import re
 
@@ -18,6 +21,7 @@ class JobManager(object):
     """Job Manager"""
 
     def __init__(self):
+        self.environ = {}
         self.root = Node()
 
     def load_conf(self, conf_file):
@@ -89,6 +93,11 @@ def parse_node_info(xmlroot):
 
     return name, res, deps
 
+pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
+
+def calc_value(orig, properties):
+    pass
+
 def parse_jobconf(node, xmlroot):
     jobconf = JobConf()
 
@@ -99,24 +108,57 @@ def parse_jobconf(node, xmlroot):
         resolved[name] = len(re.findall("\$\{(.+?)\}", value)) == 0
 
     for name, value in jobconf.properties.iteritems():
-        unresolved = re.findall("\$\{(.+?)\}", value)
-        for var in re.findall("\$\{(.+?)\}", value):
-            if not var in jobconf.properties or not resolved[var]:
-                raise RuntimeError("invalid property, "
-                                   "undefined or unresolved "
+
+        for match in pattern.findall(value):
+            var = match[0]
+            if len(match) != 1 and len(match) != 3 and len(match) != 4:
+                raise RuntimeError("invalid property value: %s" %
+                                   value)
+
+            resolved_value = None;
+
+            if var in jobconf.properties and resolved[var]:
+                resolved_value = jobconf.properties[var]
+            elif var in os.environ:
+                resolved_value = os.environ[var]
+            else:
+                raise RuntimeError("invalid property, undefined or unresolved"
                                    "variable: ${%s}" %
                                    var)
+
+            if match[3] == "":     # normal numeric calculation
+                if match[1] == "-":
+                    resolved_value = str(int(resolved_value) - int(match[2]))
+                elif match[1] == "+":
+                    resolved_value = str(int(resolved_value) + int(match[2]))
+
+            else:  # datetime caculation
+                orig_time = datetime.strptime(resolved_value, "%Y%M%d")
+                if match[3] == "d":   # day diff
+                    diff_time = timedelta(days=int(match[2]))
+                elif match[3] == "w": # week diff
+                    diff_time = timedelta(weeks=int(match[2]))
+                else:
+                    raise RuntimeError("invalid datettime unit: %s" % match[3])
+
+                if match[1] == "-":
+                    resolved_value = (orig_time - diff_time).strftime("%Y%M%d")
+                elif match[1] == "+":
+                    resolved_value = (orig_time + diff_time).strftime("%Y%M%d")
+
             orig = jobconf.properties[name]
             jobconf.properties[name] = jobconf.properties[name].replace(
-                "${" + var + "}",
-                jobconf.properties[var])
+                "${" + match[0] + match[1] + match[2] + match[3] + "}",
+                resolved_value)
             logger.debug("resolving: %s -> %s",
                          orig, jobconf.properties[name])
+
     try:
         jobconf.validate()
     except RuntimeError as e:
         raise RuntimeError("invalid jobconf, missing property '%s'" %
                            e.message)
+
     node.jobconf = jobconf
 
 def parse_property_info(xmlroot):

@@ -14,7 +14,7 @@ from corgi import JobManager
 logger = logging.getLogger("corgi")
 
 def main():
-    setenv()
+    load_conf()
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hv", ["help", "version"])
     except getopt.GetoptError as err:
@@ -37,7 +37,7 @@ def main():
     job_manager.load_conf(flow)
     job_manager.launch()
 
-def setenv():
+def load_conf():
     rootdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
     sys.path.append(rootdir + "/conf")
     import config

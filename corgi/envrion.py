@@ -4,7 +4,7 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-from os import envrion
+from os import environ
 
 class Environ(object):
     """Envrion"""
@@ -13,4 +13,4 @@ class Environ(object):
         self.properties = {}
 
     def setenv(self):
-        print envrion
+        print environ

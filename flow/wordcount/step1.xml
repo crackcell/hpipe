@@ -7,14 +7,16 @@
     <value>step1</value>
   </property>
 
+  <!--
   <property>
     <name>gmdate</name>
     <value>20140127</value>
   </property>
+  -->
 
   <property>
     <name>mapred.job.name</name>
-    <value>${corgi.job.name}: ${gmdate}</value>
+    <value>${corgi.job.name}: ${gmdate-27d}</value>
   </property>
 
   <property>
