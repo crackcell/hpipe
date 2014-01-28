@@ -14,10 +14,18 @@ from corgi import JobManager
 logger = logging.getLogger("corgi")
 
 def main():
+
+    # Check python runtime version
+    if sys.version_info[0] * 10 + sys.version_info[1] < 26:
+        raise RuntimeError("invalid python version %s.%s.%s (< 2.6), "
+                           "please upgrade it" %
+                           (sys.version_info[0], sys.version_info[1],
+                            sys.version_info[2]))
+
     logger.setLevel(int(os.environ["corgi_log_level"]))
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hv", ["help", "version"])
-    except getopt.GetoptError as err:
+    except getopt.GetoptError, err:
         usage()
         sys.exit(1)
     for o, a in opts:

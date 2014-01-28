@@ -4,16 +4,15 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
+import os
+import re
+import sys
+import logging
+
 from xml.etree import ElementTree as ET
-
 from datetime import datetime, timedelta
-
 from job_launcher import JobLauncher
 from entity import Node, JobConf
-
-import os
-import logging
-import re
 
 logger = logging.getLogger("corgi")
 
@@ -46,7 +45,7 @@ def parse_flow(node, xmlroot):
 
     try:
         node.name = xmlroot.attrib["name"]
-    except KeyError as e:
+    except KeyError, e:
         raise RuntimeError("invalid flow, missing attribute: %s" %
                            e.message)
 
@@ -155,7 +154,7 @@ def parse_jobconf(node, xmlroot):
 
     try:
         jobconf.validate()
-    except RuntimeError as e:
+    except RuntimeError, e:
         raise RuntimeError("invalid jobconf, missing property '%s'" %
                            e.message)
 
