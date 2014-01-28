@@ -10,8 +10,9 @@ class Node(object):
     def __init__(self, name="", resource=""):
         self.name = name
         self.resource = resource
-        self.jobconf = None
         self.depends = []
+        self.jobconf = None
+        self.launcher = None
 
     def __repr__(self):
         str = self.name

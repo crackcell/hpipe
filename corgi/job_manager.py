@@ -30,6 +30,7 @@ class JobManager(object):
 
     def launch(self):
         logger.info("launching jobs")
+        self.launcher.launch()
 
 def parse_file(node, conf_file):
     xmlroot = ET.parse(conf_file).getroot()
