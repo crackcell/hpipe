@@ -43,4 +43,4 @@ shift $((OPTIND-1))
 flow=$1
 
 PYTHONPATH=$workroot \
-    $workroot/bin/corgi_run.py $flow
+    python $workroot/bin/corgi_run.py $flow
