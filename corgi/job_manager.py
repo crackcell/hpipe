@@ -31,7 +31,6 @@ class JobManager(object):
 
     def launch(self):
         logger.info("launching jobs")
-        
 
 def parse_file(node, conf_file):
     xmlroot = ET.parse(conf_file).getroot()
@@ -52,7 +51,9 @@ def parse_flow(node, xmlroot):
                            e.message)
 
     deps = {}
-    for child in xmlroot.iter("node"):
+    for child in xmlroot:
+        if child.tag != "node":
+            continue
         node_name, node_res, node_deps = parse_node_info(child)
         # format: {node_name : [node_object, deps_dict, depended_by_others]}
         deps[node_name] = [Node(node_name, node_res), node_deps, False]
@@ -99,7 +100,9 @@ def parse_jobconf(node, xmlroot):
     jobconf = JobConf()
 
     resolved = {}
-    for child in xmlroot.iter("property"):
+    for child in xmlroot:
+        if child.tag != "property":
+            continue
         name, value = parse_property_info(child)
         jobconf.properties[name] = value
         resolved[name] = len(re.findall("\$\{(.+?)\}", value)) == 0
