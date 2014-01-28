@@ -19,4 +19,4 @@ class JobLauncher(object):
         self.hadoop_streaming_jar = os.environ["hadoop_streaming_jar"]
 
     def launch(self):
-        pass
+        call(self.hadoop_exec)
