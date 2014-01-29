@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<jobconf>
+<job>
 
   <property>
     <name>corgi.job.name</name>
@@ -32,4 +32,4 @@
     <value>wordcount/step1/reducer.pl</value>
   </property>
 
-</jobconf>
+</job>
