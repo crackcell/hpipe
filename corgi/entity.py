@@ -9,16 +9,21 @@ import os
 from threading import Thread
 from subprocess import call
 from multiprocessing import Process, Lock
+from collections import namedtuple
 
 class Node(object):
     """Node"""
+
+    RUNABLE  = 1
+    RUNNING  = 2
+    COMPLETE = 3
 
     def __init__(self, name="", resource=""):
         self.name = name
         self.resource = resource
         self.depends = []
         self.job = None
-        self.launcher = None
+        self.state = "RUNNABLE"
 
     def __repr__(self):
         str = self.name
