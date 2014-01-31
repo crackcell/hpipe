@@ -108,6 +108,9 @@ class JobManager(object):
             if child.tag != "property":
                 continue
             name, value = self.__parse_property_info(child)
+            if name == "corgi.file":
+                job.files.append(value)
+                continue
             job.properties[name] = value
             resolved[name] = len(re.findall("\$\{(.+?)\}", value)) == 0
 
@@ -172,8 +175,8 @@ class JobManager(object):
         node.job = job
 
     def __parse_property_info(self, xmlroot):
-        name = None;
-        value = None;
+        name = None
+        value = None
         for child in xmlroot:
             if child.tag == "name":
                 name = child.text

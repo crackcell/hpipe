@@ -13,23 +13,33 @@
   </property>
 
   <property>
-    <name>mapred.input.dir</name>
-    <value>/group/tbalgo-rank-dev/menglong.tml/corgi-example/wordcount/input/*</value>
+    <name>corgi.input.dir</name>
+    <value>/ssd1/hdfs/wordcount/input/*</value>
   </property>
 
   <property>
-    <name>mapred.output.dir</name>
-    <value>/group/tbalgo-rank-dev/menglong.tml/corgi-example/wordcount/output/step1</value>
+    <name>corgi.output.dir</name>
+    <value>/ssd1/hdfs/wordcount/output/step1</value>
   </property>
 
   <property>
-    <name>mapper</name>
-    <value>wordcount/step1/mapper.pl</value>
+    <name>corgi.mapper</name>
+    <value>flow/wordcount/step1/mapper.pl</value>
   </property>
 
   <property>
-    <name>reducer</name>
-    <value>wordcount/step1/reducer.pl</value>
+    <name>corgi.reducer</name>
+    <value>flow/wordcount/step1/reducer.pl</value>
+  </property>
+
+  <property>
+    <name>corgi.file</name>
+    <value>flow/wordcount/step1/mapper.pl</value>
+  </property>
+
+  <property>
+    <name>corgi.file</name>
+    <value>flow/wordcount/step1/reducer.pl</value>
   </property>
 
 </job>

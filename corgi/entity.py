@@ -14,10 +14,6 @@ from collections import namedtuple
 class Node(object):
     """Node"""
 
-    RUNABLE  = 1
-    RUNNING  = 2
-    COMPLETE = 3
-
     def __init__(self, name="", resource=""):
         self.name = name
         self.resource = resource
@@ -28,8 +24,8 @@ class Node(object):
     def __repr__(self):
         str = self.name
         if self.job != None:
-            str += " mapper:" + self.job.properties["mapper"] + \
-            " reducer:" + self.job.properties["reducer"]
+            str += " mapper:" + self.job.properties["corgi.mapper"] + \
+            " reducer:" + self.job.properties["corgi.reducer"]
         return str
 
 class Job(object):
@@ -37,6 +33,7 @@ class Job(object):
 
     def __init__(self):
         self.properties = {}
+        self.files = []
 
     def __repr__(self):
         str = "Job:{"
@@ -46,7 +43,8 @@ class Job(object):
         return str
 
     def validate(self):
-        checklist = ["mapper", "reducer"]
+        checklist = ["corgi.job.name", "corgi.input.dir",
+                     "corgi.output.dir", "corgi.mapper", "corgi.reducer"]
         for p in checklist:
             if not p in self.properties.keys():
                 raise RuntimeError(p)
