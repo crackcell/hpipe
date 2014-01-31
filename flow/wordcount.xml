@@ -7,4 +7,9 @@
     <resource>flow/wordcount/step1.xml</resource>
   </node>
 
+  <node>
+    <name>step2</name>
+    <resource>flow/wordcount/step2.xml</resource>
+  </node>
+
 </flow>
