@@ -19,7 +19,7 @@ typeset -r VERSION="1.0"
 
 set -eu
 workroot=$(pushd $(dirname $0)/.. >/dev/null && pwd -P && popd >/dev/null)
-source $workroot/conf/corgi.conf
+source $workroot/conf/corgi.env
 
 function usage() {
     echo "Usage: $0 [-t today] [-h] FLOW" >&2

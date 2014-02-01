@@ -4,7 +4,7 @@
 
   <property>
     <name>corgi.job.name</name>
-    <value>step2</value>
+    <value>step3</value>
   </property>
 
   <property>
@@ -19,27 +19,27 @@
 
   <property>
     <name>corgi.output.dir</name>
-    <value>/corgi/wordcount/step2/output</value>
+    <value>/corgi/wordcount/step3/output</value>
   </property>
 
   <property>
     <name>corgi.mapper</name>
-    <value>flow/wordcount/step2/mapper.pl</value>
+    <value>flow/wordcount/step3/mapper.pl</value>
   </property>
 
   <property>
     <name>corgi.reducer</name>
-    <value>flow/wordcount/step2/reducer.pl</value>
+    <value>flow/wordcount/step3/reducer.pl</value>
   </property>
 
   <property>
     <name>corgi.file</name>
-    <value>flow/wordcount/step2/mapper.pl</value>
+    <value>flow/wordcount/step3/mapper.pl</value>
   </property>
 
   <property>
     <name>corgi.file</name>
-    <value>flow/wordcount/step2/reducer.pl</value>
+    <value>flow/wordcount/step3/reducer.pl</value>
   </property>
 
 </job>

@@ -11,7 +11,7 @@ import logging
 
 from xml.etree import ElementTree as ET
 from datetime import datetime, timedelta
-from job_launcher import JobLauncher
+from launcher import Launcher
 from entity import Node, Job
 
 logger = logging.getLogger("corgi")
@@ -21,7 +21,7 @@ class JobManager(object):
 
     def __init__(self):
         self.root = Node()
-        self.launcher = JobLauncher()
+        self.launcher = Launcher()
         self.pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
 
     def load_conf(self, conf_file):

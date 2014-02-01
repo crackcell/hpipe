@@ -12,4 +12,10 @@
     <resource>flow/wordcount/step2.xml</resource>
   </node>
 
+  <node>
+    <name>step3</name>
+    <resource>flow/wordcount/step3.xml</resource>
+    <dependencies>step1,step2</dependencies>
+  </node>
+
 </flow>

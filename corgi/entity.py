@@ -20,6 +20,7 @@ class Node(object):
         self.depends = []
         self.job = None
         self.state = "RUNNABLE"
+        self.returncode = 0
 
     def __repr__(self):
         str = self.name

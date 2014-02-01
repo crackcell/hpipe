@@ -4,16 +4,20 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-from subprocess import Popen, STDOUT
-from entity import Node, Job
-
 import os
 import logging
 
+from subprocess import Popen
+
 logger = logging.getLogger("corgi")
 
-class JobLauncher(object):
-    """Launch jobs to hadoop"""
+class Client(object):
+    """Client interface"""
+
+    def launch(self, tree):
+        pass
+
+class HadoopClient(Client):
 
     def __init__(self):
         # Load hadoop config from system envrionment variables
@@ -22,25 +26,18 @@ class JobLauncher(object):
         self.hadoop_exec_conf = os.environ["hadoop_exec_conf"]
         self.hadoop_streaming_jar = os.environ["hadoop_streaming_jar"]
 
-    def launch(self, tree):
+    def launch(self, runnables):
         processes = []
-        runnables = []
-        self.__get_runnable(tree, runnables)
-        while len(runnables) != 0:
-            for node in runnables:
-                # TODO: check filesystem flags before launching job
-                command = self.__assemble_command(node.job)
-                logger.debug("submit job: %s", command)
-                processes.append(Popen(command, shell=True))
-                # TODO: touch BUSY flag after launching job
-            for p in processes:
-                p.wait()
-            for node in runnables:
-                pass
-                # TODO: touch DONE flags
-
-            runnables = []
-            self.__get_runnable(tree, runnables)
+        returncode = []
+        for node in runnables:
+            command = self.__assemble_command(node.job)
+            logger.debug("submit job: %s", command)
+            processes.append(Popen(command, shell=True))
+            # TODO: touch BUSY flag after launching job
+        for p in processes:
+            p.wait()
+        for i, p in enumerate(processes):
+            runnables[i].returncode = p.returncode
 
     def __assemble_command(self, job):
         command = self.hadoop_exec + " jar " + \
@@ -65,15 +62,3 @@ class JobLauncher(object):
             command += " -file " + f
 
         return command
-
-    def __get_runnable(self, node, runnables):
-        pending = []
-        for dep in node.depends:
-            if dep.job != None and dep.state == "RUNNABLE" \
-               and len(dep.depends) == 0:
-                # TODO: check DONE flags
-                runnables.append(dep)
-            else:
-                pending.append(dep)
-                self.__get_runnable(dep, runnables)
-        node.depends = pending
