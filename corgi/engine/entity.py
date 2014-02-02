@@ -4,13 +4,6 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-import os
-
-from threading import Thread
-from subprocess import call
-from multiprocessing import Process, Lock
-from collections import namedtuple
-
 class Node(object):
     """Node"""
 

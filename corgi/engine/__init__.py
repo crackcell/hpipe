@@ -4,6 +4,4 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-from main import main
-
-VERSION = "1.0.0"
+from jobmgr import JobManager

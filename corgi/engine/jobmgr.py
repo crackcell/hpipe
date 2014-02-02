@@ -6,15 +6,17 @@
 
 import os
 import re
-import sys
 import logging
 
 from xml.etree import ElementTree as ET
 from datetime import datetime, timedelta
-from launcher import Launcher
-from entity import Node, Job
 
-logger = logging.getLogger("corgi")
+from corgi.util import setup_logger
+from corgi.engine.entity import Node, Job
+from corgi.engine.launcher import Launcher
+
+logger = logging.getLogger(__name__)
+setup_logger(logger)
 
 class JobManager(object):
     """Job Manager"""

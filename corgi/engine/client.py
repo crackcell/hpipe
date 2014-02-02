@@ -8,8 +8,10 @@ import os
 import logging
 
 from subprocess import Popen
+from corgi.util import setup_logger
 
-logger = logging.getLogger("corgi")
+logger = logging.getLogger(__name__)
+setup_logger(logger)
 
 class Client(object):
     """Client interface"""

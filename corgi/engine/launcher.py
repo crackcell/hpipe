@@ -8,21 +8,32 @@ import os
 import logging
 
 from subprocess import Popen
-from constants import *
-from entity import *
-from scheduler import *
-from client import *
-from filesystem import *
 
-logger = logging.getLogger("corgi")
+from corgi.constants import *
+from corgi.engine.entity import *
+from corgi.engine.scheduler import *
+from corgi.engine.client import *
+from corgi.engine.filesystem import *
+
+logger = logging.getLogger(__name__)
+setup_logger(logger)
 
 class Launcher(object):
     """Launch jobs to hadoop"""
 
     def __init__(self):
-        self.scheduler = SimpleScheduler()
-        self.client = HadoopClient()
-        self.filesystem = HDFSFilesystem()
+        if os.environ["corgi_scheduler"] == "simple":
+            self.scheduler = SimpleScheduler()
+        else:
+            self.scheduler = SimpleScheduler()
+        if os.environ["corgi_client"] == "hadoop":
+            self.client = HadoopClient()
+        else:
+            self.client = HadoopClient()
+        if os.environ["corgi_filesystem"] == "hdfs":
+            self.filesystem = HDFSFilesystem()
+        else:
+            self.filesystem = HDFSFilesystem()
 
     def launch(self, tree):
         processes = []

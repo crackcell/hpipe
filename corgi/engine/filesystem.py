@@ -8,8 +8,10 @@ import os
 import logging
 
 from subprocess import call
+from corgi.util import setup_logger
 
-logger = logging.getLogger("corgi")
+logger = logging.getLogger(__name__)
+setup_logger(logger)
 
 class Filesystem(object):
     """Filesystem interface"""
