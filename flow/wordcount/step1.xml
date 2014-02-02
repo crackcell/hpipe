@@ -19,7 +19,7 @@
 
   <property>
     <name>corgi.output.dir</name>
-    <value>/corgi/wordcount/step1/output</value>
+    <value>/corgi/wordcount/step1</value>
   </property>
 
   <property>
