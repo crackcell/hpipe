@@ -18,6 +18,7 @@ setup_logger(logger)
 def main():
     # require python >= 2.6
     assert_runtime_version()
+    assert_env_var()
 
     # parse commandline arguments
     try:
@@ -56,3 +57,19 @@ def assert_runtime_version():
                            "please upgrade it" %
                            (sys.version_info[0], sys.version_info[1],
                             sys.version_info[2]))
+
+def assert_env_var():
+    var_checklist = ["corgi_log_level",
+                     "corgi_scheduler", "corgi_client", "corgi_filesystem",
+                     "hadoop_home", "hadoop_exec", "hadoop_streaming_jar",
+                     "hadoop_conf"]
+    for v in var_checklist:
+        if os.environ[v] == None:
+            raise RuntimeError("missing environment variable $%s" % v)
+
+    path_checklist = ["hadoop_home", "hadoop_exec", "hadoop_streaming_jar",
+                      "hadoop_conf"]
+    for v in path_checklist:
+        if not os.path.exists(os.environ[v]):
+            raise RuntimeError("invalid envrionment variable $%s,"
+                               " path does not exist: %s" % (v, os.environ[v]))
