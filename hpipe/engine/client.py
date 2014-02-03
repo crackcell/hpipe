@@ -8,7 +8,7 @@ import os
 import logging
 
 from subprocess import Popen
-from corgi.util import setup_logger
+from hpipe.util import setup_logger
 
 logger = logging.getLogger(__name__)
 setup_logger(logger)
@@ -49,19 +49,19 @@ class HadoopClient(Client):
                   self.hadoop_streaming_jar
 
         p = job.properties.copy()
-        del p["corgi.job.name"]
-        del p["corgi.input.dir"]
-        del p["corgi.output.dir"]
-        del p["corgi.mapper"]
-        del p["corgi.reducer"]
+        del p["hpipe.job.name"]
+        del p["hpipe.input.dir"]
+        del p["hpipe.output.dir"]
+        del p["hpipe.mapper"]
+        del p["hpipe.reducer"]
 
         for k, v in p.iteritems():
             command += " -D " + k + "=\"" + v + "\""
 
-        command += " -input " + job.properties["corgi.input.dir"] + \
-                   " -output " + job.properties["corgi.output.dir"] + \
-                   " -mapper " + job.properties["corgi.mapper"] + \
-                   " -reducer " + job.properties["corgi.reducer"]
+        command += " -input " + job.properties["hpipe.input.dir"] + \
+                   " -output " + job.properties["hpipe.output.dir"] + \
+                   " -mapper " + job.properties["hpipe.mapper"] + \
+                   " -reducer " + job.properties["hpipe.reducer"]
 
         for f in job.files:
             command += " -file " + f

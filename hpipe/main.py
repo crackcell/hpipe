@@ -9,8 +9,8 @@ import sys
 import getopt
 import logging
 
-from corgi.util import setup_logger
-from corgi.engine import JobManager
+from hpipe.util import setup_logger
+from hpipe.engine import JobManager
 
 logger = logging.getLogger(__name__)
 setup_logger(logger)
@@ -48,7 +48,7 @@ def usage():
     print "Usage: run.py [-h --help] [-v --version] FLOW"
 
 def version():
-    print "Corgi " + corgi.VERSION
+    print "Hpipe " + hpipe.VERSION
 
 def assert_runtime_version():
     # Check python runtime version
@@ -59,8 +59,8 @@ def assert_runtime_version():
                             sys.version_info[2]))
 
 def assert_env_var():
-    var_checklist = ["corgi_log_level",
-                     "corgi_scheduler", "corgi_client", "corgi_filesystem",
+    var_checklist = ["hpipe_log_level",
+                     "hpipe_scheduler", "hpipe_client", "hpipe_filesystem",
                      "hadoop_home", "hadoop_exec", "hadoop_streaming_jar",
                      "hadoop_conf"]
     for v in var_checklist:

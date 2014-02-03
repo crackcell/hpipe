@@ -14,4 +14,4 @@ def setup_logger(logger):
     stream_handler = logging.StreamHandler(sys.stderr)
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
-    logger.setLevel(int(os.environ["corgi_log_level"]))
+    logger.setLevel(int(os.environ["hpipe_log_level"]))

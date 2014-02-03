@@ -11,9 +11,9 @@ import logging
 from xml.etree import ElementTree as ET
 from datetime import datetime, timedelta
 
-from corgi.util import setup_logger
-from corgi.engine.entity import Node, Job
-from corgi.engine.launcher import Launcher
+from hpipe.util import setup_logger
+from hpipe.engine.entity import Node, Job
+from hpipe.engine.launcher import Launcher
 
 logger = logging.getLogger(__name__)
 setup_logger(logger)
@@ -110,7 +110,7 @@ class JobManager(object):
             if child.tag != "property":
                 continue
             name, value = self.__parse_property_info(child)
-            if name == "corgi.file":
+            if name == "hpipe.file":
                 job.files.append(value)
                 continue
             job.properties[name] = value

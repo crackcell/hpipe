@@ -18,8 +18,8 @@ class Node(object):
     def __repr__(self):
         str = self.name
         if self.job != None:
-            str += " mapper:" + self.job.properties["corgi.mapper"] + \
-            " reducer:" + self.job.properties["corgi.reducer"]
+            str += " mapper:" + self.job.properties["hpipe.mapper"] + \
+            " reducer:" + self.job.properties["hpipe.reducer"]
         return str
 
 class Job(object):
@@ -37,8 +37,8 @@ class Job(object):
         return str
 
     def validate(self):
-        checklist = ["corgi.job.name", "corgi.input.dir",
-                     "corgi.output.dir", "corgi.mapper", "corgi.reducer"]
+        checklist = ["hpipe.job.name", "hpipe.input.dir",
+                     "hpipe.output.dir", "hpipe.mapper", "hpipe.reducer"]
         for p in checklist:
             if not p in self.properties.keys():
                 raise RuntimeError(p)
