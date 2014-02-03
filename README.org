@@ -1,0 +1,10 @@
+# -*- mode: org -*-
+
+#+TITLE: README
+#+AUTHOR: Tan Menglong
+#+EMAIL: tanmenglong AT gmail DOT com
+#+DATE: Mon Feb  3 11:21:25 2014
+#+STYLE: <link rel="stylesheet" type="text/css" href="http://blog.crackcell.com/static/org-mode/org-mode.css" />
+
+* What's this
+  hpipe is workflow engine for Hadoop streaming jobs.
