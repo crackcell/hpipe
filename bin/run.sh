@@ -19,7 +19,7 @@ typeset -r VERSION="1.0"
 
 set -eu
 workroot=$(pushd $(dirname $0)/.. >/dev/null && pwd -P && popd >/dev/null)
-source $workroot/conf/corgi.env
+source $workroot/conf/hpipe.env
 
 function usage() {
     echo "Usage: $0 [-t today] [-h] FLOW" >&2
@@ -43,4 +43,4 @@ shift $((OPTIND-1))
 flow=$1
 
 PYTHONPATH=$workroot \
-    python $workroot/bin/corgi_run.py $flow
+    python $workroot/bin/hpipe_run.py $flow

@@ -4,7 +4,7 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-from corgi import main
+from hpipe import main
 
 if __name__ == "__main__":
     main()

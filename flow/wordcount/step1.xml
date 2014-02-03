@@ -3,42 +3,42 @@
 <job>
 
   <property>
-    <name>corgi.job.name</name>
+    <name>hpipe.job.name</name>
     <value>step1</value>
   </property>
 
   <property>
     <name>mapred.job.name</name>
-    <value>${corgi.job.name}: ${today-27d}</value>
+    <value>${hpipe.job.name}: ${today-27d}</value>
   </property>
 
   <property>
-    <name>corgi.input.dir</name>
-    <value>/corgi/wordcount/input/part-*</value>
+    <name>hpipe.input.dir</name>
+    <value>/hpipe/wordcount/input/part-*</value>
   </property>
 
   <property>
-    <name>corgi.output.dir</name>
-    <value>/corgi/wordcount/step1</value>
+    <name>hpipe.output.dir</name>
+    <value>/hpipe/wordcount/step1</value>
   </property>
 
   <property>
-    <name>corgi.mapper</name>
+    <name>hpipe.mapper</name>
     <value>flow/wordcount/step1/mapper.pl</value>
   </property>
 
   <property>
-    <name>corgi.reducer</name>
+    <name>hpipe.reducer</name>
     <value>flow/wordcount/step1/reducer.pl</value>
   </property>
 
   <property>
-    <name>corgi.file</name>
+    <name>hpipe.file</name>
     <value>flow/wordcount/step1/mapper.pl</value>
   </property>
 
   <property>
-    <name>corgi.file</name>
+    <name>hpipe.file</name>
     <value>flow/wordcount/step1/reducer.pl</value>
   </property>
 

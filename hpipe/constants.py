@@ -4,4 +4,4 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-CORGI_OUTPUT_DIR = "corgi.output.dir"
+HPIPE_OUTPUT_DIR = "hpipe.output.dir"

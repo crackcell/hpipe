@@ -8,7 +8,7 @@ import os
 import logging
 
 from subprocess import call
-from corgi.util import setup_logger
+from hpipe.util import setup_logger
 
 logger = logging.getLogger(__name__)
 setup_logger(logger)
