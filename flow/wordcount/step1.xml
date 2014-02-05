@@ -9,7 +9,7 @@
 
   <property>
     <name>mapred.job.name</name>
-    <value>${hpipe.job.name}: ${today-27d}</value>
+    <value>${hpipe.job.name}: ${bizdate}</value>
   </property>
 
   <property>
@@ -19,7 +19,7 @@
 
   <property>
     <name>hpipe.output.dir</name>
-    <value>/hpipe/wordcount/step1</value>
+    <value>/hpipe/wordcount/${bizdate}/step1</value>
   </property>
 
   <property>
