@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<flow name="daily">
+
+  <node>
+    <name>impression</name>
+    <resource>flow/ctrpred/impression.xml</resource>
+  </node>
+
+</flow>

@@ -12,13 +12,13 @@
 ** Online Advertising CTR Prediction
    1. Prepare data on HDFS
       - PV log
-        : hadoop fs -mkdir /hpipe/ctrpred/20140204/pvlog
-        : hadoop fs -mkdir /hpipe/ctrpred/20140205/pvlog
-        : hadoop fs -put demo/ctrpred/pvlog.txt /hpipe/ctrpred/20140204/pvlog/part-00000
-        : hadoop fs -put demo/ctrpred/pvlog.txt /hpipe/ctrpred/20140205/pvlog/part-00000
+        : hadoop fs -mkdir /hpipe/ctrpred/pvlog/20140204
+        : hadoop fs -mkdir /hpipe/ctrpred/pvlog/20140205
+        : hadoop fs -put demo/ctrpred/pvlog.txt /hpipe/ctrpred/pvlog/20140204/part-00000
+        : hadoop fs -put demo/ctrpred/pvlog.txt /hpipe/ctrpred/pvlog/20140205/part-00000
       - Click log
         : hadoop fs -mkdir /hpipe/ctrpred/20140204/clicklog
         : hadoop fs -mkdir /hpipe/ctrpred/20140205/clicklog
-        : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/20140204/clicklog/part-00000
-        : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/20140205/clicklog/part-00000
+        : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/clicklog/20140204/part-00000
+        : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/clicklog/20140205/part-00000
    2. Run
