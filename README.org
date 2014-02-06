@@ -22,3 +22,5 @@
         : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/clicklog/20140204/part-00000
         : hadoop fs -put demo/ctrpred/clicklog.txt /hpipe/ctrpred/clicklog/20140205/part-00000
    2. Run
+* TODO
+  1. join/filtering/grouping
