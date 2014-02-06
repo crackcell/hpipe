@@ -20,7 +20,6 @@
     </property>
   </node>
 
-  <!--
   <node>
     <name>step2</name>
     <resource>flow/wordcount/step2.xml</resource>
@@ -29,9 +28,9 @@
   <node>
     <name>step3</name>
     <resource>flow/wordcount/step3.xml</resource>
-    <depend>step1</depend>
+    <depend>step1.0</depend>
+    <depend>step1.1</depend>
     <depend>step2</depend>
   </node>
-  -->
 
 </flow>

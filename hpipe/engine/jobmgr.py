@@ -77,7 +77,7 @@ class JobManager(object):
                               global_space, child_scope)
             # parse dependence
             for dep_name in dep[1]:
-                if deps[dep_name] == None:
+                if not dep_name in deps:
                     raise RuntimeError("invalid dependence, "
                                        "missing node: %s" %
                                        dep_name)
