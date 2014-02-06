@@ -7,10 +7,11 @@
 class Node(object):
     """Node"""
 
-    def __init__(self, name="", resource=""):
+    def __init__(self, name="", resource="", properties={}):
         self.name = name
         self.resource = resource
         self.depends = []
+        self.properties = properties
         self.job = None
         self.state = "RUNNABLE"
         self.returncode = 0
@@ -18,8 +19,7 @@ class Node(object):
     def __repr__(self):
         str = self.name
         if self.job != None:
-            str += " mapper:" + self.job.properties["hpipe.mapper"] + \
-            " reducer:" + self.job.properties["hpipe.reducer"]
+            str += ":\n" + self.job.__repr__()
         return str
 
 class Job(object):
@@ -30,10 +30,10 @@ class Job(object):
         self.files = []
 
     def __repr__(self):
-        str = "Job:{"
+        str = " " * 4 + "Job:{\n"
         for k, v in self.properties.iteritems():
-            str += " " * 10  + k + ":" + v + ","
-        str += "}"
+            str += " " * 8 + k + ": " + v + "\n"
+        str += " " * 4 + "}"
         return str
 
     def validate(self):

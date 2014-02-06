@@ -28,6 +28,14 @@ class ReferenceResolver(object):
         while changed:
             changed = self.__resolve_space(self.space)
 
+    def resolve_properties(self, properties):
+        self.resolve()
+        for k in properties.iterkeys():
+            if k in self.space:
+                #print properties[k], "-->", self.space[k]
+                properties[k] = self.space[k]
+        return properties
+
     def __calc_value(self, match, newvalue, oldvalue):
         if match[3] == "":     # normal numeric calculation (no unit)
             if match[1] == "-":

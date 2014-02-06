@@ -28,44 +28,53 @@ class JobManager(object):
         self.pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
 
     def load_conf(self, conf_file):
-        self.__parse_file(self.root, conf_file, {})
+        self.__parse_file(self.root, conf_file, os.environ, {})
         logger.debug("node tree:")
         self.__log_tree(self.root)
 
     def launch(self):
         logger.info("launching jobs")
-        self.launcher.launch(self.root)
+        # TODO
+        #self.launcher.launch(self.root)
 
-    def __parse_file(self, node, conf_file, local_space):
+    def __parse_file(self, node, conf_file, global_space, scope_space):
         xmlroot = ET.parse(conf_file).getroot()
-
         if xmlroot.tag == "flow":
-            self.__parse_flow(node, xmlroot, local_space)
+            self.__parse_flow(node, xmlroot, global_space, scope_space)
         elif xmlroot.tag == "job":
-            self.__parse_job(node, xmlroot, local_space)
+            self.__parse_job(node, xmlroot, global_space, scope_space)
         else:
             raise RuntimeError("invalid xml tag '%s'" % xmlroot.tag)
 
-    def __parse_flow(self, node, xmlroot, local_space):
-
+    def __parse_flow(self, node, xmlroot, global_space, scope_space):
         try:
             node.name = xmlroot.attrib["name"]
         except KeyError, e:
             raise RuntimeError("invalid flow, missing attribute: %s" %
                                e.message)
-
         deps = {}
-
         for child in xmlroot:
             if child.tag != "node":
                 continue
-            node_name, node_res, node_deps, local_space = self.__parse_node(child)
+            node_name, node_res, node_deps, node_prop = self.__parse_node(child)
             # format:
-            #  {node_name : [node_object, deps_dict, depended_by_others, local_space]}
-            deps[node_name] = [Node(node_name, node_res), node_deps, False, local_space]
+            #  {node_name : [node_object, deps_dict, depended_by_others]}
+            deps[node_name] = [Node(node_name, node_res, node_prop),
+                               node_deps, False]
 
         for name, dep in deps.iteritems():
-            self.__parse_file(dep[0], dep[0].resource, dep[3])
+            child_scope = {}
+            child_scope.update(scope_space)
+            child_scope.update(dep[0].properties)
+
+            refresolv = ReferenceResolver()
+            refresolv.add_space(global_space)
+            refresolv.add_space(scope_space)
+            refresolv.add_space(child_scope)
+            child_scope = refresolv.resolve_properties(child_scope)
+
+            self.__parse_file(dep[0], dep[0].resource,
+                              global_space, child_scope)
             # parse dependence
             for dep_name in dep[1]:
                 if deps[dep_name] == None:
@@ -87,7 +96,7 @@ class JobManager(object):
         name = None
         res = None
         deps = {}
-        local_space = {}
+        properties = {}
         for child in xmlroot:
             if child.tag == "name":
                 name = child.text
@@ -97,18 +106,17 @@ class JobManager(object):
                 deps[child.text.strip()] = 0
             elif child.tag == "property":
                 pname, pvalue = self.__parse_property(child)
-                local_space[pname] = pvalue
+                properties[pname] = pvalue
             else:
                 raise RuntimeError("invalid property: %s" % child.tag)
 
         if name == None or res == None:
             raise RuntimeError("invalid node, missing resource")
 
-        return name, res, deps, local_space
+        return name, res, deps, properties
 
-    def __parse_job(self, node, xmlroot, local_space):
+    def __parse_job(self, node, xmlroot, global_space, scope_space):
         job = Job()
-        resolved = {}
         for child in xmlroot:
             if child.tag != "property":
                 continue
@@ -117,19 +125,12 @@ class JobManager(object):
                 job.files.append(value)
                 continue
             job.properties[name] = value
-            resolved[name] = len(re.findall("\$\{(.+?)\}", value)) == 0
 
-        # process grammer
-        ref_resolver = ReferenceResolver()
-        ref_resolver.add_space(os.environ)
-        ref_resolver.add_space(local_space)
-        ref_resolver.add_space(job.properties)
-        ref_resolver.resolve()
-
-        for k, v in job.properties.iteritems():
-            orig = job.properties[k]
-            job.properties[k] = ref_resolver.space[k]
-            logger.debug("resolved $%s: %s -> %s", k, orig, job.properties[k])
+        refresolv = ReferenceResolver()
+        refresolv.add_space(global_space)
+        refresolv.add_space(scope_space)
+        refresolv.add_space(job.properties)
+        job.properties = refresolv.resolve_properties(job.properties)
 
         try:
             job.validate()
@@ -151,8 +152,13 @@ class JobManager(object):
             raise RuntimeError("invalid property, missing name or value")
         return name, value
 
-    def __log_tree(self, node, level=1):
-        str = " " * level * 2 + node.__repr__()
-        logger.debug(str)
+    def __log_tree(self, node, level=0):
+        str = node.__repr__()
+        lines = str.split("\n")
+        for i in range(len(lines)):
+            prefix = "| "
+            if i == 0:
+                prefix = "+ "
+            logger.debug("|    " * level + prefix + lines[i])
         for n in node.depends:
             self.__log_tree(n, level + 1)
