@@ -25,7 +25,7 @@ class JobManager(object):
     def __init__(self):
         self.root = Node()
         self.launcher = Launcher()
-        self.pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
+        self.input_pattern = re.compile("hpipe\..*?input.dir")
 
     def load_conf(self, conf_file):
         self.__parse_file(self.root, conf_file, os.environ, {})
@@ -35,7 +35,7 @@ class JobManager(object):
     def launch(self):
         logger.info("launching jobs")
         # TODO
-        #self.launcher.launch(self.root)
+        self.launcher.launch(self.root)
 
     def __parse_file(self, node, conf_file, global_space, scope_space):
         xmlroot = ET.parse(conf_file).getroot()
@@ -121,7 +121,10 @@ class JobManager(object):
             if child.tag != "property":
                 continue
             name, value = self.__parse_property(child)
-            if name == "hpipe.file":
+            if self.input_pattern.match(name):
+                job.inputs.append(name)
+                continue
+            elif name == "hpipe.file":
                 job.files.append(value)
                 continue
             job.properties[name] = value

@@ -27,6 +27,7 @@ class Job(object):
 
     def __init__(self):
         self.properties = {}
+        self.inputs = []
         self.files = []
 
     def __repr__(self):
@@ -37,8 +38,10 @@ class Job(object):
         return str
 
     def validate(self):
-        checklist = ["hpipe.job.name", "hpipe.input.dir",
-                     "hpipe.output.dir", "hpipe.mapper", "hpipe.reducer"]
+        checklist = ["hpipe.job.name", "hpipe.output.dir", "hpipe.mapper",
+                     "hpipe.reducer"]
         for p in checklist:
             if not p in self.properties.keys():
                 raise RuntimeError(p)
+        if len(self.inputs) == 0:
+            raise RuntimeError("input")

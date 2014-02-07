@@ -48,18 +48,13 @@ class HadoopClient(Client):
                   " jar " + \
                   self.hadoop_streaming_jar
 
-        p = job.properties.copy()
-        del p["hpipe.job.name"]
-        del p["hpipe.input.dir"]
-        del p["hpipe.output.dir"]
-        del p["hpipe.mapper"]
-        del p["hpipe.reducer"]
-
-        for k, v in p.iteritems():
+        for k, v in job.properties.iteritems():
             command += " -D " + k + "=\"" + v + "\""
 
-        command += " -input " + job.properties["hpipe.input.dir"] + \
-                   " -output " + job.properties["hpipe.output.dir"] + \
+        for i in job.inputs:
+            command += " -input " + i
+
+        command += " -output " + job.properties["hpipe.output.dir"] + \
                    " -mapper " + job.properties["hpipe.mapper"] + \
                    " -reducer " + job.properties["hpipe.reducer"]
 

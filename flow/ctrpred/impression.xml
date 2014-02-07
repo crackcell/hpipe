@@ -13,8 +13,28 @@
   </property>
 
   <property>
-    <name>hpipe.input.dir</name>
+    <name>hpipe.flow.join.inputs</name>
+    <value>pv,click</value>
+  </property>
+
+  <property>
+    <name>hpipe.flow.join.pv.input.dir</name>
     <value>/hpipe/ctrpred/pvlog/${bizdate}/part-*</value>
+  </property>
+
+  <property>
+    <name>hpipe.flow.join.pv.mapper</name>
+    <value>flow/ctrpred/impression/pv_mapper.py</value>
+  </property>
+
+  <property>
+    <name>hpipe.flow.join.click.input.dir</name>
+    <value>/hpipe/ctrpred/clicklog/${bizdate}/part-*</value>
+  </property>
+
+  <property>
+    <name>hpipe.flow.join.click.mapper</name>
+    <value>flow/ctrpred/impression/click_mapper.py</value>
   </property>
 
   <property>
@@ -24,12 +44,12 @@
 
   <property>
     <name>hpipe.mapper</name>
-    <value>flow/ctrpred/impression/pv_mapper.pl</value>
+    <value>hpipe/flow/join/join_mapper.py</value>
   </property>
 
   <property>
     <name>hpipe.reducer</name>
-    <value>flow/ctrpred/impression/pv_reducer.pl</value>
+    <value>hpipe/flow/join/join_reducer.py</value>
   </property>
 
   <property>
