@@ -9,6 +9,8 @@ import sys
 import getopt
 import logging
 
+import hpipe.constants as consts
+
 from hpipe.util import setup_logger
 from hpipe.engine import JobManager
 
@@ -26,18 +28,19 @@ def main():
     except getopt.GetoptError, err:
         usage()
         sys.exit(1)
-    for o, a in opts:
-        if o in ("-v", "--version"):
+    for opt, arg in opts:
+        if opt in ("-v", "--version"):
             version()
             sys.exit()
-        elif o in ("-h", "--help"):
+        elif opt in ("-h", "--help"):
             usage()
             sys.exit()
     if len(sys.argv) != len(opts) + 2:
         usage()
         sys.exit()
     flow = sys.argv[len(opts) + 1]
-    logger.info("flow: %s", flow)
+    logger.info("workroot: %s flow: %s", os.environ[consts.HPIPE_WORKROOT],
+                flow)
 
     # launch job
     jobmgr = JobManager()
@@ -45,7 +48,7 @@ def main():
     jobmgr.launch()
 
 def usage():
-    print "Usage: run.py [-h --help] [-v --version] FLOW"
+    print "Usage: run.py [-d --workroot] [-h --help] [-v --version] FLOW"
 
 def version():
     print "Hpipe " + hpipe.VERSION
@@ -59,7 +62,7 @@ def assert_runtime_version():
                             sys.version_info[2]))
 
 def assert_env_var():
-    var_checklist = ["hpipe_log_level",
+    var_checklist = [consts.HPIPE_WORKROOT, consts.HPIPE_LOG_LEVEL,
                      "hpipe_scheduler", "hpipe_client", "hpipe_filesystem",
                      "hadoop_home", "hadoop_exec", "hadoop_streaming_jar",
                      "hadoop_conf"]

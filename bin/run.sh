@@ -27,12 +27,14 @@ function usage() {
 }
 
 export today=$(date +%Y%m%d)
+export hpipe_workroot=$workroot
 
 properties=()
-while getopts "t:h" opt
+while getopts "t:d:h" opt
 do
     case $opt in
         t) today=$OPTARG;;
+        d) workroot=$OPTARG;;
         h) usage 0;;
         \?) echo "Invalid option: -$OPTARG" >&2; usage 1;;
     esac

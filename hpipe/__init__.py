@@ -4,6 +4,6 @@
 # Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
 #
 
-from main import main
+from engine.main import main
 
 VERSION = "1.0.0"
