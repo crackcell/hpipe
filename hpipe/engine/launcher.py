@@ -9,7 +9,7 @@ import logging
 
 from subprocess import Popen
 
-from hpipe.constants import *
+from hpipe import consts
 from hpipe.engine.entity import *
 from hpipe.engine.scheduler import *
 from hpipe.engine.client import *
@@ -55,21 +55,21 @@ class Launcher(object):
         torun = []
         for node in runnables:
             # check DONE
-            filename = node.job.properties[HPIPE_OUTPUT_DIR] + ".done"
+            filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + ".done"
             if self.filesystem.test(filename, "-e") == 0:
                 logger.info("DONE flag found, skip: %s" % filename)
                 continue
             # check and remove FAIL
-            filename = node.job.properties[HPIPE_OUTPUT_DIR] + ".fail"
+            filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + ".fail"
             if self.filesystem.test( filename, "-e") == 0:
                 logger.info("FAIL flag found, removed: %s" % filename)
                 if 0 != self.filesystem.rmr(filename):
                     raise RuntimeError("rmr failed")
                 logger.info("remove failed output: %s" %
-                            node.job.properties[HPIPE_OUTPUT_DIR])
-                self.filesystem.rmr(node.job.properties[HPIPE_OUTPUT_DIR])
+                            node.job.properties[consts.HPIPE_OUTPUT_DIR])
+                self.filesystem.rmr(node.job.properties[consts.HPIPE_OUTPUT_DIR])
             # check BUSY
-            filename = node.job.properties[HPIPE_OUTPUT_DIR] + ".busy"
+            filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + ".busy"
             if self.filesystem.test(filename, "-e") == 0:
                 logger.fatal("BUSY flag found: %s" % filename)
                 raise RuntimeError("job busy")
@@ -83,15 +83,18 @@ class Launcher(object):
     def __postprocess_flags(self, runnables):
         for node in runnables:
             # remove BUSY
-            self.filesystem.rm(node.job.properties[HPIPE_OUTPUT_DIR] + ".busy")
+            self.filesystem.rm(node.job.properties[consts.HPIPE_OUTPUT_DIR] + \
+                               ".busy")
 
             # touch DONE or FAIL
             filename = None
             if node.returncode == 0:
-                filename = node.job.properties[HPIPE_OUTPUT_DIR] + ".done"
+                filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + \
+                           ".done"
                 node.state = "DONE"
             else:
-                filename = node.job.properties[HPIPE_OUTPUT_DIR] + ".fail"
+                filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + \
+                           ".fail"
             logger.debug("touching %s" % filename)
             if 0 != self.filesystem.touch(filename):
                 logger.fatal("can't touch flag: %s" % filename)

@@ -9,7 +9,7 @@ import sys
 import getopt
 import logging
 
-import hpipe.constants as consts
+from hpipe import consts
 
 from hpipe.util import setup_logger
 from hpipe.engine import JobManager
@@ -39,7 +39,7 @@ def main():
         usage()
         sys.exit()
     flow = sys.argv[len(opts) + 1]
-    logger.info("workroot: %s flow: %s", os.environ[consts.HPIPE_WORKROOT],
+    logger.info("workroot: %s flow: %s", os.environ[consts.HPIPE_ENV_WORKROOT],
                 flow)
 
     # launch job
@@ -62,10 +62,9 @@ def assert_runtime_version():
                             sys.version_info[2]))
 
 def assert_env_var():
-    var_checklist = [consts.HPIPE_WORKROOT, consts.HPIPE_LOG_LEVEL,
-                     "hpipe_scheduler", "hpipe_client", "hpipe_filesystem",
-                     "hadoop_home", "hadoop_exec", "hadoop_streaming_jar",
-                     "hadoop_conf"]
+    var_checklist = [consts.HPIPE_ENV_WORKROOT, consts.HPIPE_ENV_LOG_LEVEL,
+                     consts.HPIPE_ENV_SCHEDULER, consts.HPIPE_ENV_CLIENT,
+                     consts.HPIPE_ENV_FILESYSTEM]
     for v in var_checklist:
         if os.environ[v] == None:
             raise RuntimeError("missing environment variable $%s" % v)
