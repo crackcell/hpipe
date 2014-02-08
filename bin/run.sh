@@ -26,7 +26,10 @@ function usage() {
     exit 1
 }
 
+# job config
 export today=$(date +%Y%m%d)
+
+# hpipe config
 export hpipe_workroot=$workroot
 
 properties=()
