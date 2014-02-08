@@ -71,7 +71,8 @@ class JobManager(object):
             refresolv.add_space(global_space)
             refresolv.add_space(scope_space)
             refresolv.add_space(child_scope)
-            child_scope = refresolv.resolve_properties(child_scope)
+            refresolv.resolve()
+            child_scope = refresolv.eval_prop(child_scope)
 
             self.__parse_file(dep[0], dep[0].resource,
                               global_space, child_scope)
@@ -121,10 +122,7 @@ class JobManager(object):
             if child.tag != "property":
                 continue
             name, value = self.__parse_property(child)
-            if self.input_pattern.match(name):
-                job.inputs.append(name)
-                continue
-            elif name == "hpipe.file":
+            if name == "hpipe.file":
                 job.files.append(value)
                 continue
             job.properties[name] = value
@@ -133,7 +131,16 @@ class JobManager(object):
         refresolv.add_space(global_space)
         refresolv.add_space(scope_space)
         refresolv.add_space(job.properties)
-        job.properties = refresolv.resolve_properties(job.properties)
+        refresolv.resolve()
+        job.properties = refresolv.eval_prop(job.properties)
+
+        # separate input paths into array
+        for k, v in job.properties.items():
+            if self.input_pattern.match(k):
+                for i in v.split(","):
+                    i = i.strip()
+                    if len(i) > 0:
+                        job.inputs.append(i)
 
         try:
             job.validate()

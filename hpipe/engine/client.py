@@ -8,6 +8,8 @@ import os
 import logging
 
 from subprocess import Popen
+
+from hpipe import consts
 from hpipe.util import setup_logger
 
 logger = logging.getLogger(__name__)
@@ -49,7 +51,9 @@ class HadoopClient(Client):
                   self.hadoop_streaming_jar
 
         for k, v in job.properties.iteritems():
-            command += " -D " + k + "=\"" + v + "\""
+            command += " -D %s=\"%s\"" % (k, v)
+        command += " -D %s=\"%s\"" % (consts.HPIPE_ENV_WORKROOT,
+                                  os.environ[consts.HPIPE_ENV_WORKROOT])
 
         for i in job.inputs:
             command += " -input " + i

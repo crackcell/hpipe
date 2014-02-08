@@ -19,6 +19,7 @@ class ReferenceResolver(object):
     def __init__(self):
         self.space = {}
         self.pattern = re.compile("\$\{(.+?)([-+]*)(\d*)(d*)\}")
+        self.resolved = False
 
     def add_space(self, space):
         self.space.update(space)
@@ -27,14 +28,15 @@ class ReferenceResolver(object):
         changed = True
         while changed:
             changed = self.__resolve_space(self.space)
+        self.resolved = True
 
-    def resolve_properties(self, properties):
-        self.resolve()
-        for k in properties.iterkeys():
+    def eval_prop(self, prop):
+        if not self.resolved:
+            raise RuntimeError("call resolve() before setting prop")
+        for k in prop.iterkeys():
             if k in self.space:
-                #print properties[k], "-->", self.space[k]
-                properties[k] = self.space[k]
-        return properties
+                prop[k] = self.space[k]
+        return prop
 
     def __calc_value(self, match, newvalue, oldvalue):
         if match[3] == "":     # normal numeric calculation (no unit)

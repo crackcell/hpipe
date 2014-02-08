@@ -22,15 +22,15 @@ class Launcher(object):
     """Launch jobs to hadoop"""
 
     def __init__(self):
-        if os.environ["hpipe_scheduler"] == "simple":
+        if os.environ[consts.HPIPE_ENV_SCHEDULER] == "simple":
             self.scheduler = SimpleScheduler()
         else:
             self.scheduler = SimpleScheduler()
-        if os.environ["hpipe_client"] == "hadoop":
+        if os.environ[consts.HPIPE_ENV_CLIENT] == "hadoop":
             self.client = HadoopClient()
         else:
             self.client = HadoopClient()
-        if os.environ["hpipe_filesystem"] == "hdfs":
+        if os.environ[consts.HPIPE_ENV_FILESYSTEM] == "hdfs":
             self.filesystem = HDFSFilesystem()
         else:
             self.filesystem = HDFSFilesystem()
@@ -67,7 +67,8 @@ class Launcher(object):
                     raise RuntimeError("rmr failed")
                 logger.info("remove failed output: %s" %
                             node.job.properties[consts.HPIPE_OUTPUT_DIR])
-                self.filesystem.rmr(node.job.properties[consts.HPIPE_OUTPUT_DIR])
+                self.filesystem.rmr(
+                    node.job.properties[consts.HPIPE_OUTPUT_DIR])
             # check BUSY
             filename = node.job.properties[consts.HPIPE_OUTPUT_DIR] + ".busy"
             if self.filesystem.test(filename, "-e") == 0:

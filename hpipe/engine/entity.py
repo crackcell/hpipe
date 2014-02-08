@@ -32,8 +32,14 @@ class Job(object):
 
     def __repr__(self):
         str = " " * 4 + "Job:{\n"
+        str += " " * 8 + "prop:{\n"
         for k, v in self.properties.iteritems():
-            str += " " * 8 + k + ": " + v + "\n"
+            str += " " * 12 + k + ": " + v + "\n"
+        str += " " * 8 + "}\n"
+        str += " " * 8 + "input:[\n"
+        for i in self.inputs:
+            str += " " * 12 + i + "\n"
+        str += " " * 8 + "]\n"
         str += " " * 4 + "}"
         return str
 
