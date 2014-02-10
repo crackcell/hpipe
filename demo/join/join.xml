@@ -4,7 +4,7 @@
 
   <node>
     <name>join</name>
-    <resource>demo/join/flow/join.xml</resource>
+    <resource>demo/join/task/join.xml</resource>
   </node>
 
 </flow>
