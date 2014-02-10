@@ -16,11 +16,11 @@ get hpipe
 
 Install Python 2.6 or newer.
 
-Download or clone 'the repository'_.
+Download or clone `the repository`_.
 
 Read the documentation online at http://hpipe.readthedocs.org/
 
-Post feedback and issues on the issues_.
+Post feedback and issues on the `issues`_.
 
 .. _the repository: https://github.com/crackcell/hpipe
 .. _issues: https://github.com/crackcell/hpipe/issues
