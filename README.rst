@@ -18,4 +18,4 @@ Install Python 2.6 or newer.
 
 Download or clone 'the repository'_.
 
-Read the documentation online at http://hpipe.readthedocs.org/en/latest/
+Read the documentation online at http://hpipe.readthedocs.org/
