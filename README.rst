@@ -19,3 +19,5 @@ Install Python 2.6 or newer.
 Download or clone 'the repository'_.
 
 Read the documentation online at http://hpipe.readthedocs.org/
+
+.. _the repository: https://github.com/crackcell/hpipe
