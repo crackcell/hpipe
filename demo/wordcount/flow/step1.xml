@@ -24,22 +24,22 @@
 
   <property>
     <name>hpipe.mapper</name>
-    <value>flow/wordcount/step1/mapper.pl</value>
+    <value>demo/wordcount/flow/step1/mapper.pl</value>
   </property>
 
   <property>
     <name>hpipe.reducer</name>
-    <value>flow/wordcount/step1/reducer.pl</value>
+    <value>demo/wordcount/flow/step1/reducer.pl</value>
   </property>
 
   <property>
     <name>hpipe.file</name>
-    <value>flow/wordcount/step1/mapper.pl</value>
+    <value>demo/wordcount/flow/step1/mapper.pl</value>
   </property>
 
   <property>
     <name>hpipe.file</name>
-    <value>flow/wordcount/step1/reducer.pl</value>
+    <value>demo/wordcount/flow/step1/reducer.pl</value>
   </property>
 
 </job>
