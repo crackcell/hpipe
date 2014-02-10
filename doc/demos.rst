@@ -1,8 +1,9 @@
+=====
 Demos
 =====
 
 Wordcount: hpipe with perl
---------------------------
+==========================
 
 This chapter shows a wordcount example using hpipe and perl. The flow contains
 four sub-flows. They have no data dependencies to each other. In order to show
@@ -21,9 +22,9 @@ Steps:
 1. Setup your own Hadoop environment.
 2. Upload data file
 
-   | $ hadoop fs -mkdir hpipe/wordcount/input/
-   | $ hadoop fs -put demo/wordcount/data/part-00000 hpipe/wordcount/input/
+   >>> $ hadoop fs -mkdir hpipe/wordcount/input/
+   >>> $ hadoop fs -put demo/wordcount/data/part-00000 hpipe/wordcount/input/
 
 3. Run the demo
 
-   | $ ./bin/run.sh demo/wordcount/wordcount.xml
+   >>> $ ./bin/run.sh demo/wordcount/wordcount.xml
