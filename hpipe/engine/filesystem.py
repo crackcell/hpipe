@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    filesystem
+    ~~~~~~~~~~
+
+    Filesystem interface and implementations used by the launcher.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 import os
 import logging

@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    jobmgr
+    ~~~~~~
+
+    Load workflow definitions and call the launcher to submit jobs.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 import os
 import re

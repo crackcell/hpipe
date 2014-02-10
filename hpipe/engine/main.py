@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    main
+    ~~~~
+
+    Entry of the engine.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 import os
 import sys

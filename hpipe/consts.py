@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    consts
+    ~~~~~~
+
+    Internal constants definitions.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 HPIPE_ENV_WORKROOT = "hpipe_workroot"
 HPIPE_ENV_LOG_LEVEL = "hpipe_log_level"

@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    hpipe_run
+    ~~~~~~~~~
+
+    Connect shell script and python code.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 from hpipe import main
 
