@@ -10,12 +10,10 @@ Features include:
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
 * Join/Aggregation/Filter support.
 
-Quick start
------------
+Contents
+--------
 
-* wordcount_: Count words.
-* join_: Join PV log and Click log together.
+.. toctree::
+   :maxdepth: 2
 
-
-.. _wordcount: demos/wordcount.html
-.. _join: demos/join.html
+   demos
