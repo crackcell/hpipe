@@ -22,5 +22,14 @@ Read the documentation online at http://hpipe.readthedocs.org/
 
 Post feedback and issues on the `issues`_.
 
+Screencast
+----------
+
+.. raw:: html
+
+    <embed>
+    <div><script id="playterm-MjAxNC0wMi90dHlyZWNvcmQtMTM5MjAyMjE4MnwxMjB4MzU=" type="text/javascript" src="http://playterm.org/js/?hash=MjAxNC0wMi90dHlyZWNvcmQtMTM5MjAyMjE4MnwxMjB4MzU=" class="size:120x35"></script></div>
+    </embed>
+
 .. _the repository: https://github.com/crackcell/hpipe
 .. _issues: https://github.com/crackcell/hpipe/issues
