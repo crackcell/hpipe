@@ -13,7 +13,7 @@ Features include:
 Index of various topics:
 ========================
 
-* 'Getting started'_: how to run hpipe demos.
+* `Getting started`_: how to run hpipe demos.
 
 
-.. _'Getting started': getting-started-demos.html
+.. _`Getting started`: getting-started-demos.html
