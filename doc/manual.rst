@@ -2,5 +2,11 @@
 User manual
 ===========
 
-Create your own flow
-====================
+Flow config
+===========
+
+Smartflow
+=========
+
+Join
+----
