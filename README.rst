@@ -1,5 +1,5 @@
 hpipe
-======
+=====
 
 hpipe is a workflow engine for Hadoop streaming jobs. The main purpose of
 this project is to simplify muilti-job tasks like click-through-rate prediction
@@ -20,7 +20,7 @@ Download or clone 'the repository'_.
 
 Read the documentation online at http://hpipe.readthedocs.org/
 
-Post feedback and issues on the 'issues'_.
+Post feedback and issues on the issues_.
 
 .. _the repository: https://github.com/crackcell/hpipe
 .. _issues: https://github.com/crackcell/hpipe/issues
