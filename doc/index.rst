@@ -10,10 +10,13 @@ Features include:
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
 * Join/Aggregation/Filter support.
 
-Index of various topics:
+Quick start
 ========================
 
-* `Getting started`_: how to run hpipe demos.
+* wordcount_: Count words.
+
+* join_: Join PV log and Click log together.
 
 
-.. _`Getting started`: getting-started-demos.html
+.. _wordcount: demos/wordcount.html
+.. _join: demos/join.html
