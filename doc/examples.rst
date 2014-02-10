@@ -1,6 +1,6 @@
-======================
-Quickstart by examples
-======================
+========
+Examples
+========
 
 Wordcount: hpipe with perl
 ==========================
@@ -12,10 +12,10 @@ depend on step1.0 and step1.1's output.
 
 Files:
 
-* Flow entry: demo/wordcount/wordcount.tml
-* Sub tasks: demo/wordcount/task/step.[1-3].xml
-* Sub task files (include mapper and reducer scripts): demo/wordcount/task/step.[1-3]/
-* Demo data: demo/wordcount/data/part-00000
+* Flow entry: examples/wordcount/wordcount.tml
+* Sub tasks: examples/wordcount/task/step.[1-3].xml
+* Sub task files (include mapper and reducer scripts): examples/wordcount/task/step.[1-3]/
+* Data: examples/wordcount/data/part-00000
 
 Steps:
 
@@ -23,8 +23,8 @@ Steps:
 2. Upload data file
 
    $ hadoop fs -mkdir hpipe/wordcount/input/
-   $ hadoop fs -put demo/wordcount/data/part-00000 hpipe/wordcount/input/
+   $ hadoop fs -put examples/wordcount/data/part-00000 hpipe/wordcount/input/
 
-3. Run the demo
+3. Run the flow
 
-   $ ./bin/run.sh demo/wordcount/wordcount.xml
+   $ ./bin/run.sh examples/wordcount/wordcount.xml

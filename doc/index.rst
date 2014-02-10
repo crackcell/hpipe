@@ -18,4 +18,4 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   quickstart-by-examples
+   examples

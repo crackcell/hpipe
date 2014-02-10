@@ -4,7 +4,7 @@
 
   <node>
     <name>step1.1</name>
-    <resource>demo/wordcount/task/step1.xml</resource>
+    <resource>examples/wordcount/task/step1.xml</resource>
     <property>
       <name>bizdate</name>
       <value>${today-1d}</value>
@@ -13,7 +13,7 @@
 
   <node>
     <name>step1.0</name>
-    <resource>demo/wordcount/task/step1.xml</resource>
+    <resource>examples/wordcount/task/step1.xml</resource>
     <property>
       <name>bizdate</name>
       <value>${today-0d}</value>
@@ -22,12 +22,12 @@
 
   <node>
     <name>step2</name>
-    <resource>demo/wordcount/task/step2.xml</resource>
+    <resource>examples/wordcount/task/step2.xml</resource>
   </node>
 
   <node>
     <name>step3</name>
-    <resource>demo/wordcount/task/step3.xml</resource>
+    <resource>examples/wordcount/task/step3.xml</resource>
     <depend>step1.0</depend>
     <depend>step1.1</depend>
     <depend>step2</depend>

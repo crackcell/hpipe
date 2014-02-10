@@ -4,12 +4,12 @@
 
   <property>
     <name>hpipe.job.name</name>
-    <value>step1</value>
+    <value>step2</value>
   </property>
 
   <property>
     <name>mapred.job.name</name>
-    <value>${hpipe.job.name}: ${bizdate}</value>
+    <value>${hpipe.job.name}: ${today-27d}</value>
   </property>
 
   <property>
@@ -19,24 +19,26 @@
 
   <property>
     <name>hpipe.output.dir</name>
-    <value>/hpipe/wordcount/${bizdate}/step1</value>
+    <value>/hpipe/wordcount/step2</value>
   </property>
 
   <property>
     <name>hpipe.mapper</name>
-    <value>demo/wordcount/task/step1/mapper.pl</value>
+    <value>examples/wordcount/task/step2/mapper.pl</value>
   </property>
 
   <property>
     <name>hpipe.reducer</name>
-    <value>demo/wordcount/task/step1/reducer.pl</value>
+    <value>examples/wordcount/task/step2/reducer.pl</value>
   </property>
 
   <property>
     <name>hpipe.file</name>
     <value>
-      <array>demo/wordcount/task/step1/mapper.pl</array>
-      <array>demo/wordcount/task/step1/reducer.pl</array>
+      <array>
+        <item>examples/wordcount/task/step2/mapper.pl</item>
+        <item>examples/wordcount/task/step2/reducer.pl</item>
+      </array>
     </value>
   </property>
 

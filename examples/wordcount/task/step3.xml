@@ -4,7 +4,7 @@
 
   <property>
     <name>hpipe.job.name</name>
-    <value>step2</value>
+    <value>step3</value>
   </property>
 
   <property>
@@ -19,25 +19,25 @@
 
   <property>
     <name>hpipe.output.dir</name>
-    <value>/hpipe/wordcount/step2</value>
+    <value>/hpipe/wordcount/step3</value>
   </property>
 
   <property>
     <name>hpipe.mapper</name>
-    <value>demo/wordcount/task/step2/mapper.pl</value>
+    <value>examples/wordcount/task/step3/mapper.pl</value>
   </property>
 
   <property>
     <name>hpipe.reducer</name>
-    <value>demo/wordcount/task/step2/reducer.pl</value>
+    <value>examples/wordcount/task/step3/reducer.pl</value>
   </property>
 
   <property>
     <name>hpipe.file</name>
     <value>
       <array>
-        <item>demo/wordcount/task/step2/mapper.pl</item>
-        <item>demo/wordcount/task/step2/reducer.pl</item>
+        <item>examples/wordcount/task/step3/mapper.pl</item>
+        <item>examples/wordcount/task/step3/reducer.pl</item>
       </array>
     </value>
   </property>
