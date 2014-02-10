@@ -22,13 +22,14 @@ class JoinMapper(object):
             input_name = input_name.strip()
             input_path = os.environ["hpipe_flow_join_%s_input_dir" % input_name]
             mapper_file = os.environ["hpipe_flow_join_%s_mapper" % input_name]
-            input_path_pattern = re.compile(".*?" + fnmatch.translate(input_path))
-            self.sub_mappers[input_path] = (mapper_file, input_path_pattern)
+            path_pattern = re.compile(".*?" + fnmatch.translate(input_path),
+                                      re.IGNORECASE)
+            self.sub_mappers[input_path] = (mapper_file, path_pattern)
 
     def map(self, line):
         input_path = os.environ["map_input_file"]
         mapper_file = self.__find_mapper(input_path)
-        print input_path, "\t", mapper_file
+        print line, "\t", input_path, "\t", mapper_file
 
     def __find_mapper(self, input_path):
         for i in self.sub_mappers.keys():
