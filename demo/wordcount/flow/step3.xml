@@ -34,12 +34,12 @@
 
   <property>
     <name>hpipe.file</name>
-    <value>demo/wordcount/flow/step3/mapper.pl</value>
-  </property>
-
-  <property>
-    <name>hpipe.file</name>
-    <value>demo/wordcount/flow/step3/reducer.pl</value>
+    <value>
+      <array>
+        <item>demo/wordcount/flow/step3/mapper.pl</item>
+        <item>demo/wordcount/flow/step3/reducer.pl</item>
+      </array>
+    </value>
   </property>
 
 </job>

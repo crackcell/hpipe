@@ -37,15 +37,24 @@ class Job(object):
 
     def __repr__(self):
         str = " " * 4 + "Job:{\n"
-        str += " " * 8 + "prop:{\n"
-        for k, v in self.properties.iteritems():
+        str += self.__repr_prop("prop", self.properties)
+        str += self.__repr_array("inputs", self.inputs)
+        str += self.__repr_array("files", self.files)
+        str += " " * 4 + "}"
+        return str
+
+    def __repr_prop(self, label, prop):
+        str = " " * 8 + label + ":{\n"
+        for k, v in prop.iteritems():
             str += " " * 12 + k + ": " + v + "\n"
         str += " " * 8 + "}\n"
-        str += " " * 8 + "input:[\n"
-        for i in self.inputs:
+        return str
+
+    def __repr_array(self, label, array):
+        str = " " * 8 + label + ":[\n"
+        for i in array:
             str += " " * 12 + i + "\n"
         str += " " * 8 + "]\n"
-        str += " " * 4 + "}"
         return str
 
     def validate(self):

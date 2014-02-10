@@ -1,65 +1,10 @@
 <?xml version="1.0"?>
 
-<job>
+<flow name="join">
 
-  <property>
-    <name>hpipe.job.name</name>
-    <value>join</value>
-  </property>
+  <node>
+    <name>join</name>
+    <resource>demo/join/flow/join.xml</resource>
+  </node>
 
-  <property>
-    <name>mapred.job.name</name>
-    <value>${hpipe.job.name}: ${today}</value>
-  </property>
-
-  <property>
-    <name>hpipe.flow.join.inputs</name>
-    <value>pv,click</value>
-  </property>
-
-  <property>
-    <name>hpipe.flow.join.pv.input.dir</name>
-    <value>/hpipe/join/pvlog/part-*</value>
-  </property>
-
-  <property>
-    <name>hpipe.flow.join.pv.mapper</name>
-    <value>demo/join/pv_mapper.py</value>
-  </property>
-
-  <property>
-    <name>hpipe.flow.join.click.input.dir</name>
-    <value>/hpipe/join/clicklog/part-*</value>
-  </property>
-
-  <property>
-    <name>hpipe.flow.join.click.mapper</name>
-    <value>demo/join/click_mapper.py</value>
-  </property>
-
-  <property>
-    <name>hpipe.output.dir</name>
-    <value>/hpipe/join/output</value>
-  </property>
-
-  <property>
-    <name>hpipe.mapper</name>
-    <value>hpipe/flow/join/join_mapper.py</value>
-  </property>
-
-  <property>
-    <name>hpipe.reducer</name>
-    <value>hpipe/flow/join/join_reducer.py</value>
-  </property>
-
-  <property>
-    <name>hpipe.file</name>
-    <value>flow/ctrpred/impression/pv_mapper.pl</value>
-  </property>
-
-  <property>
-    <name>hpipe.file</name>
-    <value>flow/ctrpred/impression/pv_reducer.pl</value>
-  </property>
-
-</job>
+</flow>

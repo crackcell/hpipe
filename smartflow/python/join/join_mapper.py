@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
-#
-# Copyright 2014 Menglong TAN <tanmenglong@gmail.com>
-#
+"""
+    join_mapper
+    ~~~~~~~~~~~
+
+    Helper code to simplify join task.
+
+    :copyright: (c) 2014 Menglong TAN.
+"""
 
 import os
 import sys
+import fnmatch
+import re
 
 class JoinMapper(object):
 
@@ -15,16 +22,23 @@ class JoinMapper(object):
             input_name = input_name.strip()
             input_path = os.environ["hpipe_flow_join_%s_input_dir" % input_name]
             mapper_file = os.environ["hpipe_flow_join_%s_mapper" % input_name]
-            self.sub_mappers[input_path] = mapper_file
+            input_path_pattern = re.compile(".*?" + fnmatch.translate(input_path))
+            self.sub_mappers[input_path] = (mapper_file, input_path_pattern)
 
     def map(self, line):
         input_path = os.environ["map_input_file"]
-        if not input_path in self.sub_mappers:
-            raise RuntimeError("invalid input path: %s" % input_path)
-        mapper_file = self.sub_mappers[input_path]
+        mapper_file = self.__find_mapper(input_path)
+        print input_path, "\t", mapper_file
 
-if __name__ == "__main__":
-    mapper = JoinMapper()
-    for line in sys.stdin:
-        # remove leading and trailing whitespace
-        line = line.strip()
+    def __find_mapper(self, input_path):
+        for i in self.sub_mappers.keys():
+            mapper_file, pattern = self.sub_mappers[i]
+            if pattern.match(input_path):
+                return mapper_file
+        raise RuntimeError("invalid input path: %s. available paths %s" %
+                           (input_path, self.sub_mappers.keys()))
+
+mapper = JoinMapper()
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+    mapper.map(line.strip())
