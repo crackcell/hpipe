@@ -21,7 +21,10 @@ Steps:
 
 1. Setup your own Hadoop environment.
 2. Upload data file
+
 | $ hadoop fs -mkdir /hpipe/wordcount/input/
 | $ hadoop fs -put examples/wordcount/data/part-00000 /hpipe/wordcount/input/
+
 3. Run the flow
+
 | $ ./bin/run.sh examples/wordcount/wordcount.xml
