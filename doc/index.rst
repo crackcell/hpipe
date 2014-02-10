@@ -19,3 +19,4 @@ Contents
    :maxdepth: 2
 
    examples
+   manual
