@@ -2,8 +2,8 @@
 Quickstart
 ==========
 
-Setup config
-============
+Setup environment variables
+===========================
 
 Edit ``conf/hpipe.env``, specify config according to the underlaying systems
 
@@ -13,11 +13,11 @@ for Hadoop, you **MUST** specify:
 * ``$hadoop_streaming_jar``: path to streaming jar.
 * ``$hadoop_conf``: Hadoop client config file. may be located in users' home folder.
 
-Create flow config
-==================
+Create workflow
+===============
 
-Create flow config
-------------------
+Create flow
+-----------
 
 for example:
 
@@ -35,7 +35,7 @@ for example:
       </node>
     </flow>
 
-Create task config
+Flow configuration
 ------------------
 
 for example:
@@ -90,3 +90,6 @@ Hpipe loads variable from:
 * Environment variables
 * Flow config
 * Task config
+
+Task configuration
+------------------
