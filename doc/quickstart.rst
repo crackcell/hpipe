@@ -13,11 +13,11 @@ for Hadoop, you **MUST** specify:
 * ``$hadoop_streaming_jar``: path to streaming jar.
 * ``$hadoop_conf``: Hadoop client config file. may be located in users' home folder.
 
-Create workflow
-===============
+Workflow configuration
+======================
 
-Create flow
------------
+Flow configuration
+------------------
 
 for example:
 
@@ -35,7 +35,7 @@ for example:
       </node>
     </flow>
 
-Flow configuration
+Task configuration
 ------------------
 
 for example:
@@ -90,6 +90,3 @@ Hpipe loads variable from:
 * Environment variables
 * Flow config
 * Task config
-
-Task configuration
-------------------
