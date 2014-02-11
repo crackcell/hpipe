@@ -18,5 +18,6 @@ Contents
 .. toctree::
    :maxdepth: 3
 
+   quickstart
    examples
    manual
