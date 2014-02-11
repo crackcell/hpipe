@@ -1,9 +1,9 @@
 hpipe
 =====
 
-hpipe is a workflow engine for Hadoop streaming jobs. The main purpose of
-this project is to simplify muilti-job tasks like click-through-rate prediction
-in online advertising systems.
+hpipe is a workflow engine for various computing systems (Hadoop etc.).
+The main purpose of this project is to simplify muilti-job tasks like
+click-through-rate prediction in online advertising systems.
 
 Features include:
 
@@ -22,14 +22,12 @@ Read the documentation online at http://hpipe.readthedocs.org/
 
 Post feedback and issues on the `issues`_.
 
+.. _the repository: https://github.com/crackcell/hpipe
+.. _issues: https://github.com/crackcell/hpipe/issues
+
 Screencast
 ----------
 
-.. raw:: html
+1. `Screencast 1: join`_
 
-    <embed>
-    <div><script id="playterm-MjAxNC0wMi90dHlyZWNvcmQtMTM5MjAyMjE4MnwxMjB4MzU=" type="text/javascript" src="http://playterm.org/js/?hash=MjAxNC0wMi90dHlyZWNvcmQtMTM5MjAyMjE4MnwxMjB4MzU=" class="size:120x35"></script></div>
-    </embed>
-
-.. _the repository: https://github.com/crackcell/hpipe
-.. _issues: https://github.com/crackcell/hpipe/issues
+.. _`Screencast 1: join`: http://playterm.org/r/hpipedemojoin-1392022317
