@@ -36,3 +36,4 @@ nosetests.xml
 /*.pl
 
 doc/_build
+conf/hpipe.env
