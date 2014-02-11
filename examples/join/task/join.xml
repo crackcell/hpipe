@@ -24,7 +24,7 @@
 
   <property>
     <name>hpipe.flow.join.pv.mapper</name>
-    <value>demo/join/flow/pv_mapper.py</value>
+    <value>examples/join/task/pv_mapper.py</value>
   </property>
 
   <property>
@@ -34,7 +34,7 @@
 
   <property>
     <name>hpipe.flow.join.click.mapper</name>
-    <value>demo/join/flow/click_mapper.py</value>
+    <value>examples/join/task/click_mapper.py</value>
   </property>
 
   <property>
@@ -58,8 +58,8 @@
       <array>
         <item>hpipe/smartflow/join/join_mapper.py</item>
         <item>hpipe/smartflow/join/join_reducer.py</item>
-        <item>demo/join/flow/pv_mapper.py</item>
-        <item>demo/join/flow/click_mapper.py</item>
+        <item>examples/join/task/pv_mapper.py</item>
+        <item>examples/join/task/click_mapper.py</item>
       </array>
     </value>
   </property>

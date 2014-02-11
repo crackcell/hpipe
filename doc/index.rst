@@ -1,5 +1,7 @@
+================
 Welcome to hpipe
-============
+================
+
 The hpipe is a workflow engine for Hadoop streaming jobs. The main purpose of
 this project is to simplify muliti-job tasks like click-through-rate prediction
 in online advertising systems.
@@ -10,13 +12,11 @@ Features include:
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
 * Join/Aggregation/Filter support.
 
-Quick start
-========================
+Contents
+========
 
-* wordcount_: Count words.
+.. toctree::
+   :maxdepth: 3
 
-* join_: Join PV log and Click log together.
-
-
-.. _wordcount: demos/wordcount.html
-.. _join: demos/join.html
+   examples
+   manual
