@@ -52,30 +52,34 @@ class HDFSFilesystem(Filesystem):
         self.hadoop_conf = os.environ["hadoop_conf"]
         self.hadoop_streaming_jar = os.environ["hadoop_streaming_jar"]
 
+    def __call(self, command, shell):
+        logger.debug("fs: %s" % command)
+        return call(command, shell=shell)
+
     def touch(self, path, args=""):
         """touchz"""
         command = self.hadoop_exec + \
                   " --config " + self.hadoop_conf + \
                   " fs -touchz " + args + " " + path
-        return call(command, shell=True)
+        return self.__call(command, shell=True)
 
     def test(self, path, args=""):
         """test -e"""
         command = self.hadoop_exec + \
                   " --config " + self.hadoop_conf + \
                   " fs -test " + args + " " + path
-        return call(command, shell=True)
+        return self.__call(command, shell=True)
 
     def rm(self, path, args=""):
         """rm"""
         command = self.hadoop_exec + \
                   " --config " + self.hadoop_conf + \
                   " fs -rm " + args + " " + path
-        return call(command, shell=True)
+        return self.__call(command, shell=True)
 
     def rmr(self, path, args=""):
         """rmr"""
         command = self.hadoop_exec + \
                   " --config " + self.hadoop_conf + \
                   " fs -rmr " + args + " " + path
-        return call(command, shell=True)
+        return self.__call(command, shell=True)
