@@ -2,9 +2,9 @@
 Welcome to hpipe
 ================
 
-The hpipe is a workflow engine for Hadoop streaming jobs. The main purpose of
-this project is to simplify muliti-job tasks like click-through-rate prediction
-in online advertising systems.
+The hpipe is a workflow engine for various computing systems (Hadoop etc.). The
+main purpose of this project is to simplify muliti-job tasks like
+click-through-rate prediction in online advertising systems.
 
 Features include:
 
