@@ -10,4 +10,8 @@
 """
 
 def map(line):
-    print "%s\tin pv mapper" % line
+    tokens = line.split("\t")
+    for ad_id in tokens[1].split(","):
+        # format:
+        #     ad_id pv click
+        print "%s\t1\t0" % ad_id

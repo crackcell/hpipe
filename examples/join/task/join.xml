@@ -49,7 +49,7 @@
 
   <property>
     <name>hpipe.reducer</name>
-    <value>cat</value>
+    <value>examples/join/task/reducer.py</value>
   </property>
 
   <property>
@@ -60,6 +60,7 @@
         <item>hpipe/smartflow/join/join_reducer.py</item>
         <item>examples/join/task/pv_mapper.py</item>
         <item>examples/join/task/click_mapper.py</item>
+        <item>examples/join/task/reducer.py</item>
       </array>
     </value>
   </property>
