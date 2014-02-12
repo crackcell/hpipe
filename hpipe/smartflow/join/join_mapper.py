@@ -10,9 +10,12 @@
 """
 
 import os
-import sys
-import fnmatch
 import re
+import sys
+import imp
+import fnmatch
+
+filedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 
 class JoinMapper(object):
 
@@ -21,23 +24,33 @@ class JoinMapper(object):
         for input_name in os.environ["hpipe_flow_join_inputs"].split(","):
             input_name = input_name.strip()
             input_path = os.environ["hpipe_flow_join_%s_input_dir" % input_name]
-            mapper_file = os.environ["hpipe_flow_join_%s_mapper" % input_name]
             path_pattern = re.compile(".*?" + fnmatch.translate(input_path),
                                       re.IGNORECASE)
-            self.sub_mappers[input_path] = (mapper_file, path_pattern)
+            mapper_path = os.path.join(
+                filedir,
+                os.path.basename(os.environ["hpipe_flow_join_%s_mapper" % input_name]))
+            mapper = self.__load_mapper(input_name, mapper_path)
+            #print "mapper: %s %s" % (input_path, mapper_path)
+            self.sub_mappers[input_path] = (path_pattern, mapper)
 
     def map(self, line):
         input_path = os.environ["map_input_file"]
-        mapper_file = self.__find_mapper(input_path)
-        print line, "\t", input_path, "\t", mapper_file
+        mapper = self.__find_mapper(input_path)
+        mapper.map(line)
 
     def __find_mapper(self, input_path):
         for i in self.sub_mappers.keys():
-            mapper_file, pattern = self.sub_mappers[i]
-            if pattern.match(input_path):
-                return mapper_file
+            input_pattern, mapper = self.sub_mappers[i]
+            if input_pattern.match(input_path):
+                return mapper
         raise RuntimeError("invalid input path: %s. available paths %s" %
                            (input_path, self.sub_mappers.keys()))
+
+    def __load_mapper(self, name, path):
+        if path.endswith(".py"):
+            return imp.load_source(name, path)
+        elif path.endswith(".pyc"):
+            return imp.load_compiled(name, path)
 
 mapper = JoinMapper()
 for line in sys.stdin:
