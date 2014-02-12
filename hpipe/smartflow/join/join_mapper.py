@@ -30,7 +30,6 @@ class JoinMapper(object):
                 filedir,
                 os.path.basename(os.environ["hpipe_flow_join_%s_mapper" % input_name]))
             mapper = self.__load_mapper(input_name, mapper_path)
-            #print "mapper: %s %s" % (input_path, mapper_path)
             self.sub_mappers[input_path] = (path_pattern, mapper)
 
     def map(self, line):
@@ -51,6 +50,7 @@ class JoinMapper(object):
             return imp.load_source(name, path)
         elif path.endswith(".pyc"):
             return imp.load_compiled(name, path)
+
 
 mapper = JoinMapper()
 for line in sys.stdin:
