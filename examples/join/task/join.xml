@@ -13,27 +13,27 @@
   </property>
 
   <property>
-    <name>hpipe.flow.join.inputs</name>
+    <name>hpipe.smartflow.mi.inputs</name>
     <value>pv,click</value>
   </property>
 
   <property>
-    <name>hpipe.flow.join.pv.input.dir</name>
+    <name>hpipe.smartflow.mi.pv.input.dir</name>
     <value>/hpipe/join/pvlog/part-*</value>
   </property>
 
   <property>
-    <name>hpipe.flow.join.pv.mapper</name>
+    <name>hpipe.smartflow.mi.pv.mapper</name>
     <value>examples/join/task/pv_mapper.py</value>
   </property>
 
   <property>
-    <name>hpipe.flow.join.click.input.dir</name>
+    <name>hpipe.smartflow.mi.click.input.dir</name>
     <value>/hpipe/join/clicklog/part-*</value>
   </property>
 
   <property>
-    <name>hpipe.flow.join.click.mapper</name>
+    <name>hpipe.smartflow.mi.click.mapper</name>
     <value>examples/join/task/click_mapper.py</value>
   </property>
 
@@ -44,7 +44,7 @@
 
   <property>
     <name>hpipe.mapper</name>
-    <value>hpipe/smartflow/join/join_mapper.py</value>
+    <value>hpipe/smartflow/multiple_input/mi_mapper.py</value>
   </property>
 
   <property>
@@ -56,7 +56,7 @@
     <name>hpipe.file</name>
     <value>
       <array>
-        <item>hpipe/smartflow/join/join_mapper.py</item>
+        <item>hpipe/smartflow/multiple_input/mi_mapper.py</item>
         <item>hpipe/smartflow/join/join_reducer.py</item>
         <item>examples/join/task/pv_mapper.py</item>
         <item>examples/join/task/click_mapper.py</item>

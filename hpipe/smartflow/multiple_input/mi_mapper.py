@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 """
-    join_mapper
-    ~~~~~~~~~~~
+    mapper
+    ~~~~~~
 
     Helper code to simplify join task.
 
@@ -17,18 +17,18 @@ import fnmatch
 
 filedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 
-class JoinMapper(object):
+class MultipleInputMapper(object):
 
     def __init__(self):
         self.sub_mappers = {}
-        for input_name in os.environ["hpipe_flow_join_inputs"].split(","):
+        for input_name in os.environ["hpipe_smartflow_mi_inputs"].split(","):
             input_name = input_name.strip()
-            input_path = os.environ["hpipe_flow_join_%s_input_dir" % input_name]
+            input_path = os.environ["hpipe_smartflow_mi_%s_input_dir" % input_name]
             path_pattern = re.compile(".*?" + fnmatch.translate(input_path),
                                       re.IGNORECASE)
             mapper_path = os.path.join(
                 filedir,
-                os.path.basename(os.environ["hpipe_flow_join_%s_mapper" % input_name]))
+                os.path.basename(os.environ["hpipe_smartflow_mi_%s_mapper" % input_name]))
             mapper = self.__load_mapper(input_name, mapper_path)
             self.sub_mappers[input_path] = (path_pattern, mapper)
 
@@ -52,7 +52,7 @@ class JoinMapper(object):
             return imp.load_compiled(name, path)
 
 
-mapper = JoinMapper()
+mapper = MultipleInputMapper()
 for line in sys.stdin:
     # remove leading and trailing whitespace
     mapper.map(line.strip())
