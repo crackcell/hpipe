@@ -22,6 +22,13 @@ Read the documentation online at http://hpipe.readthedocs.org/.
 
 Post feedback and issues on the https://github.com/crackcell/hpipe/issues.
 
+Contacts
+--------
+
+* Email: tanmenglong##gmail.com
+* Twitter: http://twitter/crackcell
+* Weibo: http://weibo.com/crackcell
+
 Screencasts
 -----------
 
