@@ -45,14 +45,14 @@ Input
 
 Click log:
 
-``click log id``\\t ``clicked ad list (separated by ,)``
+``click log id``\\t ``clicked ad list``
 
 * Click log id: the primary key.
 * Clicked ad list: a list of AD id clicked in a single pageview.
 
 PV log:
 
-``pv log id``\\t ``click log id``\\t ``displayed ad list (separated by ,)``
+``pv log id``\\t ``click log id``\\t ``displayed ad list``
 
 * PV log id: the primary key.
 * Click log id: the foreign key to click log.
