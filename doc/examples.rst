@@ -2,8 +2,8 @@
 Examples
 ========
 
-Wordcount: hpipe with perl
-==========================
+Wordcount: using perl
+=====================
 
 This chapter shows a wordcount example using hpipe and perl. The flow contains
 four sub-flows. They have no data dependencies to each other. In order to show
