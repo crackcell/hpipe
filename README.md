@@ -22,14 +22,14 @@ Read the documentation online at http://hpipe.readthedocs.org/.
 
 Post feedback and issues on the https://github.com/crackcell/hpipe/issues.
 
+Screencasts
+-----------
+
+1. Screencast 1: join: http://playterm.org/r/hpipedemojoin-1392022317
+
 Contacts
 --------
 
 * Email: tanmenglong##gmail.com
 * Twitter: http://twitter/crackcell
 * Weibo: http://weibo.com/crackcell
-
-Screencasts
------------
-
-1. Screencast 1: join: http://playterm.org/r/hpipedemojoin-1392022317
