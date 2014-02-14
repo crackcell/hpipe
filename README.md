@@ -14,18 +14,15 @@ Features include:
 Get hpipe
 ---------
 
-Install Python 2.6 or newer.
-
-Download or clone https://github.com/crackcell/hpipe.
-
-Read the documentation online at http://hpipe.readthedocs.org/.
-
-Post feedback and issues on the https://github.com/crackcell/hpipe/issues.
+1. Install Python 2.6 or newer.
+2. Download or clone https://github.com/crackcell/hpipe.
+3. Read the documentation online at http://hpipe.readthedocs.org/.
+4. Post feedback and issues on the https://github.com/crackcell/hpipe/issues.
 
 Screencasts
 -----------
 
-1. Screencast 1: join: http://playterm.org/r/hpipedemojoin-1392022317
+* Data joining: http://playterm.org/r/hpipedemojoin-1392022317
 
 Contacts
 --------
