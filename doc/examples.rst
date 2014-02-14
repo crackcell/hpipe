@@ -66,6 +66,8 @@ Output
 Files
 -----
 
+* Flow entry: examples/join/join.xml
+* Task: examples/join/task/join.xml
 * Multiple input mapper: hpipe/smartflow/multiple_input/mi_mapper.py
 * PV log mapper: examples/join/task/pv_mapper.py
 * Click log mapper: examples/join/task/click_mapper.py
