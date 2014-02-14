@@ -1,5 +1,5 @@
-hpipe
-=====
+Introduction
+============
 
 hpipe is a workflow engine for various computing systems (Hadoop etc.).
 The main purpose of this project is to simplify muilti-job tasks like
@@ -11,23 +11,18 @@ Features include:
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
 * Join/Aggregation/Filter support.
 
-get hpipe
+Get hpipe
 ---------
 
 Install Python 2.6 or newer.
 
-Download or clone `the repository`_.
+Download or clone https://github.com/crackcell/hpipe.
 
-Read the documentation online at http://hpipe.readthedocs.org/
+Read the documentation online at http://hpipe.readthedocs.org/.
 
-Post feedback and issues on the `issues`_.
-
-.. _the repository: https://github.com/crackcell/hpipe
-.. _issues: https://github.com/crackcell/hpipe/issues
+Post feedback and issues on the https://github.com/crackcell/hpipe/issues.
 
 Screencast
 ----------
 
-1. `Screencast 1: join`_
-
-.. _`Screencast 1: join`: http://playterm.org/r/hpipedemojoin-1392022317
+1. Screencast 1: join: http://playterm.org/r/hpipedemojoin-1392022317
