@@ -31,5 +31,5 @@ Contacts
 --------
 
 * Email: tanmenglong##gmail.com
-* Twitter: http://twitter/crackcell
-* Weibo: http://weibo.com/crackcell
+* Twitter: [http://twitter/crackcell](http://twitter/crackcell)
+* Weibo: [http://weibo.com/crackcell](http://weibo.com/crackcell)
