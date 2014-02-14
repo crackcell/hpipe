@@ -15,20 +15,23 @@ pvclick = {}
 
 for line in sys.stdin:
     tokens = line.strip().split("\t")
-    if len(tokens) != 3:
-        continue
-    ad_id = tokens[0]
-    if not ad_id in pvclick:
-        pvclick[ad_id] = []
-        pvclick[ad_id].append(int(tokens[1]))
-        pvclick[ad_id].append(int(tokens[2]))
-    else:
-        pvclick[ad_id][0] += int(tokens[1])
-        pvclick[ad_id][1] += int(tokens[2])
+    data = {}
+    if len(tokens) == 3:
+        click_id = tokens[0]
+        data["pv_id"] = tokens[1]
+        data["shown_ad_list"] = tokens[2]
+        if not click_id in pvclick:
+            pvclick[click_id] = data
+        else:
+            pvclick[click_id].update(data)
+    elif len(tokens) == 2:
+        click_id = tokens[0]
+        data["clicked_ad_list"] = tokens[1]
+        if not click_id in pvclick:
+            pvclick[click_id] = data
+        else:
+            pvclick[click_id].update(data)
 
-for ad_id in pvclick.keys():
-    if pvclick[ad_id][0] == 0:
-        ctr = 0
-    else:
-        ctr = pvclick[ad_id][1] / float(pvclick[ad_id][0])
-    print "%s\t%f" % (ad_id, ctr)
+for click_id, data in pvclick.items():
+    print "%s\t%s\t%s" % (data["pv_id"], data["shown_ad_list"],
+                          data["clicked_ad_list"])

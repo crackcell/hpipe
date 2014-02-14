@@ -50,6 +50,7 @@
   <property>
     <name>hpipe.reducer</name>
     <value>examples/join/task/reducer.py</value>
+    <!--<value>cat</value>-->
   </property>
 
   <property>
