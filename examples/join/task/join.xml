@@ -44,7 +44,7 @@
 
   <property>
     <name>hpipe.mapper</name>
-    <value>hpipe/smartflow/multiple_input/mi_mapper.py</value>
+    <value>hpipe/smartflow/dataflow/multiple_input/mi_mapper.py</value>
   </property>
 
   <property>
@@ -57,8 +57,8 @@
     <name>hpipe.file</name>
     <value>
       <array>
-        <item>hpipe/smartflow/multiple_input/mi_mapper.py</item>
-        <item>hpipe/smartflow/join/join_reducer.py</item>
+        <item>hpipe/smartflow/dataflow/multiple_input/mi_mapper.py</item>
+        <item>hpipe/smartflow/dataflow/join/join_reducer.py</item>
         <item>examples/join/task/pv_mapper.py</item>
         <item>examples/join/task/click_mapper.py</item>
         <item>examples/join/task/reducer.py</item>
