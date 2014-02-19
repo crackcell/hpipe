@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<flow name="auc.example">
+
+  <node>
+    <name>auc</name>
+    <resource>hpipe/smartflow/eval/auc/auc.xml</resource>
+    <property>
+      <name>auc.input</name>
+      <value>/hpipe/auc/input/part-*</value>
+    </property>
+    <property>
+      <name>auc.output</name>
+      <value>/hpipe/auc/output</value>
+    </property>
+  </node>
+
+</flow>

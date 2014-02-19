@@ -66,7 +66,7 @@ class HadoopClient(Client):
         command += " -output " + job.properties["hpipe.output.dir"] + \
                    " -mapper " + job.properties["hpipe.mapper"] + \
                    " -reducer " + job.properties["hpipe.reducer"]
-
+        print "file:", job.files
         for f in job.files:
             command += " -file " + f
 
