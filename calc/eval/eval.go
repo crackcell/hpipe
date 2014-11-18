@@ -19,8 +19,8 @@
 package eval
 
 import (
+	"../ast"
 	"fmt"
-	"github.com/crackcell/opipe/calc/ast"
 	"time"
 )
 

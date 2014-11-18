@@ -19,11 +19,10 @@
 package calc
 
 import (
-	_ "fmt"
-	"github.com/crackcell/opipe/calc/ast"
-	"github.com/crackcell/opipe/calc/eval"
-	"github.com/crackcell/opipe/calc/lexer"
-	"github.com/crackcell/opipe/calc/parser"
+	"./ast"
+	"./eval"
+	"./lexer"
+	"./parser"
 	"strings"
 )
 
