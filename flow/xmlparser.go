@@ -68,29 +68,31 @@ type XMLJob struct {
 
 type xmlParser struct{}
 
-func (this *xmlParser) ParseStepFromFile(entry string, workdir string) *Step {
+func (this *xmlParser) ParseStepFromFile(entry string,
+	workdir string) (*Step, error) {
 	return parseStepFromFile(entry, workdir, nil)
 }
 
-func (this *xmlParser) ParseJobFromFile(entry string, workdir string) Job {
+func (this *xmlParser) ParseJobFromFile(entry string,
+	workdir string) (Job, error) {
 	return parseJobFromFile(entry, workdir, nil)
 }
 
 func parseStepFromFile(entry string, workdir string,
-	preDefinedVars map[string]string) *Step {
+	preDefinedVars map[string]string) (*Step, error) {
 
 	entry = workdir + "/" + entry
 
 	//log.Println("open:", entry)
 	data, err := ioutil.ReadFile(entry)
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		//log.Fatal(err)
+		return nil, err
 	}
 
 	s := XMLStep{}
 	if err := xml.Unmarshal(data, &s); err != nil {
-		return nil
+		return nil, err
 	}
 
 	//log.Println(s)
@@ -102,7 +104,7 @@ func parseStepFromFile(entry string, workdir string,
 
 	step.Var, err = evalMap(preDefinedVars, step.Var)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	for _, do := range s.Do {
@@ -113,11 +115,14 @@ func parseStepFromFile(entry string, workdir string,
 		//log.Printf("localVar: %v\n", localVar)
 		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		//log.Printf("output: %v\n", localVar)
-		step.Do = append(step.Do,
-			parseJobFromFile(do.Res, workdir, localVar))
+		j, err := parseJobFromFile(do.Res, workdir, localVar)
+		if err != nil {
+			return nil, err
+		}
+		step.Do = append(step.Do, j)
 	}
 
 	for _, dep := range s.Dep {
@@ -131,28 +136,31 @@ func parseStepFromFile(entry string, workdir string,
 			panic(err)
 		}
 		//log.Printf("output: %v\n", localVar)
-		step.Dep = append(step.Dep,
-			parseStepFromFile(dep.Res, workdir, localVar))
+		j, err := parseStepFromFile(dep.Res, workdir, localVar)
+		if err != nil {
+			return nil, err
+		}
+		step.Dep = append(step.Dep, j)
 	}
 
-	return step
+	return step, nil
 }
 
 func parseJobFromFile(entry string, workdir string,
-	preDefinedVars map[string]string) Job {
+	preDefinedVars map[string]string) (Job, error) {
 
 	entry = workdir + "/" + entry
 
 	//log.Println("open:", entry)
 	data, err := ioutil.ReadFile(entry)
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		//log.Fatal(err)
+		return nil, err
 	}
 
 	j := XMLJob{}
 	if err := xml.Unmarshal(data, &j); err != nil {
-		return nil
+		return nil, err
 	}
 
 	//log.Println(j)
@@ -175,15 +183,15 @@ func parseJobFromFile(entry string, workdir string,
 	//log.Printf("evalMap: %v\n", localVar)
 	localVar, err = evalMap(preDefinedVars, localVar)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	//log.Printf("output: %v\n", localVar)
 	job.SetVar(localVar)
 	if !job.IsValid() {
-		panic("job is invalid")
+		return nil, ErrInvalidJob
 	}
 
-	return job
+	return job, nil
 }
 
 func updateMap(dest map[string]string, src map[string]string) {

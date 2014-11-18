@@ -27,8 +27,8 @@ import (
 //===================================================================
 
 type Parser interface {
-	ParseStepFromFile(entry string, workdir string) *Step
-	ParseJobFromFile(entry string, workdir string) Job
+	ParseStepFromFile(entry string, workdir string) (*Step, error)
+	ParseJobFromFile(entry string, workdir string) (Job, error)
 }
 
 //===================================================================

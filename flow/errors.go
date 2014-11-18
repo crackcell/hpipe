@@ -8,28 +8,20 @@
  **************************************************************/
 
 /**
- * Test for Flow
  *
- * @file flow_test.go
+ *
+ * @file errors.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Mon Nov 10 19:50:59 2014
+ * @date Tue Nov 18 18:10:11 2014
  *
  **/
 
 package flow
 
 import (
-	"fmt"
-	"testing"
+	"errors"
 )
 
-var step *Step
-
-func TestParseXML(t *testing.T) {
-	p := NewXMLParser()
-	step, err := p.ParseStepFromFile("step1.xml", "../test")
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Println(step.DebugString())
-}
+var (
+	ErrInvalidJob = errors.New("invalid job definition")
+)

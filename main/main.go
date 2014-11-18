@@ -19,9 +19,51 @@
 package main
 
 import (
+	"../flow"
+	"flag"
 	"fmt"
+	"os"
 )
 
-func main() {
+var (
+	flVersion   bool
+	flDebug     bool
+	flWorkDir   string
+	flFlowEntry string
+)
 
+func Init() {
+	flag.BoolVar(&flVersion, "version", false, "Print version info and quit")
+	flag.BoolVar(&flVersion, "v", false, "Print version info and quit")
+	flag.BoolVar(&flDebug, "debug", false, "Enable debug mode")
+	flag.BoolVar(&flDebug, "d", false, "Enable debug mode")
+	flag.StringVar(&flWorkDir, "workdir", "./", "Work root of the flow")
+	flag.StringVar(&flWorkDir, "w", "./", "Work root of the flow")
+	flag.StringVar(&flFlowEntry, "flow", "", "Entry of the flow")
+	flag.StringVar(&flFlowEntry, "f", "", "Entry of the flow")
+}
+
+func main() {
+	Init()
+	flag.Parse()
+
+	if flVersion {
+		fmt.Printf("Hpipe v2\n")
+		os.Exit(0)
+	}
+
+	if len(flFlowEntry) == 0 || len(flWorkDir) == 0 {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	f := flow.NewFlow()
+	err := f.LoadFromFile(flFlowEntry, flWorkDir)
+	if err != nil {
+		panic(err)
+	}
+
+	if flDebug {
+		fmt.Printf("flow:\n%s\n", f.DebugString())
+	}
 }

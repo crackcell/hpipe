@@ -27,11 +27,33 @@ import (
 // Public APIs
 //===================================================================
 
+type Flow struct {
+	entry *Step
+}
+
 type Step struct {
 	Name string
 	Dep  []*Step
 	Do   []Job
 	Var  map[string]string
+}
+
+func NewFlow() *Flow {
+	return &Flow{}
+}
+
+func (this *Flow) LoadFromFile(filename, workdir string) error {
+	p := NewXMLParser()
+	if step, err := p.ParseStepFromFile(filename, workdir); err != nil {
+		return err
+	} else {
+		this.entry = step
+	}
+	return nil
+}
+
+func (this *Flow) DebugString() string {
+	return this.entry.DebugString()
 }
 
 func NewStep() *Step {
