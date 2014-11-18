@@ -18,8 +18,8 @@ id : {_letter | '_'} {_idcar} ;
 
 <<
 import (
-	"github.com/crackcell/opipe/calc/token"
-	"github.com/crackcell/opipe/calc/ast"
+	"../token"
+	"../ast"
 )
 >>
 

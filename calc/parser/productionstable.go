@@ -2,8 +2,8 @@
 package parser
 
 import (
-	"github.com/crackcell/opipe/calc/token"
-	"github.com/crackcell/opipe/calc/ast"
+	"../token"
+	"../ast"
 )
 
 type (

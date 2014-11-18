@@ -1,10 +1,9 @@
-
 package errors
 
-import(
+import (
+	"../token"
 	"bytes"
 	"fmt"
-	"github.com/crackcell/opipe/calc/token"
 )
 
 type ErrorSymbol interface {

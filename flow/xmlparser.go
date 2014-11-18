@@ -19,9 +19,9 @@
 package flow
 
 import (
+	"../calc"
 	"encoding/xml"
 	_ "fmt"
-	"github.com/crackcell/opipe/calc"
 	"io/ioutil"
 	"log"
 	"strings"
