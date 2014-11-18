@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<job name="job2" type="hadoop">
+	<var>mapred.job.name="test"</var>
+</job>

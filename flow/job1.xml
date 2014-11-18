@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<job name="job1" type="odps">
+	<var>date=date+1</var>
+	<var>project="xxxx"</var>
+	<var>sql="testsql"</var>
+</job>
