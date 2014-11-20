@@ -20,6 +20,8 @@ package main
 
 import (
 	"../flow"
+	log "../levellog"
+	"../util"
 	"flag"
 	"fmt"
 	"os"
@@ -43,6 +45,16 @@ func Init() {
 	flag.StringVar(&flFlowEntry, "f", "", "Entry of the flow")
 }
 
+func logo() string {
+	return ` 
+ _______         __                         ______
+|   |   |.-----.|__|.-----.-----.   .--.--.|__    |
+|       ||  _  ||  ||  _  |  -__|   |  |  ||    __|
+|___|___||   __||__||   __|_____|    \___/ |______|
+         |__|       |__|
+ `
+}
+
 func main() {
 	Init()
 	flag.Parse()
@@ -64,6 +76,7 @@ func main() {
 	}
 
 	if flDebug {
-		fmt.Printf("flow:\n%s\n", f.DebugString())
+		util.LogLines(logo(), log.Debug)
+		util.LogLines(f.DebugString(), log.Debug)
 	}
 }
