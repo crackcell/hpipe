@@ -20,10 +20,10 @@ package flow
 
 import (
 	"../calc"
+	log "../levellog"
 	"encoding/xml"
-	_ "fmt"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"strings"
 )
 
@@ -83,7 +83,7 @@ func parseStepFromFile(entry string, workdir string,
 
 	entry = workdir + "/" + entry
 
-	//log.Println("open:", entry)
+	//log.Debug("open:", entry)
 	data, err := ioutil.ReadFile(entry)
 	if err != nil {
 		//log.Fatal(err)
@@ -95,7 +95,7 @@ func parseStepFromFile(entry string, workdir string,
 		return nil, err
 	}
 
-	//log.Println(s)
+	//log.Debug(s)
 
 	step := NewStep()
 	step.Name = s.Name
@@ -109,15 +109,15 @@ func parseStepFromFile(entry string, workdir string,
 
 	for _, do := range s.Do {
 		localVar := arrayToMap(do.Arg, "=")
-		//log.Printf("%s ============\n", entry)
-		//log.Printf("predef: %v\n", preDefinedVars)
-		//log.Printf("step.Var: %v\n", step.Var)
-		//log.Printf("localVar: %v\n", localVar)
+		//log.Debugf("%s ============\n", entry)
+		//log.Debugf("predef: %v\n", preDefinedVars)
+		//log.Debugf("step.Var: %v\n", step.Var)
+		//log.Debugf("localVar: %v\n", localVar)
 		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
 		if err != nil {
 			return nil, err
 		}
-		//log.Printf("output: %v\n", localVar)
+		//log.Debugf("output: %v\n", localVar)
 		j, err := parseJobFromFile(do.Res, workdir, localVar)
 		if err != nil {
 			return nil, err
@@ -127,15 +127,15 @@ func parseStepFromFile(entry string, workdir string,
 
 	for _, dep := range s.Dep {
 		localVar := arrayToMap(dep.Var, "=")
-		//log.Printf("%s ============\n", entry)
-		//log.Printf("predef: %v\n", preDefinedVars)
-		//log.Printf("step.Var: %v\n", step.Var)
-		//log.Printf("localVar: %v\n", localVar)
+		//log.Debugf("%s ============\n", entry)
+		//log.Debugf("predef: %v\n", preDefinedVars)
+		//log.Debugf("step.Var: %v\n", step.Var)
+		//log.Debugf("localVar: %v\n", localVar)
 		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
 		if err != nil {
 			panic(err)
 		}
-		//log.Printf("output: %v\n", localVar)
+		//log.Debugf("output: %v\n", localVar)
 		j, err := parseStepFromFile(dep.Res, workdir, localVar)
 		if err != nil {
 			return nil, err
@@ -151,7 +151,7 @@ func parseJobFromFile(entry string, workdir string,
 
 	entry = workdir + "/" + entry
 
-	//log.Println("open:", entry)
+	//log.Debug("open:", entry)
 	data, err := ioutil.ReadFile(entry)
 	if err != nil {
 		//log.Fatal(err)
@@ -163,7 +163,7 @@ func parseJobFromFile(entry string, workdir string,
 		return nil, err
 	}
 
-	//log.Println(j)
+	//log.Debug(j)
 
 	var job Job
 
@@ -173,19 +173,19 @@ func parseJobFromFile(entry string, workdir string,
 	case "hadoop":
 		job = NewHadoopJob()
 	default:
-		log.Panic("unknown job type")
+		return nil, fmt.Errorf("unknown job type")
 	}
 	job.SetName(j.Name)
 
 	localVar := arrayToMap(j.Var, "=")
-	//log.Printf("%s ============\n", entry)
-	//log.Printf("predef: %v\n", preDefinedVars)
-	//log.Printf("evalMap: %v\n", localVar)
+	//log.Debugf("%s ============\n", entry)
+	//log.Debugf("predef: %v\n", preDefinedVars)
+	//log.Debugf("evalMap: %v\n", localVar)
 	localVar, err = evalMap(preDefinedVars, localVar)
 	if err != nil {
 		return nil, err
 	}
-	//log.Printf("output: %v\n", localVar)
+	//log.Debugf("output: %v\n", localVar)
 	job.SetVar(localVar)
 	if !job.IsValid() {
 		return nil, ErrInvalidJob

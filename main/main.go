@@ -22,7 +22,6 @@ import (
 	"../flow"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -42,8 +41,6 @@ func Init() {
 	flag.StringVar(&flWorkDir, "w", "./", "Work root of the flow")
 	flag.StringVar(&flFlowEntry, "flow", "", "Entry of the flow")
 	flag.StringVar(&flFlowEntry, "f", "", "Entry of the flow")
-
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
 
 func main() {
