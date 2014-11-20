@@ -19,7 +19,7 @@
 package main
 
 import (
-	"../flow"
+	"../config/flow"
 	log "../levellog"
 	"../util"
 	"flag"

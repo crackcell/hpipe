@@ -19,8 +19,8 @@
 package flow
 
 import (
+	log "../../levellog"
 	"../calc"
-	log "../levellog"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"

@@ -27,7 +27,7 @@ var step *Step
 
 func TestParseXML(t *testing.T) {
 	p := NewXMLParser()
-	step, err := p.ParseStepFromFile("step1.xml", "../test")
+	step, err := p.ParseStepFromFile("step1.xml", "../../test")
 	if err != nil {
 		t.Error(err)
 	}
