@@ -142,7 +142,7 @@ func Debug(v ...interface{}) {
 }
 
 func Debugf(fmt string, v ...interface{}) {
-	std.Debugf(fmt, v)
+	std.Debugf(fmt, v...)
 }
 
 func Trace(v ...interface{}) {
