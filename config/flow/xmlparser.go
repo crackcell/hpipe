@@ -81,10 +81,10 @@ func (this *xmlParser) ParseJobFromFile(entry string,
 func parseStepFromFile(entry string, workdir string,
 	preDefinedVars map[string]string) (*Step, error) {
 
-	entry = workdir + "/" + entry
+	path := workdir + "/" + entry
 
-	//log.Debug("open:", entry)
-	data, err := ioutil.ReadFile(entry)
+	//log.Debug("open:", path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		//log.Fatal(err)
 		return nil, err
@@ -109,7 +109,7 @@ func parseStepFromFile(entry string, workdir string,
 
 	for _, do := range s.Do {
 		localVar := arrayToMap(do.Arg, "=")
-		//log.Debugf("%s ============\n", entry)
+		//log.Debugf("%s ============\n", path)
 		//log.Debugf("predef: %v\n", preDefinedVars)
 		//log.Debugf("step.Var: %v\n", step.Var)
 		//log.Debugf("localVar: %v\n", localVar)
@@ -127,7 +127,7 @@ func parseStepFromFile(entry string, workdir string,
 
 	for _, dep := range s.Dep {
 		localVar := arrayToMap(dep.Var, "=")
-		//log.Debugf("%s ============\n", entry)
+		//log.Debugf("%s ============\n", path)
 		//log.Debugf("predef: %v\n", preDefinedVars)
 		//log.Debugf("step.Var: %v\n", step.Var)
 		//log.Debugf("localVar: %v\n", localVar)
@@ -149,10 +149,10 @@ func parseStepFromFile(entry string, workdir string,
 func parseJobFromFile(entry string, workdir string,
 	preDefinedVars map[string]string) (Job, error) {
 
-	entry = workdir + "/" + entry
+	path := workdir + "/" + entry
 
-	//log.Debug("open:", entry)
-	data, err := ioutil.ReadFile(entry)
+	//log.Debug("open:", path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		//log.Fatal(err)
 		return nil, err
@@ -178,7 +178,7 @@ func parseJobFromFile(entry string, workdir string,
 	job.SetName(j.Name)
 
 	localVar := arrayToMap(j.Var, "=")
-	//log.Debugf("%s ============\n", entry)
+	//log.Debugf("%s ============\n", path)
 	//log.Debugf("predef: %v\n", preDefinedVars)
 	//log.Debugf("evalMap: %v\n", localVar)
 	localVar, err = evalMap(preDefinedVars, localVar)
@@ -187,6 +187,7 @@ func parseJobFromFile(entry string, workdir string,
 	}
 	//log.Debugf("output: %v\n", localVar)
 	job.SetVar(localVar)
+	job.SetFile(entry)
 	if !job.IsValid() {
 		return nil, ErrInvalidJob
 	}

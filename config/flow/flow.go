@@ -32,10 +32,11 @@ type Flow struct {
 }
 
 type Step struct {
-	Name string
-	Dep  []*Step
-	Do   []Job
-	Var  map[string]string
+	Name     string
+	Dep      []*Step
+	Do       []Job
+	Var      map[string]string
+	Resource string
 }
 
 func NewFlow() *Flow {
@@ -117,19 +118,12 @@ type Job interface {
 	GetName() string
 	SetVar(m map[string]string)
 	GetVar() map[string]string
+	SetFile(f string)
+	GetFile() string
 	DoJob()
 	IsValid() bool
 	CheckStatus() int
 	DebugString() string
-}
-
-func IsInMap(keys []string, m map[string]string) bool {
-	for _, k := range keys {
-		if _, ok := m[k]; !ok {
-			return false
-		}
-	}
-	return true
 }
 
 //===================================================================

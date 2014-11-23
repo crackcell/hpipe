@@ -19,6 +19,7 @@
 package flow
 
 import (
+	"../../util"
 	"fmt"
 )
 
@@ -29,6 +30,7 @@ import (
 type HadoopJob struct {
 	Name string
 	Var  map[string]string
+	File string
 }
 
 func NewHadoopJob() *HadoopJob {
@@ -51,8 +53,16 @@ func (this *HadoopJob) GetVar() map[string]string {
 	return this.Var
 }
 
+func (this *HadoopJob) SetFile(f string) {
+	this.File = f
+}
+
+func (this *HadoopJob) GetFile() string {
+	return this.File
+}
+
 func (this *HadoopJob) IsValid() bool {
-	return IsInMap([]string{"mapred.job.name"}, this.Var)
+	return util.IsInMap([]string{"mapred.job.name"}, this.Var)
 }
 
 func (this *HadoopJob) DoJob() {}
@@ -62,7 +72,8 @@ func (this *HadoopJob) CheckStatus() int {
 }
 
 func (this *HadoopJob) DebugString() string {
-	return fmt.Sprintf("hadoop_job:{name:%s,var:%v}", this.Name, this.Var)
+	return fmt.Sprintf("hadoop_job:{name:%s, fileL%s, var:%v}",
+		this.File, this.Name, this.Var)
 }
 
 //===================================================================

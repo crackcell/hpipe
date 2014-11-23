@@ -19,6 +19,7 @@
 package flow
 
 import (
+	"../../util"
 	"fmt"
 )
 
@@ -26,9 +27,19 @@ import (
 // Public APIs
 //===================================================================
 
+const (
+	SQLJob = iota
+	MapredJob
+)
+
 type ODPSJob struct {
-	Name string
-	Var  map[string]string
+	Name      string
+	Var       map[string]string
+	File      string
+	AccessID  string
+	AccessKey string
+	Project   string
+	Endpoint  string
 }
 
 func NewODPSJob() *ODPSJob {
@@ -51,8 +62,18 @@ func (this *ODPSJob) GetVar() map[string]string {
 	return this.Var
 }
 
+func (this *ODPSJob) SetFile(f string) {
+	this.File = f
+}
+
+func (this *ODPSJob) GetFile() string {
+	return this.File
+}
+
 func (this *ODPSJob) IsValid() bool {
-	return true
+	return util.IsInMap(
+		[]string{"accessid", "accesskey", "project", "endpoint", "jobtype"},
+		this.Var)
 }
 
 func (this *ODPSJob) DoJob() {}
@@ -62,7 +83,8 @@ func (this *ODPSJob) CheckStatus() int {
 }
 
 func (this *ODPSJob) DebugString() string {
-	return fmt.Sprintf("odps_job:{name:%s,var:%v}", this.Name, this.Var)
+	return fmt.Sprintf("odps_job:{name:%s, file:%s, var:%v}",
+		this.Name, this.File, this.Var)
 }
 
 //===================================================================
