@@ -10,39 +10,28 @@
 /**
  *
  *
- * @file util.go
+ * @file cmdline.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Thu Nov 20 16:58:01 2014
+ * @date Sun Nov 23 20:59:30 2014
  *
  **/
 
-package util
+package cmdline
 
 import (
-	"strings"
+	_ "fmt"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-func LogLines(s string, fn func(v ...interface{})) {
-	for _, line := range strings.Split(s, "\n") {
-		if len(line) == 0 {
-			line = " "
-		}
-		fn(line)
-	}
-}
-
-func IsInMap(keys []string, m map[string]string) bool {
-	for _, k := range keys {
-		if _, ok := m[k]; !ok {
-			return false
-		}
-	}
-	return true
-}
+var (
+	FlagHelp      bool
+	FlagVerbose   bool
+	FlagWorkRoot  string
+	FlagEntryFile string
+)
 
 //===================================================================
 // Private

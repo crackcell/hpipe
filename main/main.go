@@ -19,6 +19,7 @@
 package main
 
 import (
+	"../config/cmdline"
 	"../config/flow"
 	log "../levellog"
 	"../util"
@@ -27,56 +28,58 @@ import (
 	"os"
 )
 
-var (
-	flVersion   bool
-	flDebug     bool
-	flWorkDir   string
-	flFlowEntry string
-)
-
 func Init() {
-	flag.BoolVar(&flVersion, "version", false, "Print version info and quit")
-	flag.BoolVar(&flVersion, "v", false, "Print version info and quit")
-	flag.BoolVar(&flDebug, "debug", false, "Enable debug mode")
-	flag.BoolVar(&flDebug, "d", false, "Enable debug mode")
-	flag.StringVar(&flWorkDir, "workdir", "./", "Work root of the flow")
-	flag.StringVar(&flWorkDir, "w", "./", "Work root of the flow")
-	flag.StringVar(&flFlowEntry, "flow", "", "Entry of the flow")
-	flag.StringVar(&flFlowEntry, "f", "", "Entry of the flow")
+	flag.BoolVar(&cmdline.FlagHelp, "help", false, "Print help message")
+	flag.BoolVar(&cmdline.FlagHelp, "h", false, "Print help message")
+	flag.BoolVar(&cmdline.FlagVerbose, "verbose", false, "Use verbose output")
+	flag.BoolVar(&cmdline.FlagVerbose, "v", false, "Use verbose output")
+	flag.StringVar(&cmdline.FlagWorkRoot, "workdir", "./", "Root path of the flow")
+	flag.StringVar(&cmdline.FlagWorkRoot, "w", "./", "Work root of the flow")
+	flag.StringVar(&cmdline.FlagEntryFile, "flow", "", "Entry of the flow")
+	flag.StringVar(&cmdline.FlagEntryFile, "f", "", "Entry of the flow")
 }
 
-func logo() string {
-	return ` 
- _______         __                         ______
-|   |   |.-----.|__|.-----.-----.   .--.--.|__    |
-|       ||  _  ||  ||  _  |  -__|   |  |  ||    __|
-|___|___||   __||__||   __|_____|    \___/ |______|
+const (
+	LogoString = ` _______         __
+|   |   |.-----.|__|.-----.-----.
+|       ||  _  ||  ||  _  |  -__|
+|___|___||   __||__||   __|_____|
          |__|       |__|
- `
+`
+	HelpString = `Execute a hpipe workflow
+
+Usage:
+    hpipe-run [options]
+
+Options:
+    -h, --help     Print this message
+    -w, --worddir  Root path of workflow
+    -f, --flow     Entry filename of workflow
+    -v, --verbose  Use verbose output
+`
+)
+
+func showHelp() {
+	fmt.Print(HelpString)
+	os.Exit(0)
 }
 
 func main() {
 	Init()
 	flag.Parse()
-
-	if flVersion {
-		fmt.Printf("Hpipe v2\n")
-		os.Exit(0)
+	if cmdline.FlagHelp {
+		showHelp()
 	}
-
-	if len(flFlowEntry) == 0 || len(flWorkDir) == 0 {
-		flag.Usage()
-		os.Exit(1)
+	if len(cmdline.FlagEntryFile) == 0 || len(cmdline.FlagWorkRoot) == 0 {
+		showHelp()
 	}
-
 	f := flow.NewFlow()
-	err := f.LoadFromFile(flFlowEntry, flWorkDir)
+	err := f.LoadFromFile(cmdline.FlagEntryFile, cmdline.FlagWorkRoot)
 	if err != nil {
 		panic(err)
 	}
-
-	if flDebug {
-		util.LogLines(logo(), log.Debug)
+	if cmdline.FlagVerbose {
+		util.LogLines(LogoString, log.Debug)
 		util.LogLines(f.DebugString(), log.Debug)
 	}
 }
