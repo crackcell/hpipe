@@ -19,6 +19,7 @@
 package cmdline
 
 import (
+	"flag"
 	_ "fmt"
 )
 
@@ -32,6 +33,21 @@ var (
 	FlagWorkRoot  string
 	FlagEntryFile string
 )
+
+func InitFlags() {
+	flag.BoolVar(&FlagHelp, "help", false, "Print help message")
+	flag.BoolVar(&FlagHelp, "h", false, "Print help message")
+	flag.BoolVar(&FlagVerbose, "verbose", false, "Use verbose output")
+	flag.BoolVar(&FlagVerbose, "v", false, "Use verbose output")
+	flag.StringVar(&FlagWorkRoot, "workdir", "./", "Root path of the flow")
+	flag.StringVar(&FlagWorkRoot, "w", "./", "Work root of the flow")
+	flag.StringVar(&FlagEntryFile, "flow", "", "Entry of the flow")
+	flag.StringVar(&FlagEntryFile, "f", "", "Entry of the flow")
+}
+
+func Parse() {
+	flag.Parse()
+}
 
 //===================================================================
 // Private

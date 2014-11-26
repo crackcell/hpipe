@@ -24,21 +24,9 @@ import (
 	"../config/parser"
 	"../log"
 	"../util"
-	"flag"
 	"fmt"
 	"os"
 )
-
-func Init() {
-	flag.BoolVar(&cmdline.FlagHelp, "help", false, "Print help message")
-	flag.BoolVar(&cmdline.FlagHelp, "h", false, "Print help message")
-	flag.BoolVar(&cmdline.FlagVerbose, "verbose", false, "Use verbose output")
-	flag.BoolVar(&cmdline.FlagVerbose, "v", false, "Use verbose output")
-	flag.StringVar(&cmdline.FlagWorkRoot, "workdir", "./", "Root path of the flow")
-	flag.StringVar(&cmdline.FlagWorkRoot, "w", "./", "Work root of the flow")
-	flag.StringVar(&cmdline.FlagEntryFile, "flow", "", "Entry of the flow")
-	flag.StringVar(&cmdline.FlagEntryFile, "f", "", "Entry of the flow")
-}
 
 const (
 	LogoString = ` _______         __
@@ -77,8 +65,8 @@ func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
 }
 
 func main() {
-	Init()
-	flag.Parse()
+	cmdline.InitFlags()
+	cmdline.Parse()
 	if cmdline.FlagHelp {
 		showHelp()
 	}
