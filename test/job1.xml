@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <job name="job1" type="odps">
-	<var>jobtype="sql"</var>
 	<var>accesskey="accesskey"</var>
 	<var>accessid="accessid"</var>
 	<var>project="xxxx"</var>
 	<var>endpoint=""</var>
 	<var>date=date+1</var>
-	<var>sql="testsql"</var>
+	<var>command="select count(*) from test;"</var>
 </job>

@@ -128,7 +128,10 @@ type ODPSJob struct {
 	Endpoint  string
 }
 
-func NewODPSJob() *ODPSJob                       { return &ODPSJob{Var: make(map[string]string)} }
+func NewODPSJob() *ODPSJob {
+	return &ODPSJob{Var: make(map[string]string)}
+}
+
 func (this *ODPSJob) SetName(n string)           { this.Name = n }
 func (this *ODPSJob) GetName() string            { return this.Name }
 func (this *ODPSJob) SetVar(m map[string]string) { this.Var = m }
@@ -138,7 +141,7 @@ func (this *ODPSJob) GetFile() string            { return this.File }
 
 func (this *ODPSJob) IsValid() bool {
 	return util.IsInMap(
-		[]string{"accessid", "accesskey", "project", "endpoint", "jobtype"},
+		[]string{"accessid", "accesskey", "project", "endpoint", "command"},
 		this.Var)
 }
 
@@ -156,7 +159,9 @@ type HadoopJob struct {
 	File string
 }
 
-func NewHadoopJob() *HadoopJob                     { return &HadoopJob{Var: make(map[string]string)} }
+func NewHadoopJob() *HadoopJob {
+	return &HadoopJob{Var: make(map[string]string)}
+}
 func (this *HadoopJob) SetName(n string)           { this.Name = n }
 func (this *HadoopJob) GetName() string            { return this.Name }
 func (this *HadoopJob) SetVar(m map[string]string) { this.Var = m }
