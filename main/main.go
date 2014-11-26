@@ -22,7 +22,7 @@ import (
 	"../config/ast"
 	"../config/cmdline"
 	"../config/parser"
-	log "../levellog"
+	"../log"
 	"../util"
 	"flag"
 	"fmt"

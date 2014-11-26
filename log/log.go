@@ -16,7 +16,7 @@
  *
  **/
 
-package levellog
+package log
 
 import (
 	"io"

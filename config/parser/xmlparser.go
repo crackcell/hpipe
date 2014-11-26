@@ -19,7 +19,7 @@
 package parser
 
 import (
-	log "../../levellog"
+	"../../log"
 	"../ast"
 	"../calc"
 	"encoding/xml"
