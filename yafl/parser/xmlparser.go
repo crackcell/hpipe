@@ -20,8 +20,8 @@ package parser
 
 import (
 	"../../log"
-	"../../tit"
 	"../ast"
+	"../tit"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
