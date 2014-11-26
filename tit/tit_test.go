@@ -8,15 +8,15 @@
  **************************************************************/
 
 /**
- * Test for calc.go
+ * Test for tit.go
  *
- * @file calc_test.go
+ * @file tit_test.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Nov 18 13:01:42 2014
  *
  **/
 
-package calc
+package tit
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	c := NewCalc()
+	c := NewTit()
 	c.AddVar("date1", "20141111")
 	c.AddVar("num1", "10")
 	src := "date1=date1+1"

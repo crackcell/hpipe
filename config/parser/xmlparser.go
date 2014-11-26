@@ -19,9 +19,9 @@
 package parser
 
 import (
+	"../../ast"
 	"../../log"
-	"../ast"
-	"../calc"
+	"../../tit"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -220,7 +220,7 @@ func updateMapWithArray(dest map[string]string, array []string, sep string) {
 }
 
 func evalMap(maps ...map[string]string) (map[string]string, error) {
-	c := calc.NewCalc()
+	c := tit.NewTit()
 	for _, m := range maps {
 		if m != nil {
 			c.AddVarMap(m)

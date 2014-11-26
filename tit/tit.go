@@ -10,13 +10,13 @@
 /**
  *
  *
- * @file calc.go
+ * @file tit.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Mon Nov 17 15:32:54 2014
  *
  **/
 
-package calc
+package tit
 
 import (
 	"./ast"
@@ -30,29 +30,29 @@ import (
 // Public APIs
 //===================================================================
 
-type Calc struct {
+type Tit struct {
 	SrcPieces []string
 }
 
-func NewCalc() *Calc {
-	return &Calc{}
+func NewTit() *Tit {
+	return &Tit{}
 }
 
-func (this *Calc) AddVar(k, v string) {
+func (this *Tit) AddVar(k, v string) {
 	this.SrcPieces = append(this.SrcPieces, k+"="+v)
 }
 
-func (this *Calc) AddVarMap(m map[string]string) {
+func (this *Tit) AddVarMap(m map[string]string) {
 	for k, v := range m {
 		this.AddVar(k, v)
 	}
 }
 
-func (this *Calc) AddPiece(src string) {
+func (this *Tit) AddPiece(src string) {
 	this.SrcPieces = append(this.SrcPieces, src)
 }
 
-func (this *Calc) DoEval() (map[string]string, error) {
+func (this *Tit) DoEval() (map[string]string, error) {
 	src := this.assembleSrc()
 
 	p := parser.NewParser()
@@ -77,7 +77,7 @@ func (this *Calc) DoEval() (map[string]string, error) {
 // Private
 //===================================================================
 
-func (this *Calc) assembleSrc() string {
+func (this *Tit) assembleSrc() string {
 	var src string
 	for _, piece := range this.SrcPieces {
 		src += strings.Trim(piece, ";") + ";"

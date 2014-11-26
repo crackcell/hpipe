@@ -19,7 +19,7 @@
 package ast
 
 import (
-	"../../util"
+	"../util"
 	"fmt"
 	"strings"
 )

@@ -19,7 +19,7 @@
 package main
 
 import (
-	"../config/ast"
+	"../ast"
 	"../config/cmdline"
 	"../config/parser"
 	"../log"
