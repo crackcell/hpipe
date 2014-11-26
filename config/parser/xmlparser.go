@@ -16,10 +16,11 @@
  *
  **/
 
-package flow
+package parser
 
 import (
 	log "../../levellog"
+	"../ast"
 	"../calc"
 	"encoding/xml"
 	"fmt"
@@ -69,17 +70,17 @@ type XMLJob struct {
 type xmlParser struct{}
 
 func (this *xmlParser) ParseStepFromFile(entry string,
-	workdir string) (*Step, error) {
+	workdir string) (*ast.Step, error) {
 	return parseStepFromFile(entry, workdir, nil)
 }
 
 func (this *xmlParser) ParseJobFromFile(entry string,
-	workdir string) (Job, error) {
+	workdir string) (ast.Job, error) {
 	return parseJobFromFile(entry, workdir, nil)
 }
 
 func parseStepFromFile(entry string, workdir string,
-	preDefinedVars map[string]string) (*Step, error) {
+	preDefinedVars map[string]string) (*ast.Step, error) {
 
 	path := workdir + "/" + entry
 
@@ -97,7 +98,7 @@ func parseStepFromFile(entry string, workdir string,
 
 	//log.Debug(s)
 
-	step := NewStep()
+	step := ast.NewStep()
 	step.Name = s.Name
 
 	step.Var = arrayToMap(s.Var, "=")
@@ -147,7 +148,7 @@ func parseStepFromFile(entry string, workdir string,
 }
 
 func parseJobFromFile(entry string, workdir string,
-	preDefinedVars map[string]string) (Job, error) {
+	preDefinedVars map[string]string) (ast.Job, error) {
 
 	path := workdir + "/" + entry
 
@@ -165,13 +166,13 @@ func parseJobFromFile(entry string, workdir string,
 
 	//log.Debug(j)
 
-	var job Job
+	var job ast.Job
 
 	switch j.Type {
 	case "odps":
-		job = NewODPSJob()
+		job = ast.NewODPSJob()
 	case "hadoop":
-		job = NewHadoopJob()
+		job = ast.NewHadoopJob()
 	default:
 		return nil, fmt.Errorf("unknown job type")
 	}
@@ -189,7 +190,7 @@ func parseJobFromFile(entry string, workdir string,
 	job.SetVar(localVar)
 	job.SetFile(entry)
 	if !job.IsValid() {
-		return nil, ErrInvalidJob
+		return nil, ast.ErrInvalidJob
 	}
 
 	return job, nil

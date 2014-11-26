@@ -10,15 +10,16 @@
 /**
  *
  *
- * @file flow.go
+ * @file ast.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Thu Nov 13 12:00:17 2014
  *
  **/
 
-package flow
+package ast
 
 import (
+	"../../util"
 	"fmt"
 	"strings"
 )
@@ -28,7 +29,7 @@ import (
 //===================================================================
 
 type Flow struct {
-	entry *Step
+	Entry *Step
 }
 
 type Step struct {
@@ -43,18 +44,8 @@ func NewFlow() *Flow {
 	return &Flow{}
 }
 
-func (this *Flow) LoadFromFile(filename, workdir string) error {
-	p := NewXMLParser()
-	if step, err := p.ParseStepFromFile(filename, workdir); err != nil {
-		return err
-	} else {
-		this.entry = step
-	}
-	return nil
-}
-
 func (this *Flow) DebugString() string {
-	return this.entry.DebugString()
+	return this.Entry.DebugString()
 }
 
 func NewStep() *Step {
@@ -120,10 +111,66 @@ type Job interface {
 	GetVar() map[string]string
 	SetFile(f string)
 	GetFile() string
-	DoJob()
 	IsValid() bool
-	CheckStatus() int
 	DebugString() string
+}
+
+//===================================================================
+// ODPS Job
+
+type ODPSJob struct {
+	Name      string
+	Var       map[string]string
+	File      string
+	AccessID  string
+	AccessKey string
+	Project   string
+	Endpoint  string
+}
+
+func NewODPSJob() *ODPSJob                       { return &ODPSJob{Var: make(map[string]string)} }
+func (this *ODPSJob) SetName(n string)           { this.Name = n }
+func (this *ODPSJob) GetName() string            { return this.Name }
+func (this *ODPSJob) SetVar(m map[string]string) { this.Var = m }
+func (this *ODPSJob) GetVar() map[string]string  { return this.Var }
+func (this *ODPSJob) SetFile(f string)           { this.File = f }
+func (this *ODPSJob) GetFile() string            { return this.File }
+
+func (this *ODPSJob) IsValid() bool {
+	return util.IsInMap(
+		[]string{"accessid", "accesskey", "project", "endpoint", "jobtype"},
+		this.Var)
+}
+
+func (this *ODPSJob) DebugString() string {
+	return fmt.Sprintf("odps_job:{name:%s, file:%s, var:%v}",
+		this.Name, this.File, this.Var)
+}
+
+//===================================================================
+// Hadoop Job
+
+type HadoopJob struct {
+	Name string
+	Var  map[string]string
+	File string
+}
+
+func NewHadoopJob() *HadoopJob                     { return &HadoopJob{Var: make(map[string]string)} }
+func (this *HadoopJob) SetName(n string)           { this.Name = n }
+func (this *HadoopJob) GetName() string            { return this.Name }
+func (this *HadoopJob) SetVar(m map[string]string) { this.Var = m }
+func (this *HadoopJob) GetVar() map[string]string  { return this.Var }
+func (this *HadoopJob) SetFile(f string)           { this.File = f }
+func (this *HadoopJob) GetFile() string            { return this.File }
+
+func (this *HadoopJob) IsValid() bool {
+	return util.IsInMap([]string{"mapred.job.name"}, this.Var)
+}
+
+func (this *HadoopJob) DebugString() string {
+	return fmt.Sprintf("hadoop_job:{name:%s, fileL%s, var:%v}",
+		this.File, this.Name, this.Var)
 }
 
 //===================================================================

@@ -19,8 +19,9 @@
 package main
 
 import (
+	"../config/ast"
 	"../config/cmdline"
-	"../config/flow"
+	"../config/parser"
 	log "../levellog"
 	"../util"
 	"flag"
@@ -64,6 +65,17 @@ func showHelp() {
 	os.Exit(0)
 }
 
+func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
+	f := ast.NewFlow()
+	p := parser.NewXMLParser()
+	if step, err := p.ParseStepFromFile(filename, workdir); err != nil {
+		return nil, err
+	} else {
+		f.Entry = step
+		return f, nil
+	}
+}
+
 func main() {
 	Init()
 	flag.Parse()
@@ -73,8 +85,7 @@ func main() {
 	if len(cmdline.FlagEntryFile) == 0 || len(cmdline.FlagWorkRoot) == 0 {
 		showHelp()
 	}
-	f := flow.NewFlow()
-	err := f.LoadFromFile(cmdline.FlagEntryFile, cmdline.FlagWorkRoot)
+	f, err := loadFlowFromFile(cmdline.FlagEntryFile, cmdline.FlagWorkRoot)
 	if err != nil {
 		panic(err)
 	}

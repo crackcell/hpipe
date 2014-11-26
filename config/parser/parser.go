@@ -16,10 +16,10 @@
  *
  **/
 
-package flow
+package parser
 
 import (
-	_ "fmt"
+	"../ast"
 )
 
 //===================================================================
@@ -27,8 +27,8 @@ import (
 //===================================================================
 
 type Parser interface {
-	ParseStepFromFile(entry string, workdir string) (*Step, error)
-	ParseJobFromFile(entry string, workdir string) (Job, error)
+	ParseStepFromFile(entry string, workdir string) (*ast.Step, error)
+	ParseJobFromFile(entry string, workdir string) (ast.Job, error)
 }
 
 //===================================================================
