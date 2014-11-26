@@ -19,9 +19,9 @@
 package parser
 
 import (
-	"../../ast"
 	"../../log"
 	"../../tit"
+	"../ast"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"

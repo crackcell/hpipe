@@ -19,11 +19,11 @@
 package main
 
 import (
-	"../ast"
 	"../config/cmdline"
-	"../config/parser"
 	"../log"
 	"../util"
+	"../yafl/ast"
+	"../yafl/parser"
 	"fmt"
 	"os"
 )
