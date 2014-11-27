@@ -21,6 +21,7 @@ package main
 import (
 	"../config/cmdline"
 	"../log"
+	"../taskmanager"
 	"../util"
 	"../yafl/ast"
 	"../yafl/parser"
@@ -81,4 +82,7 @@ func main() {
 		util.LogLines(LogoString, log.Debug)
 		util.LogLines(f.DebugString(), log.Debug)
 	}
+	taskmgr := taskmanager.NewTaskManager()
+	taskmgr.Setup(f)
+	taskmgr.Run()
 }

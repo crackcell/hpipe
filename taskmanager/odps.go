@@ -16,7 +16,7 @@
  *
  **/
 
-package taskmgr
+package taskmanager
 
 import (
 	_ "fmt"
