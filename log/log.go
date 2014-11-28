@@ -22,6 +22,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime"
+	"strconv"
 	"sync"
 )
 
@@ -36,7 +38,9 @@ const (
 	LOG_LEVEL_WARN
 	LOG_LEVEL_ERROR
 	LOG_LEVEL_FATAL
-	LOG_LEVEL_NUM = 6
+	LOG_LEVEL_NUM      = 6
+	LOG_LEVEL_NONDEBUG = LOG_LEVEL_TRACE | LOG_LEVEL_INFO |
+		LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL
 	LOG_LEVEL_ALL = LOG_LEVEL_DEBUG | LOG_LEVEL_TRACE | LOG_LEVEL_INFO |
 		LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL
 )
@@ -59,6 +63,15 @@ type LevelLogger interface {
 func New(writer io.Writer, prefix string, logLevel int) LevelLogger {
 	ret := new(levelLogger)
 	ret.prefix = prefix
+	ret.callerpath = 3
+	ret.init(writer, prefix, logLevel)
+	return ret
+}
+
+func NewDefault(writer io.Writer, prefix string, logLevel int) LevelLogger {
+	ret := new(levelLogger)
+	ret.prefix = prefix
+	ret.callerpath = 4
 	ret.init(writer, prefix, logLevel)
 	return ret
 }
@@ -82,9 +95,10 @@ func (this *nullLogger) Fatal(v ...interface{})              {}
 func (this *nullLogger) Fatalf(fmt string, v ...interface{}) {}
 
 type levelLogger struct {
-	mu      sync.Mutex
-	prefix  string
-	loggers map[int]underlayLogger
+	mu         sync.Mutex
+	prefix     string
+	loggers    map[int]underlayLogger
+	callerpath int
 }
 
 var levelToStr = map[int]string{
@@ -96,7 +110,7 @@ var levelToStr = map[int]string{
 	LOG_LEVEL_FATAL: "FATAL",
 }
 
-var std = New(os.Stdout, "", LOG_LEVEL_ALL)
+var std = NewDefault(os.Stdout, "", LOG_LEVEL_ALL)
 
 func (this *levelLogger) init(writer io.Writer, prefix string, logLevel int) {
 	this.loggers = make(map[int]underlayLogger)
@@ -107,8 +121,7 @@ func (this *levelLogger) init(writer io.Writer, prefix string, logLevel int) {
 		if level&logLevel != 0 {
 			levelName, _ := levelToStr[level]
 			this.loggers[level] =
-				log.New(writer, levelName+" "+prefix,
-					log.LstdFlags|log.Lshortfile)
+				log.New(writer, levelName+" "+prefix, log.LstdFlags)
 		} else {
 			this.loggers[level] = null
 		}
@@ -127,6 +140,7 @@ func (this *levelLogger) print(level int, v ...interface{}) {
 	l := this.getLogger(level)
 	this.mu.Lock()
 	defer this.mu.Unlock()
+	v = append([]interface{}{getCallerInfo(this.callerpath) + ": "}, v...)
 	l.Print(v...)
 }
 
@@ -134,6 +148,7 @@ func (this *levelLogger) printf(level int, fmt string, v ...interface{}) {
 	l := this.getLogger(level)
 	this.mu.Lock()
 	defer this.mu.Unlock()
+	fmt = getCallerInfo(this.callerpath) + ": " + fmt
 	l.Printf(fmt, v...)
 }
 
@@ -231,4 +246,23 @@ func (this *levelLogger) Fatal(v ...interface{}) {
 
 func (this *levelLogger) Fatalf(fmt string, v ...interface{}) {
 	this.printf(LOG_LEVEL_FATAL, fmt, v...)
+}
+
+func getCallerInfo(callpath int) string {
+	_, file, line, ok := runtime.Caller(callpath)
+	if !ok {
+		file = "???"
+		line = 0
+	}
+
+	short := file
+	for i := len(file) - 1; i > 0; i-- {
+		if file[i] == '/' {
+			short = file[i+1:]
+			break
+		}
+	}
+	file = short
+
+	return file + ":" + strconv.Itoa(line)
 }

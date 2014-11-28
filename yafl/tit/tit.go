@@ -31,7 +31,7 @@ import (
 //===================================================================
 
 type Tit struct {
-	SrcPieces []string
+	Src []string
 }
 
 func NewTit() *Tit {
@@ -39,7 +39,7 @@ func NewTit() *Tit {
 }
 
 func (this *Tit) AddVar(k, v string) {
-	this.SrcPieces = append(this.SrcPieces, k+"="+v)
+	this.Src = append(this.Src, k+"="+v)
 }
 
 func (this *Tit) AddVarMap(m map[string]string) {
@@ -48,8 +48,8 @@ func (this *Tit) AddVarMap(m map[string]string) {
 	}
 }
 
-func (this *Tit) AddPiece(src string) {
-	this.SrcPieces = append(this.SrcPieces, src)
+func (this *Tit) AddSrc(src string) {
+	this.Src = append(this.Src, src)
 }
 
 func (this *Tit) DoEval() (map[string]string, error) {
@@ -79,7 +79,7 @@ func (this *Tit) DoEval() (map[string]string, error) {
 
 func (this *Tit) assembleSrc() string {
 	var src string
-	for _, piece := range this.SrcPieces {
+	for _, piece := range this.Src {
 		src += strings.Trim(piece, ";") + ";"
 	}
 	src = strings.TrimSuffix(src, ";")

@@ -25,6 +25,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -61,10 +62,16 @@ type XMLDo struct {
 }
 
 type XMLJob struct {
-	XMLName xml.Name `xml:"job"`
-	Name    string   `xml:"name,attr"`
-	Type    string   `xml:"type,attr"`
-	Var     []string `xml:"var"`
+	XMLName    xml.Name  `xml:"job"`
+	Name       string    `xml:"name,attr"`
+	Type       string    `xml:"type,attr"`
+	Var        []string  `xml:"var"`
+	Properties []XMLProp `xml:"property"`
+}
+
+type XMLProp struct {
+	Name  string `xml:"name"`
+	Value string `xml:"value"`
 }
 
 type xmlParser struct{}
@@ -87,7 +94,7 @@ func parseStepFromFile(entry string, workdir string,
 	//log.Debug("open:", path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		//log.Fatal(err)
+		log.Fatal(err)
 		return nil, err
 	}
 
@@ -105,22 +112,20 @@ func parseStepFromFile(entry string, workdir string,
 
 	step.Var, err = evalMap(preDefinedVars, step.Var)
 	if err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
 
 	for _, do := range s.Do {
 		localVar := arrayToMap(do.Arg, "=")
-		//log.Debugf("%s ============\n", path)
-		//log.Debugf("predef: %v\n", preDefinedVars)
-		//log.Debugf("step.Var: %v\n", step.Var)
-		//log.Debugf("localVar: %v\n", localVar)
 		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
 		if err != nil {
+			log.Fatal(err)
 			return nil, err
 		}
-		//log.Debugf("output: %v\n", localVar)
 		j, err := parseJobFromFile(do.Res, workdir, localVar)
 		if err != nil {
+			log.Fatal(err)
 			return nil, err
 		}
 		step.Do = append(step.Do, j)
@@ -128,17 +133,14 @@ func parseStepFromFile(entry string, workdir string,
 
 	for _, dep := range s.Dep {
 		localVar := arrayToMap(dep.Var, "=")
-		//log.Debugf("%s ============\n", path)
-		//log.Debugf("predef: %v\n", preDefinedVars)
-		//log.Debugf("step.Var: %v\n", step.Var)
-		//log.Debugf("localVar: %v\n", localVar)
 		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
+			return nil, err
 		}
-		//log.Debugf("output: %v\n", localVar)
 		j, err := parseStepFromFile(dep.Res, workdir, localVar)
 		if err != nil {
+			log.Fatal(err)
 			return nil, err
 		}
 		step.Dep = append(step.Dep, j)
@@ -152,19 +154,17 @@ func parseJobFromFile(entry string, workdir string,
 
 	path := workdir + "/" + entry
 
-	//log.Debug("open:", path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		//log.Fatal(err)
+		log.Fatal(err)
 		return nil, err
 	}
 
 	j := XMLJob{}
 	if err := xml.Unmarshal(data, &j); err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
-
-	//log.Debug(j)
 
 	var job ast.Job
 
@@ -179,19 +179,24 @@ func parseJobFromFile(entry string, workdir string,
 	job.SetName(j.Name)
 
 	localVar := arrayToMap(j.Var, "=")
-	//log.Debugf("%s ============\n", path)
-	//log.Debugf("predef: %v\n", preDefinedVars)
-	//log.Debugf("evalMap: %v\n", localVar)
 	localVar, err = evalMap(preDefinedVars, localVar)
 	if err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
-	//log.Debugf("output: %v\n", localVar)
+
+	for _, prop := range j.Properties {
+		job.AddProp(prop.Name, prop.Value)
+	}
+	newprop, err := applyMap(localVar, job.GetProp())
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	job.SetProp(newprop)
+
 	job.SetVar(localVar)
 	job.SetFile(entry)
-	if !job.IsValid() {
-		return nil, ast.ErrInvalidJob
-	}
 
 	return job, nil
 }
@@ -231,4 +236,34 @@ func evalMap(maps ...map[string]string) (map[string]string, error) {
 		return nil, err
 	}
 	return output, nil
+}
+
+var varPattern *regexp.Regexp = regexp.MustCompile(`\$\{([a-zA-Z0-9_]+)\}`)
+
+func applySrc(vars map[string]string, src string) (string, error) {
+	for _, g := range varPattern.FindAllSubmatch([]byte(src), -1) {
+		raw_name := string(g[0])
+		var_name := string(g[1])
+		val, ok := vars[var_name]
+		if !ok {
+			errmsg := fmt.Sprintf("undefined var: %s", var_name)
+			log.Error(errmsg)
+			return "", fmt.Errorf(errmsg)
+		}
+		src = strings.Replace(src, raw_name, val, -1)
+	}
+	return src, nil
+}
+
+func applyMap(vars map[string]string,
+	src map[string]string) (map[string]string, error) {
+
+	for k, v := range src {
+		v, err := applySrc(vars, v)
+		if err != nil {
+			return nil, err
+		}
+		src[k] = v
+	}
+	return src, nil
 }

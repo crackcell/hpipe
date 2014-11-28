@@ -19,7 +19,6 @@
 package ast
 
 import (
-	"../../util"
 	"fmt"
 	"strings"
 )
@@ -111,7 +110,9 @@ type Job interface {
 	GetVar() map[string]string
 	SetFile(f string)
 	GetFile() string
-	IsValid() bool
+	AddProp(key, value string)
+	SetProp(p map[string]string)
+	GetProp() map[string]string
 	DebugString() string
 }
 
@@ -119,63 +120,65 @@ type Job interface {
 // ODPS Job
 
 type ODPSJob struct {
-	Name      string
-	Var       map[string]string
-	File      string
-	AccessID  string
-	AccessKey string
-	Project   string
-	Endpoint  string
+	Name       string
+	Var        map[string]string
+	File       string
+	AccessId   string
+	AccessKey  string
+	Project    string
+	Endpoint   string
+	Properties map[string]string
 }
 
 func NewODPSJob() *ODPSJob {
-	return &ODPSJob{Var: make(map[string]string)}
+	return &ODPSJob{
+		Var:        make(map[string]string),
+		Properties: make(map[string]string)}
 }
 
-func (this *ODPSJob) SetName(n string)           { this.Name = n }
-func (this *ODPSJob) GetName() string            { return this.Name }
-func (this *ODPSJob) SetVar(m map[string]string) { this.Var = m }
-func (this *ODPSJob) GetVar() map[string]string  { return this.Var }
-func (this *ODPSJob) SetFile(f string)           { this.File = f }
-func (this *ODPSJob) GetFile() string            { return this.File }
-
-func (this *ODPSJob) IsValid() bool {
-	return util.IsInMap(
-		[]string{"accessid", "accesskey", "project", "endpoint", "command"},
-		this.Var)
-}
+func (this *ODPSJob) SetName(n string)            { this.Name = n }
+func (this *ODPSJob) GetName() string             { return this.Name }
+func (this *ODPSJob) SetVar(m map[string]string)  { this.Var = m }
+func (this *ODPSJob) GetVar() map[string]string   { return this.Var }
+func (this *ODPSJob) SetFile(f string)            { this.File = f }
+func (this *ODPSJob) GetFile() string             { return this.File }
+func (this *ODPSJob) AddProp(k, v string)         { this.Properties[k] = v }
+func (this *ODPSJob) SetProp(p map[string]string) { this.Properties = p }
+func (this *ODPSJob) GetProp() map[string]string  { return this.Properties }
 
 func (this *ODPSJob) DebugString() string {
-	return fmt.Sprintf("odps_job:{name:%s, file:%s, var:%v}",
-		this.Name, this.File, this.Var)
+	return fmt.Sprintf("odps_job:{name:%s, file:%s, var:%v, prop:%v}",
+		this.Name, this.File, this.Var, this.Properties)
 }
 
 //===================================================================
 // Hadoop Job
 
 type HadoopJob struct {
-	Name string
-	Var  map[string]string
-	File string
+	Name       string
+	Var        map[string]string
+	File       string
+	Properties map[string]string
 }
 
 func NewHadoopJob() *HadoopJob {
-	return &HadoopJob{Var: make(map[string]string)}
+	return &HadoopJob{
+		Var:        make(map[string]string),
+		Properties: make(map[string]string)}
 }
-func (this *HadoopJob) SetName(n string)           { this.Name = n }
-func (this *HadoopJob) GetName() string            { return this.Name }
-func (this *HadoopJob) SetVar(m map[string]string) { this.Var = m }
-func (this *HadoopJob) GetVar() map[string]string  { return this.Var }
-func (this *HadoopJob) SetFile(f string)           { this.File = f }
-func (this *HadoopJob) GetFile() string            { return this.File }
-
-func (this *HadoopJob) IsValid() bool {
-	return util.IsInMap([]string{"mapred.job.name"}, this.Var)
-}
+func (this *HadoopJob) SetName(n string)            { this.Name = n }
+func (this *HadoopJob) GetName() string             { return this.Name }
+func (this *HadoopJob) SetVar(m map[string]string)  { this.Var = m }
+func (this *HadoopJob) GetVar() map[string]string   { return this.Var }
+func (this *HadoopJob) SetFile(f string)            { this.File = f }
+func (this *HadoopJob) GetFile() string             { return this.File }
+func (this *HadoopJob) AddProp(k, v string)         { this.Properties[k] = v }
+func (this *HadoopJob) SetProp(p map[string]string) { this.Properties = p }
+func (this *HadoopJob) GetProp() map[string]string  { return this.Properties }
 
 func (this *HadoopJob) DebugString() string {
-	return fmt.Sprintf("hadoop_job:{name:%s, fileL%s, var:%v}",
-		this.File, this.Name, this.Var)
+	return fmt.Sprintf("hadoop_job:{name:%s, fileL%s, var:%v, prop:%v}",
+		this.File, this.Name, this.Var, this.Properties)
 }
 
 //===================================================================

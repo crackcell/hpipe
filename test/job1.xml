@@ -1,9 +1,23 @@
 <?xml version="1.0"?>
 <job name="job1" type="odps">
-	<var>accesskey="accesskey"</var>
-	<var>accessid="accessid"</var>
-	<var>project="xxxx"</var>
-	<var>endpoint=""</var>
-	<var>date=date+1</var>
-	<var>command="select count(*) from test;"</var>
+	<property>
+		<name>access_key</name>
+		<value>testkey</value>
+	</property>
+	<property>
+		<name>access_id</name>
+		<value>testid</value>
+	</property>
+	<property>
+		<name>endpoint</name>
+		<value>testendpoint</value>
+	</property>
+	<property>
+		<name>project</name>
+		<value>testproj</value>
+	</property>
+	<property>
+		<name>commands</name>
+		<value>select count(*) from test where ds=${date};</value>
+	</property>
 </job>
