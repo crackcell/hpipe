@@ -5,4 +5,7 @@
 		<res>step2.xml</res>
 		<arg>date=date-1</arg>
 	</dep>
+	<do>
+		<res>job3.xml</res>
+	</do>
 </step>

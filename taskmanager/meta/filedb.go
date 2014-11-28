@@ -10,13 +10,13 @@
 /**
  *
  *
- * @file odps.go
+ * @file filedb.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Wed Nov 26 18:11:29 2014
+ * @date Fri Nov 28 18:14:08 2014
  *
  **/
 
-package taskmanager
+package meta
 
 import (
 	_ "fmt"
@@ -25,6 +25,23 @@ import (
 //===================================================================
 // Public APIs
 //===================================================================
+
+func NewFileDB() (DB, error) {
+	ret := new(FileDB)
+	return ret, nil
+}
+
+type FileDB struct {
+	file string
+}
+
+func (this *FileDB) Set(key, value string) error {
+	return nil
+}
+
+func (this *FileDB) Get(key string) string {
+	return ""
+}
 
 //===================================================================
 // Private
