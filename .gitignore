@@ -37,3 +37,5 @@ nosetests.xml
 
 doc/_build
 conf/hpipe.env
+
+*.db

@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <job name="job2" type="hadoop">
+	<instance_id>job2-${date}</instance_id>
 	<var>mapred.job.name="test"</var>
 </job>

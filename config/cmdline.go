@@ -16,7 +16,7 @@
  *
  **/
 
-package cmdline
+package config
 
 import (
 	"flag"

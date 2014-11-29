@@ -64,6 +64,7 @@ type XMLDo struct {
 type XMLJob struct {
 	XMLName    xml.Name  `xml:"job"`
 	Name       string    `xml:"name,attr"`
+	InstanceID string    `xml:"instance_id"`
 	Type       string    `xml:"type,attr"`
 	Var        []string  `xml:"var"`
 	Properties []XMLProp `xml:"property"`
@@ -82,7 +83,7 @@ func (this *xmlParser) ParseStepFromFile(entry string,
 }
 
 func (this *xmlParser) ParseJobFromFile(entry string,
-	workdir string) (ast.Job, error) {
+	workdir string) (*ast.Job, error) {
 	return parseJobFromFile(entry, workdir, nil)
 }
 
@@ -150,7 +151,7 @@ func parseStepFromFile(entry string, workdir string,
 }
 
 func parseJobFromFile(entry string, workdir string,
-	preDefinedVars map[string]string) (ast.Job, error) {
+	preDefinedVars map[string]string) (*ast.Job, error) {
 
 	path := workdir + "/" + entry
 
@@ -166,17 +167,9 @@ func parseJobFromFile(entry string, workdir string,
 		return nil, err
 	}
 
-	var job ast.Job
-
-	switch j.Type {
-	case "odps":
-		job = ast.NewODPSJob()
-	case "hadoop":
-		job = ast.NewHadoopJob()
-	default:
-		return nil, fmt.Errorf("unknown job type")
-	}
-	job.SetName(j.Name)
+	job := ast.NewJob()
+	job.Type = j.Type
+	job.Name = j.Name
 
 	localVar := arrayToMap(j.Var, "=")
 	localVar, err = evalMap(preDefinedVars, localVar)
@@ -186,18 +179,22 @@ func parseJobFromFile(entry string, workdir string,
 	}
 
 	for _, prop := range j.Properties {
-		job.AddProp(prop.Name, prop.Value)
+		job.Prop[prop.Name] = prop.Value
 	}
-	newprop, err := applyMap(localVar, job.GetProp())
+	newprop, err := applyMap(localVar, job.Prop)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
-	job.SetProp(newprop)
-
-	job.SetVar(localVar)
-	job.SetFile(entry)
-
+	newinstid, err := applySrc(localVar, j.InstanceID)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	job.InstanceID = newinstid
+	job.Prop = newprop
+	job.Var = localVar
+	job.File = entry
 	return job, nil
 }
 

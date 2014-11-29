@@ -19,7 +19,8 @@
 package meta
 
 import (
-	"fmt"
+	"../../yafl/ast"
+	_ "fmt"
 )
 
 //===================================================================
@@ -31,8 +32,8 @@ type Meta struct {
 }
 
 type DB interface {
-	Set(key, value string) error
-	Get(key string) string
+	Close() error
+	SaveFlow(f *ast.Flow) error
 }
 
 func NewMeta() *Meta {

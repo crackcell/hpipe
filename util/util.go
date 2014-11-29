@@ -19,6 +19,8 @@
 package util
 
 import (
+	"../log"
+	"os"
 	"strings"
 )
 
@@ -42,6 +44,18 @@ func IsInMap(keys []string, m map[string]string) bool {
 		}
 	}
 	return true
+}
+
+func FileExist(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	log.Fatal("check file exist failed: %v", err)
+	return false
 }
 
 //===================================================================

@@ -71,7 +71,7 @@ func (this *taskMgr) runStep(s *ast.Step) error {
 	return nil
 }
 
-func (this *taskMgr) runJob(j ast.Job) error {
-	log.Debugf("run job: %s", j.GetName())
+func (this *taskMgr) runJob(j *ast.Job) error {
+	log.Debugf("run job: %s", j.Name)
 	return nil
 }

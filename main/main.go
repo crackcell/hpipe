@@ -19,7 +19,7 @@
 package main
 
 import (
-	"../config/cmdline"
+	"../config"
 	"../log"
 	"../taskmanager"
 	"../util"
@@ -66,19 +66,19 @@ func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
 }
 
 func main() {
-	cmdline.InitFlags()
-	cmdline.Parse()
-	if cmdline.FlagHelp {
+	config.InitFlags()
+	config.Parse()
+	if config.FlagHelp {
 		showHelp()
 	}
-	if len(cmdline.FlagEntryFile) == 0 || len(cmdline.FlagWorkRoot) == 0 {
+	if len(config.FlagEntryFile) == 0 || len(config.FlagWorkRoot) == 0 {
 		showHelp()
 	}
-	f, err := loadFlowFromFile(cmdline.FlagEntryFile, cmdline.FlagWorkRoot)
+	f, err := loadFlowFromFile(config.FlagEntryFile, config.FlagWorkRoot)
 	if err != nil {
 		panic(err)
 	}
-	if cmdline.FlagVerbose {
+	if config.FlagVerbose {
 		util.LogLines(LogoString, log.Debug)
 		util.LogLines(f.DebugString(), log.Debug)
 	}
