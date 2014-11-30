@@ -26,6 +26,7 @@ import (
 	"database/sql"
 	_ "database/sql/driver"
 	_ "fmt"
+	"os"
 )
 
 //===================================================================
@@ -34,12 +35,21 @@ import (
 
 func NewSqliteDB(path string) (DB, error) {
 	ret := new(SqliteDB)
+	isInit := true
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		isInit = false
+	}
 	conn, err := sql.Open("sqlite3", path)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	ret.conn = conn
+	if !isInit {
+		if err := ret.init(); err != nil {
+			return nil, err
+		}
+	}
 	log.Debugf("open sqlite3 succ: %s", path)
 	return ret, nil
 }
@@ -78,6 +88,24 @@ func (this *SqliteDB) SaveFlow(f *ast.Flow) error {
 // Private
 //===================================================================
 
+func (this *SqliteDB) init() error {
+	if err := this.createTable(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (this *SqliteDB) createTable() error {
+	_, err := this.conn.Exec(`CREATE TABLE "hpipe_task_info" (
+"instance_id" TEXT NOT NULL,
+"status" TEXT NOT NULL,
+PRIMARY KEY(instance_id));`)
+	if err != nil {
+		log.Fatalf("create table failed: %v", err)
+	}
+	return err
+}
+
 func (this *SqliteDB) saveStep(s *ast.Step) error {
 	for _, dep := range s.Dep {
 		if err := this.saveStep(dep); err != nil {
@@ -96,25 +124,20 @@ func (this *SqliteDB) saveStep(s *ast.Step) error {
 
 func (this *SqliteDB) saveJob(j *ast.Job) error {
 	_, err := this.tx.Exec(
-		"UPDATE hpipe_task_info SET status=? WHERE instance_id=j",
-		j.Status, j.InstanceID,
+		"DELETE FROM hpipe_task_info WHERE instance_id=?",
+		j.InstanceID,
 	)
-	if err == nil {
-		return nil
+	if err != nil {
+		log.Fatalf("saveJob failed: %v", err)
+		return err
 	}
-	this.createTable()
 	_, err = this.tx.Exec(
 		"INSERT INTO hpipe_task_info (instance_id, status) VALUES (?,?)",
 		j.InstanceID, j.Status,
 	)
-	log.Fatalf("saveJob failed: %v", err)
-	return err
-}
-
-func (this *SqliteDB) createTable() error {
-	_, err := this.conn.Exec(`CREATE TABLE "hpipe_task_info" (
-"instance_id" TEXT NOT NULL,
-"status" TEXT NOT NULL,
-PRIMARY KEY(taskid));`)
-	return err
+	if err != nil {
+		log.Fatalf("saveJob failed: %v", err)
+		return err
+	}
+	return nil
 }
