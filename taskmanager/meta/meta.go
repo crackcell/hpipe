@@ -34,6 +34,7 @@ type Meta struct {
 type DB interface {
 	Close() error
 	SaveFlow(f *ast.Flow) error
+	FetchFlow(f *ast.Flow) error
 }
 
 func NewMeta() *Meta {

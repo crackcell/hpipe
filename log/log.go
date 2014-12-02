@@ -249,20 +249,25 @@ func (this *levelLogger) Fatalf(fmt string, v ...interface{}) {
 }
 
 func getCallerInfo(callpath int) string {
-	_, file, line, ok := runtime.Caller(callpath)
+	pc, file, line, ok := runtime.Caller(callpath)
 	if !ok {
 		file = "???"
 		line = 0
 	}
 
-	short := file
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			short = file[i+1:]
+	file = shorten(file)
+
+	return file + ":" + strconv.Itoa(line) + " " +
+		shorten(runtime.FuncForPC(pc).Name())
+}
+
+func shorten(long string) string {
+	short := long
+	for i := len(long) - 1; i > 0; i-- {
+		if long[i] == '/' {
+			short = long[i+1:]
 			break
 		}
 	}
-	file = short
-
-	return file + ":" + strconv.Itoa(line)
+	return short
 }

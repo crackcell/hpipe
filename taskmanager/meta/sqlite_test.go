@@ -39,7 +39,7 @@ func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
 	}
 }
 
-func TestParseXML(t *testing.T) {
+func TestSqlite(t *testing.T) {
 	f, err := loadFlowFromFile("step1.xml", "../../test")
 	if err != nil {
 		t.Error(err)
@@ -53,4 +53,6 @@ func TestParseXML(t *testing.T) {
 	defer db.Close()
 
 	db.SaveFlow(f)
+
+	db.FetchFlow(f)
 }

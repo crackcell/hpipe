@@ -19,13 +19,9 @@
 package meta
 
 import (
-	_ "../../config"
 	"../../log"
-	_ "../../util"
 	"../../yafl/ast"
 	"database/sql"
-	_ "database/sql/driver"
-	_ "fmt"
 	"os"
 )
 
@@ -50,7 +46,7 @@ func NewSqliteDB(path string) (DB, error) {
 			return nil, err
 		}
 	}
-	log.Debugf("open sqlite3 succ: %s", path)
+	log.Debugf("open: %s", path)
 	return ret, nil
 }
 
@@ -67,13 +63,21 @@ func (this *SqliteDB) Close() error {
 }
 
 func (this *SqliteDB) SaveFlow(f *ast.Flow) error {
+	return this.walkFlow(f, this.saveJob)
+}
+
+func (this *SqliteDB) FetchFlow(f *ast.Flow) error {
+	return this.walkFlow(f, this.fetchJob)
+}
+
+func (this *SqliteDB) walkFlow(f *ast.Flow, fn func(j *ast.Job) error) error {
 	tx, err := this.conn.Begin()
 	this.tx = tx
 	if err != nil {
 		log.Fatalf("begin tx failed: %v", err)
 		return err
 	}
-	if err := this.saveStep(f.Entry); err != nil {
+	if err := this.walkStep(f.Entry, fn); err != nil {
 		this.tx.Rollback()
 		return err
 	}
@@ -101,21 +105,20 @@ func (this *SqliteDB) createTable() error {
 "status" TEXT NOT NULL,
 PRIMARY KEY(instance_id));`)
 	if err != nil {
-		log.Fatalf("create table failed: %v", err)
+		log.Fatalf("%v", err)
 	}
 	return err
 }
 
-func (this *SqliteDB) saveStep(s *ast.Step) error {
+func (this *SqliteDB) walkStep(s *ast.Step, f func(j *ast.Job) error) error {
 	for _, dep := range s.Dep {
-		if err := this.saveStep(dep); err != nil {
-			log.Fatalf("saveStep failed: %v", err)
+		if err := this.walkStep(dep, f); err != nil {
+			log.Fatalf("%v", err)
 			return err
 		}
 	}
 	for _, do := range s.Do {
-		if err := this.saveJob(do); err != nil {
-			log.Fatalf("saveJob failed: %v", err)
+		if err := f(do); err != nil {
 			return err
 		}
 	}
@@ -128,16 +131,34 @@ func (this *SqliteDB) saveJob(j *ast.Job) error {
 		j.InstanceID,
 	)
 	if err != nil {
-		log.Fatalf("saveJob failed: %v", err)
+		log.Fatalf("%v", err)
 		return err
 	}
 	_, err = this.tx.Exec(
 		"INSERT INTO hpipe_task_info (instance_id, status) VALUES (?,?)",
 		j.InstanceID, j.Status,
 	)
+	log.Debugf("save %s=%s", j.InstanceID, j.Status)
 	if err != nil {
-		log.Fatalf("saveJob failed: %v", err)
+		log.Fatalf("%v", err)
 		return err
 	}
 	return nil
+}
+
+func (this *SqliteDB) fetchJob(j *ast.Job) error {
+	var status string
+	err := this.tx.QueryRow(
+		"SELECT status FROM hpipe_task_info WHERE instance_id=?",
+		j.InstanceID,
+	).Scan(&status)
+	switch {
+	case err == sql.ErrNoRows:
+	case err != nil:
+		log.Fatalf("%v", err)
+	default:
+		log.Debugf("restore %s=%s", j.InstanceID, status)
+		j.Status = status
+	}
+	return err
 }
