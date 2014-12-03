@@ -19,32 +19,19 @@
 package meta
 
 import (
-	"../../yafl/ast"
 	"../../yafl/parser"
 	_ "code.google.com/p/gosqlite/sqlite3"
 	"fmt"
 	"testing"
 )
 
-var step *ast.Step
-
-func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
-	f := ast.NewFlow()
-	p := parser.NewXMLParser()
-	if step, err := p.ParseStepFromFile(filename, workdir); err != nil {
-		return nil, err
-	} else {
-		f.Entry = step
-		return f, nil
-	}
-}
-
 func TestSqlite(t *testing.T) {
-	f, err := loadFlowFromFile("step1.xml", "../../test")
+	p := parser.NewXMLParser()
+	f, err := p.ParseFile("flow1.xml", "../../test")
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(f.Entry.DebugString())
+	fmt.Println(f.DebugString())
 
 	db, err := NewSqliteDB("./test.db")
 	if err != nil {
@@ -53,6 +40,5 @@ func TestSqlite(t *testing.T) {
 	defer db.Close()
 
 	db.SaveFlow(f)
-
 	db.FetchFlow(f)
 }
