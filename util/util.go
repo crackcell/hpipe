@@ -28,7 +28,7 @@ import (
 // Public APIs
 //===================================================================
 
-func LogLines(s string, fn func(v ...interface{})) {
+func DebugLines(s string, fn func(v ...interface{})) {
 	for _, line := range strings.Split(s, "\n") {
 		if len(line) == 0 {
 			line = " "

@@ -70,8 +70,8 @@ func main() {
 	}
 
 	if config.FlagVerbose {
-		util.LogLines(LogoString, log.Debug)
-		util.LogLines(f.DebugString(), log.Debug)
+		util.DebugLines(LogoString, log.Debug)
+		util.DebugLines(f.DebugString(), log.Debug)
 	}
 
 	taskmgr := task.NewTaskManager()
