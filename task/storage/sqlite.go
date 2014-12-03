@@ -16,11 +16,12 @@
  *
  **/
 
-package meta
+package storage
 
 import (
 	"../../log"
 	"../../yafl/ast"
+	_ "code.google.com/p/gosqlite/sqlite3"
 	"database/sql"
 	"os"
 )
@@ -29,30 +30,36 @@ import (
 // Public APIs
 //===================================================================
 
-func NewSqliteDB(path string) (DB, error) {
-	ret := new(SqliteDB)
-	isInit := true
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		isInit = false
-	}
-	conn, err := sql.Open("sqlite3", path)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-	ret.conn = conn
-	if !isInit {
-		if err := ret.init(); err != nil {
-			return nil, err
-		}
-	}
-	log.Debugf("open: %s", path)
-	return ret, nil
-}
-
 type SqliteDB struct {
+	path string
 	conn *sql.DB
 	tx   *sql.Tx
+}
+
+func NewSqliteDB(path string) DB {
+	ret := new(SqliteDB)
+	ret.path = path
+	return ret
+}
+
+func (this *SqliteDB) Open() error {
+	isInit := true
+	if _, err := os.Stat(this.path); os.IsNotExist(err) {
+		isInit = false
+	}
+	conn, err := sql.Open("sqlite3", this.path)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	this.conn = conn
+	if !isInit {
+		if err := this.init(); err != nil {
+			return err
+		}
+	}
+	log.Debugf("open: %s", this.path)
+	return nil
 }
 
 func (this *SqliteDB) Close() error {
@@ -66,8 +73,8 @@ func (this *SqliteDB) SaveFlow(f *ast.Flow) error {
 	return this.walkFlow(f, this.saveJob)
 }
 
-func (this *SqliteDB) FetchFlow(f *ast.Flow) error {
-	return this.walkFlow(f, this.fetchJob)
+func (this *SqliteDB) RestoreFlow(f *ast.Flow) error {
+	return this.walkFlow(f, this.restoreJob)
 }
 
 func (this *SqliteDB) walkFlow(f *ast.Flow, fn func(j *ast.Job) error) error {
@@ -105,7 +112,7 @@ func (this *SqliteDB) createTable() error {
 "status" TEXT NOT NULL,
 PRIMARY KEY(instance_id));`)
 	if err != nil {
-		log.Fatalf("%v", err)
+		log.Fatalf("%v for %s", err, this.path)
 	}
 	return err
 }
@@ -146,7 +153,7 @@ func (this *SqliteDB) saveJob(j *ast.Job) error {
 	return nil
 }
 
-func (this *SqliteDB) fetchJob(j *ast.Job) error {
+func (this *SqliteDB) restoreJob(j *ast.Job) error {
 	var status string
 	err := this.tx.QueryRow(
 		"SELECT status FROM hpipe_task_info WHERE instance_id=?",

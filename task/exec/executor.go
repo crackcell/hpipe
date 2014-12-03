@@ -10,24 +10,26 @@
 /**
  *
  *
- * @file parser.go
+ * @file executor.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Mon Nov 10 15:41:35 2014
+ * @date Fri Nov 28 16:57:33 2014
  *
  **/
 
-package parser
+package exec
 
 import (
-	"../ast"
+	"../../yafl/ast"
+	_ "fmt"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-type Parser interface {
-	ParseFile(filename string, workpath string) (*ast.Flow, error)
+type Executor interface {
+	Setup(prop map[string]string) error
+	Run(job ast.Job) (string, error) // ret_status, error
 }
 
 //===================================================================

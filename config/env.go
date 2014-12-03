@@ -10,16 +10,15 @@
 /**
  *
  *
- * @file executor.go
+ * @file env.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Fri Nov 28 16:57:33 2014
+ * @date Wed Dec  3 20:28:25 2014
  *
  **/
 
-package exec
+package config
 
 import (
-	"../../yafl/ast"
 	_ "fmt"
 )
 
@@ -27,30 +26,8 @@ import (
 // Public APIs
 //===================================================================
 
-type Executor interface {
-	Run(job ast.Job) error
-}
-
-func NewODPSExecutor(id, key, project, endpoint string) Executor {
-	ret := new(ODPSExecutor)
-	ret.accessId = id
-	ret.accessKey = key
-	ret.project = project
-	ret.endpoint = endpoint
-	return ret
-}
+var Env map[string]string = make(map[string]string)
 
 //===================================================================
 // Private
 //===================================================================
-
-type ODPSExecutor struct {
-	accessId  string
-	accessKey string
-	project   string
-	endpoint  string
-}
-
-func (this *ODPSExecutor) Run(job ast.Job) error {
-	return nil
-}

@@ -10,18 +10,20 @@
 /**
  *
  *
- * @file taskmgr.go
+ * @file manager.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Thu Nov 27 09:23:19 2014
  *
  **/
 
-package taskmanager
+package task
 
 import (
+	"../config"
 	"../log"
 	"../yafl/ast"
 	"./exec"
+	"./storage"
 	_ "fmt"
 )
 
@@ -34,44 +36,60 @@ type TaskManager interface {
 	Run() error
 }
 
-func NewTaskManager() TaskManager {
-	ret := new(taskMgr)
+func NewTaskManager() (TaskManager, error) {
+	ret := new(taskManager)
 	ret.executors = make(map[string]exec.Executor)
-	return ret
+	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
+	if err := ret.db.Open(); err != nil {
+		return nil, err
+	}
+	return ret, nil
 }
 
 //===================================================================
 // Private
 //===================================================================
 
-type taskMgr struct {
+type taskManager struct {
 	flow      *ast.Flow
 	executors map[string]exec.Executor
+	db        storage.DB
+	todo      []*ast.Job
 }
 
-func (this *taskMgr) Setup(flow *ast.Flow) error {
+func (this *taskManager) Setup(flow *ast.Flow) error {
 	this.flow = flow
 	return nil
 }
 
-func (this *taskMgr) Run() error {
-	log.Debug("taskmgr runs")
-	this.runStep(this.flow.Entry)
+func (this *taskManager) Run() error {
+	log.Debug("start to run")
+
+	this.scanStep(this.flow.Entry)
+	for len(this.todo) != 0 {
+		var wg sync.WaitGroup
+
+		retchan := make(chan string, len(this.todo))
+		for j := range this.todo {
+			// TODO
+		}
+	}
+
 	return nil
 }
 
-func (this *taskMgr) runStep(s *ast.Step) error {
-	log.Debugf("run step: %s", s.Name)
+func (this *taskManager) scanStep(s *ast.Step) {
 	for _, dep := range s.Dep {
-		this.runStep(dep)
+		this.scanStep(dep)
 	}
 	for _, do := range s.Do {
-		this.runJob(do)
+		this.scanJob(do)
 	}
-	return nil
 }
 
-func (this *taskMgr) runJob(j *ast.Job) error {
-	log.Debugf("run job: %s", j.Name)
-	return nil
+func (this *taskManager) scanJob(j *ast.Job) {
+	if j.Status == "todo" {
+		this.todo = append(this.todo, j)
+		log.Debugf("ready to go: %s", j.Name)
+	}
 }

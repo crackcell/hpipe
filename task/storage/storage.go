@@ -16,7 +16,7 @@
  *
  **/
 
-package meta
+package storage
 
 import (
 	"../../yafl/ast"
@@ -27,34 +27,11 @@ import (
 // Public APIs
 //===================================================================
 
-type Meta struct {
-	db DB
-}
-
 type DB interface {
+	Open() error
 	Close() error
 	SaveFlow(f *ast.Flow) error
-	FetchFlow(f *ast.Flow) error
-}
-
-func NewMeta() *Meta {
-	return new(Meta)
-}
-
-func (this *Meta) SetFlowInfo(info string) error {
-	return nil
-}
-
-func (this *Meta) GetFlowInfo() (string, error) {
-	return "", nil
-}
-
-func (this *Meta) SetJobInfo(info string) error {
-	return nil
-}
-
-func (this *Meta) GetJobInfo() (string, error) {
-	return "", nil
+	RestoreFlow(f *ast.Flow) error
 }
 
 //===================================================================

@@ -19,17 +19,16 @@
 package ast
 
 import (
+	"./parser"
 	"fmt"
 	"testing"
 )
 
-var step *Step
-
 func TestParseXML(t *testing.T) {
-	p := NewXMLParser()
-	step, err := p.ParseStepFromFile("step1.xml", "../../test")
+	p := parser.NewXMLParser()
+	f, err := p.ParseFile("flow1.xml", "../test")
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(step.DebugString())
+	fmt.Println(f.DebugString())
 }

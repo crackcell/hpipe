@@ -16,7 +16,7 @@
  *
  **/
 
-package meta
+package storage
 
 import (
 	"../../yafl/ast"
@@ -46,13 +46,14 @@ func TestSqlite(t *testing.T) {
 	}
 	fmt.Println(f.Entry.DebugString())
 
-	db, err := NewSqliteDB("./test.db")
-	if err != nil {
+	db := NewSqliteDB("./test.db")
+
+	if err := db.Open(); err != nil {
 		t.Error(err)
 	}
 	defer db.Close()
 
 	db.SaveFlow(f)
 
-	db.FetchFlow(f)
+	db.RestoreFlow(f)
 }

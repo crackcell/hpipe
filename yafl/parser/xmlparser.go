@@ -41,6 +41,13 @@ func NewXMLParser() Parser {
 // Private
 //===================================================================
 
+type XMLFlow struct {
+	XMLName xml.Name  `xml:"flow"`
+	Name    string    `xml:"name,attr"`
+	Entry   string    `xml:"entry"`
+	Prop    []XMLProp `xml:"property"`
+}
+
 type XMLStep struct {
 	XMLName xml.Name `xml:"step"`
 	Name    string   `xml:"name,attr"`
@@ -67,7 +74,7 @@ type XMLJob struct {
 	InstanceID string    `xml:"instance_id"`
 	Type       string    `xml:"type,attr"`
 	Var        []string  `xml:"var"`
-	Properties []XMLProp `xml:"property"`
+	Prop       []XMLProp `xml:"property"`
 }
 
 type XMLProp struct {
@@ -77,23 +84,41 @@ type XMLProp struct {
 
 type xmlParser struct{}
 
-func (this *xmlParser) ParseStepFromFile(entry string,
-	workdir string) (*ast.Step, error) {
-	return parseStepFromFile(entry, workdir, nil)
+func (this *xmlParser) ParseFile(filename string,
+	workpath string) (*ast.Flow, error) {
+
+	data, err := ioutil.ReadFile(workpath + "/" + filename)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	f := XMLFlow{}
+	if err := xml.Unmarshal(data, &f); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	flow := ast.NewFlow()
+	flow.Name = f.Name
+
+	s, err := parseStep(f.Entry, workpath, nil)
+	if err != nil {
+		return nil, err
+	}
+	flow.Entry = s
+
+	for _, env := range f.Env {
+		config.Env[env.Name] = env.Value
+	}
+
+	return flow, nil
 }
 
-func (this *xmlParser) ParseJobFromFile(entry string,
-	workdir string) (*ast.Job, error) {
-	return parseJobFromFile(entry, workdir, nil)
-}
-
-func parseStepFromFile(entry string, workdir string,
+func parseStep(filename string, workpath string,
 	preDefinedVars map[string]string) (*ast.Step, error) {
 
-	path := workdir + "/" + entry
-
-	//log.Debug("open:", path)
-	data, err := ioutil.ReadFile(path)
+	data, err := ioutil.ReadFile(workpath + "/" + filename)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -101,10 +126,9 @@ func parseStepFromFile(entry string, workdir string,
 
 	s := XMLStep{}
 	if err := xml.Unmarshal(data, &s); err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
-
-	//log.Debug(s)
 
 	step := ast.NewStep()
 	step.Name = s.Name
@@ -124,7 +148,7 @@ func parseStepFromFile(entry string, workdir string,
 			log.Fatal(err)
 			return nil, err
 		}
-		j, err := parseJobFromFile(do.Res, workdir, localVar)
+		j, err := parseJob(do.Res, workpath, localVar)
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -139,7 +163,7 @@ func parseStepFromFile(entry string, workdir string,
 			log.Fatal(err)
 			return nil, err
 		}
-		j, err := parseStepFromFile(dep.Res, workdir, localVar)
+		j, err := parseStep(dep.Res, workpath, localVar)
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -150,12 +174,10 @@ func parseStepFromFile(entry string, workdir string,
 	return step, nil
 }
 
-func parseJobFromFile(entry string, workdir string,
+func parseJob(filename string, workpath string,
 	preDefinedVars map[string]string) (*ast.Job, error) {
 
-	path := workdir + "/" + entry
-
-	data, err := ioutil.ReadFile(path)
+	data, err := ioutil.ReadFile(workpath + "/" + filename)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -178,7 +200,7 @@ func parseJobFromFile(entry string, workdir string,
 		return nil, err
 	}
 
-	for _, prop := range j.Properties {
+	for _, prop := range j.Prop {
 		job.Prop[prop.Name] = prop.Value
 	}
 	newprop, err := applyMap(localVar, job.Prop)
@@ -194,7 +216,7 @@ func parseJobFromFile(entry string, workdir string,
 	job.InstanceID = newinstid
 	job.Prop = newprop
 	job.Var = localVar
-	job.File = entry
+	job.File = filename
 	return job, nil
 }
 

@@ -35,7 +35,9 @@ const (
 )
 
 type Flow struct {
+	Name  string
 	Entry *Step
+	Prop  map[string]string
 }
 
 type Step struct {
@@ -58,7 +60,7 @@ type Job struct {
 }
 
 func NewFlow() *Flow {
-	return &Flow{}
+	return &Flow{Prop: make(map[string]string)}
 }
 
 func (this *Flow) DebugString() string {
