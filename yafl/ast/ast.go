@@ -35,6 +35,7 @@ const (
 )
 
 type Flow struct {
+	Name  string
 	Entry *Step
 }
 
@@ -61,15 +62,15 @@ func NewFlow() *Flow {
 	return &Flow{}
 }
 
-func (this *Flow) DebugString() string {
-	return this.Entry.DebugString()
-}
-
 func NewStep() *Step {
 	return &Step{
 		Var:    make(map[string]string),
 		Status: TODO,
 	}
+}
+
+func (this *Flow) DebugString() string {
+	return this.Entry.DebugString()
 }
 
 func (this *Step) DebugString() string {

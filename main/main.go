@@ -23,7 +23,6 @@ import (
 	"../log"
 	"../taskmanager"
 	"../util"
-	"../yafl/ast"
 	"../yafl/parser"
 	"fmt"
 	"os"
@@ -54,17 +53,6 @@ func showHelp() {
 	os.Exit(0)
 }
 
-func loadFlowFromFile(filename, workdir string) (*ast.Flow, error) {
-	f := ast.NewFlow()
-	p := parser.NewXMLParser()
-	if step, err := p.ParseStepFromFile(filename, workdir); err != nil {
-		return nil, err
-	} else {
-		f.Entry = step
-		return f, nil
-	}
-}
-
 func main() {
 	config.InitFlags()
 	config.Parse()
@@ -74,14 +62,18 @@ func main() {
 	if len(config.FlagEntryFile) == 0 || len(config.FlagWorkRoot) == 0 {
 		showHelp()
 	}
-	f, err := loadFlowFromFile(config.FlagEntryFile, config.FlagWorkRoot)
+
+	p := parser.NewXMLParser()
+	f, err := p.ParseFile(config.FlagEntryFile, config.FlagWorkRoot)
 	if err != nil {
 		panic(err)
 	}
+
 	if config.FlagVerbose {
 		util.LogLines(LogoString, log.Debug)
 		util.LogLines(f.DebugString(), log.Debug)
 	}
+
 	taskmgr := taskmanager.NewTaskManager()
 	taskmgr.Setup(f)
 	taskmgr.Run()

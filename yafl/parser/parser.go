@@ -27,8 +27,7 @@ import (
 //===================================================================
 
 type Parser interface {
-	ParseStepFromFile(entry string, workdir string) (*ast.Step, error)
-	ParseJobFromFile(entry string, workdir string) (*ast.Job, error)
+	ParseFile(filename string, workdir string) (*ast.Flow, error)
 }
 
 //===================================================================

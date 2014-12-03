@@ -1,0 +1,3 @@
+<flow name="testflow">
+	<entry>step1.xml</entry>
+</flow>

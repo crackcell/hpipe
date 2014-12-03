@@ -41,6 +41,12 @@ func NewXMLParser() Parser {
 // Private
 //===================================================================
 
+type XMLFlow struct {
+	XMLName xml.Name `xml:"flow"`
+	Name    string   `xml:"name,attr"`
+	Entry   string   `xml:"entry"`
+}
+
 type XMLStep struct {
 	XMLName xml.Name `xml:"step"`
 	Name    string   `xml:"name,attr"`
@@ -77,22 +83,37 @@ type XMLProp struct {
 
 type xmlParser struct{}
 
-func (this *xmlParser) ParseStepFromFile(entry string,
-	workdir string) (*ast.Step, error) {
-	return parseStepFromFile(entry, workdir, nil)
+func (this *xmlParser) ParseFile(filename string,
+	workdir string) (*ast.Flow, error) {
+
+	path := workdir + "/" + filename
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	f := XMLFlow{}
+	if err := xml.Unmarshal(data, &f); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	flow := ast.NewFlow()
+
+	step, err := parseStep(f.Entry, workdir, nil)
+	if err != nil {
+		return nil, err
+	}
+	flow.Entry = step
+
+	return flow, nil
 }
 
-func (this *xmlParser) ParseJobFromFile(entry string,
-	workdir string) (*ast.Job, error) {
-	return parseJobFromFile(entry, workdir, nil)
-}
-
-func parseStepFromFile(entry string, workdir string,
+func parseStep(entry string, workdir string,
 	preDefinedVars map[string]string) (*ast.Step, error) {
 
 	path := workdir + "/" + entry
-
-	//log.Debug("open:", path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
@@ -101,10 +122,9 @@ func parseStepFromFile(entry string, workdir string,
 
 	s := XMLStep{}
 	if err := xml.Unmarshal(data, &s); err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
-
-	//log.Debug(s)
 
 	step := ast.NewStep()
 	step.Name = s.Name
@@ -139,7 +159,7 @@ func parseStepFromFile(entry string, workdir string,
 			log.Fatal(err)
 			return nil, err
 		}
-		j, err := parseStepFromFile(dep.Res, workdir, localVar)
+		j, err := parseStep(dep.Res, workdir, localVar)
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
