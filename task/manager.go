@@ -10,13 +10,13 @@
 /**
  *
  *
- * @file taskmgr.go
+ * @file manager.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Thu Nov 27 09:23:19 2014
  *
  **/
 
-package taskmanager
+package task
 
 import (
 	"../log"
