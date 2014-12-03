@@ -27,9 +27,9 @@ import (
 // Public APIs
 //===================================================================
 
-type Executor interface {
+type Exec interface {
 	Setup(prop map[string]string) error
-	Run(job ast.Job) (string, error) // ret_status, error
+	Run(job *ast.Job) (string, error) // ret_status, error
 }
 
 //===================================================================

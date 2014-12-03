@@ -2,23 +2,7 @@
 <job name="job1" type="odps">
 	<instance_id>job1-${date}</instance_id>
 	<property>
-		<name>access_key</name>
-		<value>testkey</value>
-	</property>
-	<property>
-		<name>access_id</name>
-		<value>testid</value>
-	</property>
-	<property>
-		<name>endpoint</name>
-		<value>testendpoint</value>
-	</property>
-	<property>
-		<name>project</name>
-		<value>testproj</value>
-	</property>
-	<property>
-		<name>commands</name>
+		<name>cmd</name>
 		<value>select count(*) from test where ds=${date};</value>
 	</property>
 </job>

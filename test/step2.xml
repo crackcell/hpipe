@@ -5,9 +5,6 @@
 	<do>
 		<res>job1.xml</res>
 		<arg>date=date+2</arg>
-	</do>
-	<do>
-		<res>job2.xml</res>
-		<arg>date=date+5</arg>
+		<arg>name="test"</arg>
 	</do>
 </step>

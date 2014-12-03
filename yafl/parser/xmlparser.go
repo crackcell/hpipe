@@ -19,6 +19,7 @@
 package parser
 
 import (
+	"../../config"
 	"../../log"
 	"../ast"
 	"../tit"
@@ -45,6 +46,7 @@ type XMLFlow struct {
 	XMLName xml.Name  `xml:"flow"`
 	Name    string    `xml:"name,attr"`
 	Entry   string    `xml:"entry"`
+	Var     []string  `xml:"var"`
 	Prop    []XMLProp `xml:"property"`
 }
 
@@ -102,15 +104,17 @@ func (this *xmlParser) ParseFile(filename string,
 	flow := ast.NewFlow()
 	flow.Name = f.Name
 
+	for _, env := range f.Prop {
+		config.Env[env.Name] = env.Value
+	}
+
+	//s, err := parseStep(f.Entry, workpath, propToVar(config.Env))
+	log.Debug(propToVar(config.Env))
 	s, err := parseStep(f.Entry, workpath, nil)
 	if err != nil {
 		return nil, err
 	}
 	flow.Entry = s
-
-	for _, env := range f.Env {
-		config.Env[env.Name] = env.Value
-	}
 
 	return flow, nil
 }
@@ -196,7 +200,6 @@ func parseJob(filename string, workpath string,
 	localVar := arrayToMap(j.Var, "=")
 	localVar, err = evalMap(preDefinedVars, localVar)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 
@@ -285,4 +288,13 @@ func applyMap(vars map[string]string,
 		src[k] = v
 	}
 	return src, nil
+}
+
+func propToVar(prop map[string]string) map[string]string {
+	va := make(map[string]string)
+	for k, v := range prop {
+		va[k] = `"` + v + `"`
+	}
+	log.Debug(va)
+	return va
 }

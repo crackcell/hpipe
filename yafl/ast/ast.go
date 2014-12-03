@@ -37,6 +37,7 @@ const (
 type Flow struct {
 	Name  string
 	Entry *Step
+	Var   map[string]string
 	Prop  map[string]string
 }
 

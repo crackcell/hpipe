@@ -23,6 +23,7 @@ import (
 	"./eval"
 	"./lexer"
 	"./parser"
+	"fmt"
 	"strings"
 )
 
@@ -83,6 +84,6 @@ func (this *Tit) assembleSrc() string {
 		src += strings.Trim(piece, ";") + ";"
 	}
 	src = strings.TrimSuffix(src, ";")
-	//fmt.Println("src:", src)
+	fmt.Println("src:", src)
 	return src
 }

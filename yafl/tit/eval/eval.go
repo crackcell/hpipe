@@ -19,6 +19,7 @@
 package eval
 
 import (
+	"../../../log"
 	"../ast"
 	"fmt"
 	"time"
@@ -48,7 +49,6 @@ func (this *Eval) evalStmtList(stmtList []*ast.Stmt) (map[string]*ast.Stmt, erro
 	for _, stmt := range stmtList {
 		_, err := this.evalStmt(stmt)
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
 	}
@@ -79,14 +79,18 @@ func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
 		case "/":
 			return this.evalOperator(s1, s2, "/")
 		default:
-			return nil, fmt.Errorf(ErrFmtUnknownOperator, stmt.Value.(string))
+			err := fmt.Errorf(ErrFmtUnknownOperator, stmt.Value.(string))
+			log.Fatal(err)
+			return nil, err
 		}
 	case "leftid":
 		return stmt, nil
 	case "rightid":
 		val, ok := this.context[stmt.Value.(string)]
 		if !ok {
-			return nil, fmt.Errorf(ErrFmtUndefinedVar, stmt.Value.(string))
+			err := fmt.Errorf(ErrFmtUndefinedVar, stmt.Value.(string))
+			log.Fatal(err)
+			return nil, err
 		}
 		return val, nil
 	case "string":
@@ -96,6 +100,7 @@ func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
 	case "date":
 		return stmt, nil
 	default:
+		log.Fatal(ast.ErrUnknownOperator)
 		return nil, ast.ErrUnknownOperator
 	}
 }

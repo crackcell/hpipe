@@ -78,6 +78,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	taskmgr.Setup(f)
-	taskmgr.Run()
+	taskmgr.Run(f)
 }

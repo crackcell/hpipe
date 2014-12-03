@@ -24,7 +24,7 @@ import (
 	"../yafl/ast"
 	"./exec"
 	"./storage"
-	_ "fmt"
+	"sync"
 )
 
 //===================================================================
@@ -32,16 +32,22 @@ import (
 //===================================================================
 
 type TaskManager interface {
-	Setup(flow *ast.Flow) error
-	Run() error
+	Run(flow *ast.Flow) error
 }
 
 func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
-	ret.executors = make(map[string]exec.Executor)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
 	if err := ret.db.Open(); err != nil {
 		return nil, err
+	}
+	ret.exec = map[string]exec.Exec{
+		"odps": exec.NewODPSExec(),
+	}
+	for _, e := range ret.exec {
+		if err := e.Setup(config.Env); err != nil {
+			return nil, err
+		}
 	}
 	return ret, nil
 }
@@ -51,27 +57,38 @@ func NewTaskManager() (TaskManager, error) {
 //===================================================================
 
 type taskManager struct {
-	flow      *ast.Flow
-	executors map[string]exec.Executor
-	db        storage.DB
-	todo      []*ast.Job
+	flow *ast.Flow
+	exec map[string]exec.Exec
+	db   storage.DB
+	todo []*ast.Job
 }
 
-func (this *taskManager) Setup(flow *ast.Flow) error {
+func (this *taskManager) Run(flow *ast.Flow) error {
 	this.flow = flow
-	return nil
-}
 
-func (this *taskManager) Run() error {
 	log.Debug("start to run")
 
 	this.scanStep(this.flow.Entry)
 	for len(this.todo) != 0 {
 		var wg sync.WaitGroup
 
-		retchan := make(chan string, len(this.todo))
-		for j := range this.todo {
-			// TODO
+		for _, j := range this.todo {
+			e, ok := this.exec[j.Type]
+			if !ok {
+				log.Fatalf("no exec for %s", j.Type)
+				continue
+			}
+			go func() {
+				wg.Add(1)
+				defer wg.Done()
+				status, err := e.Run(j)
+				if err != nil {
+					log.Fatalf("job failed: %v", err)
+					j.Status = ast.FAIL
+				}
+				j.Status = status
+			}()
+			wg.Wait()
 		}
 	}
 
