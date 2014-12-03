@@ -16,11 +16,12 @@
  *
  **/
 
-package meta
+package storage
 
 import (
 	"../../log"
 	"../../yafl/ast"
+	_ "code.google.com/p/gosqlite/sqlite3"
 	"database/sql"
 	"os"
 )
@@ -29,28 +30,34 @@ import (
 // Public APIs
 //===================================================================
 
-func NewSqliteDB(path string) (DB, error) {
+func NewSqliteDB(path string) DB {
 	ret := new(SqliteDB)
+	ret.path = path
+	return ret
+}
+
+func (this *SqliteDB) Open() error {
 	isInit := true
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+	if _, err := os.Stat(this.path); os.IsNotExist(err) {
 		isInit = false
 	}
-	conn, err := sql.Open("sqlite3", path)
+	conn, err := sql.Open("sqlite3", this.path)
 	if err != nil {
 		log.Fatal(err)
-		return nil, err
+		return err
 	}
-	ret.conn = conn
+	this.conn = conn
 	if !isInit {
-		if err := ret.init(); err != nil {
-			return nil, err
+		if err := this.init(); err != nil {
+			return err
 		}
 	}
-	log.Debugf("open: %s", path)
-	return ret, nil
+	log.Debugf("open: %s", this.path)
+	return nil
 }
 
 type SqliteDB struct {
+	path string
 	conn *sql.DB
 	tx   *sql.Tx
 }
@@ -66,8 +73,9 @@ func (this *SqliteDB) SaveFlow(f *ast.Flow) error {
 	return this.walkFlow(f, this.saveJob)
 }
 
-func (this *SqliteDB) FetchFlow(f *ast.Flow) error {
-	return this.walkFlow(f, this.fetchJob)
+func (this *SqliteDB) RestoreFlow(f *ast.Flow) (*ast.Flow, error) {
+	err := this.walkFlow(f, this.restoreJob)
+	return f, err
 }
 
 func (this *SqliteDB) walkFlow(f *ast.Flow, fn func(j *ast.Job) error) error {
@@ -82,7 +90,7 @@ func (this *SqliteDB) walkFlow(f *ast.Flow, fn func(j *ast.Job) error) error {
 		return err
 	}
 	if err := this.tx.Commit(); err != nil {
-		log.Fatalf("tx commit failed: %v", err)
+		log.Fatalf("commit tx failed: %v", err)
 		return err
 	}
 	return nil
@@ -105,7 +113,7 @@ func (this *SqliteDB) createTable() error {
 "status" TEXT NOT NULL,
 PRIMARY KEY(instance_id));`)
 	if err != nil {
-		log.Fatalf("%v", err)
+		log.Fatal(err)
 	}
 	return err
 }
@@ -113,7 +121,6 @@ PRIMARY KEY(instance_id));`)
 func (this *SqliteDB) walkStep(s *ast.Step, f func(j *ast.Job) error) error {
 	for _, dep := range s.Dep {
 		if err := this.walkStep(dep, f); err != nil {
-			log.Fatalf("%v", err)
 			return err
 		}
 	}
@@ -131,22 +138,22 @@ func (this *SqliteDB) saveJob(j *ast.Job) error {
 		j.InstanceID,
 	)
 	if err != nil {
-		log.Fatalf("%v", err)
+		log.Fatal(err)
 		return err
 	}
 	_, err = this.tx.Exec(
 		"INSERT INTO hpipe_task_info (instance_id, status) VALUES (?,?)",
 		j.InstanceID, j.Status,
 	)
-	log.Debugf("save %s=%s", j.InstanceID, j.Status)
+	log.Debugf("%s=%s", j.InstanceID, j.Status)
 	if err != nil {
-		log.Fatalf("%v", err)
+		log.Fatal(err)
 		return err
 	}
 	return nil
 }
 
-func (this *SqliteDB) fetchJob(j *ast.Job) error {
+func (this *SqliteDB) restoreJob(j *ast.Job) error {
 	var status string
 	err := this.tx.QueryRow(
 		"SELECT status FROM hpipe_task_info WHERE instance_id=?",
@@ -154,11 +161,13 @@ func (this *SqliteDB) fetchJob(j *ast.Job) error {
 	).Scan(&status)
 	switch {
 	case err == sql.ErrNoRows:
+		return nil
 	case err != nil:
-		log.Fatalf("%v", err)
+		log.Fatal(err)
+		return err
 	default:
-		log.Debugf("restore %s=%s", j.InstanceID, status)
+		log.Debugf("%s=%s", j.InstanceID, status)
 		j.Status = status
+		return nil
 	}
-	return err
 }

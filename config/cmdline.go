@@ -28,21 +28,27 @@ import (
 //===================================================================
 
 var (
-	FlagHelp      bool
-	FlagVerbose   bool
-	FlagWorkRoot  string
-	FlagEntryFile string
+	Help      bool
+	Verbose   bool
+	WorkPath  string
+	MetaPath  string
+	NodeName  string
+	EntryFile string
 )
 
 func InitFlags() {
-	flag.BoolVar(&FlagHelp, "help", false, "Print help message")
-	flag.BoolVar(&FlagHelp, "h", false, "Print help message")
-	flag.BoolVar(&FlagVerbose, "verbose", false, "Use verbose output")
-	flag.BoolVar(&FlagVerbose, "v", false, "Use verbose output")
-	flag.StringVar(&FlagWorkRoot, "workdir", "./", "Root path of the flow")
-	flag.StringVar(&FlagWorkRoot, "w", "./", "Work root of the flow")
-	flag.StringVar(&FlagEntryFile, "flow", "", "Entry of the flow")
-	flag.StringVar(&FlagEntryFile, "f", "", "Entry of the flow")
+	flag.BoolVar(&Help, "help", false, "Print help message")
+	flag.BoolVar(&Help, "h", false, "Print help message")
+	flag.BoolVar(&Verbose, "verbose", false, "Use verbose output")
+	flag.BoolVar(&Verbose, "v", false, "Use verbose output")
+	flag.StringVar(&NodeName, "name", "noname", "Node name")
+	flag.StringVar(&NodeName, "n", "noname", "Node name")
+	flag.StringVar(&WorkPath, "work", "", "Root path of the flow")
+	flag.StringVar(&WorkPath, "w", "", "Work root of the flow")
+	flag.StringVar(&MetaPath, "meta", "", "Path for meta data")
+	flag.StringVar(&MetaPath, "m", "", "Path for meta data")
+	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
+	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
 }
 
 func Parse() {

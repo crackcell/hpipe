@@ -28,15 +28,16 @@ import (
 //===================================================================
 
 type Executor interface {
-	Run(job ast.Job) error
+	Run(job *ast.Job) error
 }
 
-func NewODPSExecutor(id, key, project, endpoint string) Executor {
+func NewODPSExecutor(id, key, project, endpoint, cmd string) Executor {
 	ret := new(ODPSExecutor)
 	ret.accessId = id
 	ret.accessKey = key
 	ret.project = project
 	ret.endpoint = endpoint
+	ret.cmd = cmd
 	return ret
 }
 
@@ -49,8 +50,41 @@ type ODPSExecutor struct {
 	accessKey string
 	project   string
 	endpoint  string
+	cmd       string
 }
 
-func (this *ODPSExecutor) Run(job ast.Job) error {
+func (this *ODPSExecutor) Run(job *ast.Job) error {
+	cmd := exec.Command("odpscmd",
+		"-u "+this.accessId, "-p "+this.accessKey,
+		"--project="+this.project, "--endpoint="+this.endpoint,
+		"-e "+this.cmd)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+		return err
+	}
+	errscanner := bufio.NewScanner(stderr)
+	for errscanner.Scan() {
+		log.Info(errscanner.Text()) // Println will add back the final '\n'
+	}
+	if err := errscanner.Err(); err != nil {
+		log.Errorf("read from pipe failed: %v", err)
+	}
+	outscanner := bufio.NewScanner(stdout)
+	for outscanner.Scan() {
+		log.Info(outscanner.Text()) // Println will add back the final '\n'
+	}
+	if err := outscanner.Err(); err != nil {
+		log.Errorf("read from pipe failed: %v", err)
+	}
 	return nil
 }
