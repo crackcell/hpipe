@@ -25,6 +25,7 @@ import (
 	"./exec"
 	"./storage"
 	"sync"
+	"time"
 )
 
 //===================================================================
@@ -70,29 +71,30 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 	this.scanStep(this.flow.Entry)
 	for len(this.todo) != 0 {
 		var wg sync.WaitGroup
-
 		for _, job := range this.todo {
 			e, ok := this.exec[job.Type]
 			if !ok {
 				log.Fatalf("no exec for %s", job.Type)
 				continue
 			}
-			go func() {
-				wg.Add(1)
+			wg.Add(1)
+			go func(j *ast.Job, e exec.Exec) {
 				defer wg.Done()
-				status, err := e.Run(job)
-				if err != nil {
-					log.Fatalf("job failed: %v", err)
-					job.Status = ast.FAIL
-				}
-				job.Status = status
+				/*
+					status, err := e.Run(job)
+					if err != nil {
+						log.Fatalf("job failed: %v", err)
+						job.Status = ast.FAIL
+					}
+					job.Status = status
+				*/
+				time.Sleep(10000)
+				status := "done"
 				log.Debugf("status: %s", status)
-			}()
+			}(job, e)
 		}
-
 		wg.Wait()
 	}
-
 	return nil
 }
 

@@ -58,7 +58,7 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 		" --project=" + this.getEnv("odps_project") +
 		" --endpoint=" + this.getEnv("odps_endpoint") +
 		" -e \"" + this.cmd + "\"")
-	time.Sleep(10000)
+	time.Sleep(100000)
 	return ast.DONE, nil
 	/*
 		cmd := exec.Command("odpscmd",
