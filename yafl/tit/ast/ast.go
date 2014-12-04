@@ -54,12 +54,18 @@ func (this *Stmt) DebugString() string {
 
 func (this *Stmt) ValueString() string {
 	switch this.Type {
-	case "int64":
-		return strconv.Itoa(int(this.Value.(int64)))
-	case "date":
-		return (this.Value.(time.Time)).Format("20060102")
-	default:
+	case LeftID:
 		return this.Value.(string)
+	case RightID:
+		return this.Value.(string)
+	case String:
+		return `"` + this.Value.(string) + `"`
+	case Int64:
+		return strconv.Itoa(int(this.Value.(int64)))
+	case Date:
+		return `"` + (this.Value.(time.Time)).Format("20060102") + `"`
+	default:
+		panic(fmt.Errorf("invalid stmt type"))
 	}
 }
 

@@ -19,20 +19,26 @@
 package tit
 
 import (
+	"./ast"
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestAll(t *testing.T) {
 	c := NewTit()
-	c.AddVar("date1", "20141111")
-	c.AddVar("num1", "10")
-	src := "date1=date1+1"
-	c.AddPiece(src)
+	c.AddStmt("date1",
+		ast.NewDate(time.Date(2014, time.November, 11, 0, 0, 0, 0, time.UTC)))
+	c.AddStmt("num1", ast.NewInt64(int64(123)))
+	src := "date2=date1+1"
+	c.AddSrc(src)
 	m, err := c.DoEval()
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Printf("src:\t%v\n", src)
-	fmt.Printf("output:\t%v\n", m)
+	fmt.Printf("src:%v\n", src)
+	fmt.Println("output:")
+	for k, v := range m {
+		fmt.Printf("%s=%v\n", k, v)
+	}
 }

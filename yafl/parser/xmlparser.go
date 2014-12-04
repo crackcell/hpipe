@@ -23,6 +23,7 @@ import (
 	"../../log"
 	"../ast"
 	"../tit"
+	titast "../tit/ast"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -108,7 +109,6 @@ func (this *xmlParser) ParseFile(filename string,
 		config.Env[env.Name] = env.Value
 	}
 
-	//s, err := parseStep(f.Entry, workpath, propToVar(config.Env))
 	log.Debug(propToVar(config.Env))
 	s, err := parseStep(f.Entry, workpath, nil)
 	if err != nil {
@@ -120,7 +120,7 @@ func (this *xmlParser) ParseFile(filename string,
 }
 
 func parseStep(filename string, workpath string,
-	preDefinedVars map[string]string) (*ast.Step, error) {
+	preDefinedVars map[string]*titast.Stmt) (*ast.Step, error) {
 
 	data, err := ioutil.ReadFile(workpath + "/" + filename)
 	if err != nil {
@@ -137,17 +137,17 @@ func parseStep(filename string, workpath string,
 	step := ast.NewStep()
 	step.Name = s.Name
 
-	step.Var = arrayToMap(s.Var, "=")
+	varSrc := arrayToSrc(s.Var)
 
-	step.Var, err = evalMap(preDefinedVars, step.Var)
+	step.Var, err = evalSrc(varSrc, preDefinedVars)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 
 	for _, do := range s.Do {
-		localVar := arrayToMap(do.Arg, "=")
-		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
+		localVarSrc := arrayToSrc(do.Arg)
+		localVar, err := evalSrc(localVarSrc, preDefinedVars, step.Var)
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -161,10 +161,9 @@ func parseStep(filename string, workpath string,
 	}
 
 	for _, dep := range s.Dep {
-		localVar := arrayToMap(dep.Var, "=")
-		localVar, err := evalMap(preDefinedVars, step.Var, localVar)
+		localVarSrc := arrayToSrc(dep.Var)
+		localVar, err := evalSrc(localVarSrc, preDefinedVars, step.Var)
 		if err != nil {
-			log.Fatal(err)
 			return nil, err
 		}
 		j, err := parseStep(dep.Res, workpath, localVar)
@@ -179,7 +178,7 @@ func parseStep(filename string, workpath string,
 }
 
 func parseJob(filename string, workpath string,
-	preDefinedVars map[string]string) (*ast.Job, error) {
+	preDefinedVars map[string]*titast.Stmt) (*ast.Job, error) {
 
 	data, err := ioutil.ReadFile(workpath + "/" + filename)
 	if err != nil {
@@ -197,8 +196,8 @@ func parseJob(filename string, workpath string,
 	job.Type = j.Type
 	job.Name = j.Name
 
-	localVar := arrayToMap(j.Var, "=")
-	localVar, err = evalMap(preDefinedVars, localVar)
+	localVarSrc := arrayToSrc(j.Var)
+	localVar, err := evalSrc(localVarSrc, preDefinedVars)
 	if err != nil {
 		return nil, err
 	}
@@ -206,12 +205,12 @@ func parseJob(filename string, workpath string,
 	for _, prop := range j.Prop {
 		job.Prop[prop.Name] = prop.Value
 	}
-	newprop, err := applyMap(localVar, job.Prop)
+	newprop, err := applySrcMap(job.Prop, localVar)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
-	newinstid, err := applySrc(localVar, j.InstanceID)
+	newinstid, err := applySrc(j.InstanceID, localVar)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -221,6 +220,14 @@ func parseJob(filename string, workpath string,
 	job.Var = localVar
 	job.File = filename
 	return job, nil
+}
+
+func arrayToSrc(array []string) string {
+	var src string
+	for _, s := range array {
+		src += strings.Trim(s, ";") + ";"
+	}
+	return src
 }
 
 func updateMap(dest map[string]string, src map[string]string) {
@@ -246,23 +253,36 @@ func updateMapWithArray(dest map[string]string, array []string, sep string) {
 	}
 }
 
-func evalMap(maps ...map[string]string) (map[string]string, error) {
+func evalSrc(src string, maps ...map[string]*titast.Stmt) (map[string]*titast.Stmt, error) {
 	c := tit.NewTit()
 	for _, m := range maps {
 		if m != nil {
-			c.AddVarMap(m)
+			c.AddStmtMap(m)
 		}
 	}
+	c.AddSrc(src)
 	output, err := c.DoEval()
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-	return output, nil
+	return output, err
+}
+
+func evalMap(src map[string]string, maps ...map[string]*titast.Stmt) (
+	map[string]*titast.Stmt, error) {
+
+	c := tit.NewTit()
+	for _, m := range maps {
+		if m != nil {
+			c.AddStmtMap(m)
+		}
+	}
+	return c.DoEval()
 }
 
 var varPattern *regexp.Regexp = regexp.MustCompile(`\$\{([a-zA-Z0-9_]+)\}`)
 
-func applySrc(vars map[string]string, src string) (string, error) {
+func applySrc(src string, vars map[string]*titast.Stmt) (string, error) {
 	for _, g := range varPattern.FindAllSubmatch([]byte(src), -1) {
 		raw_name := string(g[0])
 		var_name := string(g[1])
@@ -272,16 +292,17 @@ func applySrc(vars map[string]string, src string) (string, error) {
 			log.Error(errmsg)
 			return "", fmt.Errorf(errmsg)
 		}
-		src = strings.Replace(src, raw_name, val, -1)
+		v := strings.Trim(val.ValueString(), "\"")
+		src = strings.Replace(src, raw_name, v, -1)
 	}
 	return src, nil
 }
 
-func applyMap(vars map[string]string,
-	src map[string]string) (map[string]string, error) {
+func applySrcMap(src map[string]string,
+	vars map[string]*titast.Stmt) (map[string]string, error) {
 
 	for k, v := range src {
-		v, err := applySrc(vars, v)
+		v, err := applySrc(v, vars)
 		if err != nil {
 			return nil, err
 		}

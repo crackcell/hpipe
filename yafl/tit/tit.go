@@ -19,11 +19,12 @@
 package tit
 
 import (
+	"../../log"
 	"./ast"
 	"./eval"
 	"./lexer"
 	"./parser"
-	"fmt"
+	_ "fmt"
 	"strings"
 )
 
@@ -39,22 +40,30 @@ func NewTit() *Tit {
 	return &Tit{}
 }
 
-func (this *Tit) AddVar(k, v string) {
-	this.Src = append(this.Src, k+"="+v)
+func (this *Tit) AddStmt(k string, v *ast.Stmt) {
+	this.Src = append(this.Src, k+"="+v.ValueString())
 }
 
-func (this *Tit) AddVarMap(m map[string]string) {
+func (this *Tit) AddStmtMap(m map[string]*ast.Stmt) {
 	for k, v := range m {
-		this.AddVar(k, v)
+		this.AddStmt(k, v)
 	}
 }
 
-func (this *Tit) AddSrc(src string) {
-	this.Src = append(this.Src, src)
+func (this *Tit) AddSrc(src ...string) {
+	for _, s := range src {
+		this.Src = append(this.Src, strings.Trim(s, ";"))
+	}
 }
 
-func (this *Tit) DoEval() (map[string]string, error) {
-	src := this.assembleSrc()
+func (this *Tit) AddSrcMap(m map[string]string) {
+	for k, v := range m {
+		this.AddSrc(k, v)
+	}
+}
+
+func (this *Tit) DoEval() (map[string]*ast.Stmt, error) {
+	src := this.assembleStmt()
 
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
@@ -63,27 +72,19 @@ func (this *Tit) DoEval() (map[string]string, error) {
 		return nil, err
 	}
 	e := eval.NewEval()
-	output, err := e.DoEval(a.([]*ast.Stmt))
-	if err != nil {
-		return nil, err
-	}
-	ret := make(map[string]string)
-	for name, stmt := range output {
-		ret[name] = stmt.ValueString()
-	}
-	return ret, nil
+	return e.DoEval(a.([]*ast.Stmt))
 }
 
 //===================================================================
 // Private
 //===================================================================
 
-func (this *Tit) assembleSrc() string {
+func (this *Tit) assembleStmt() string {
 	var src string
-	for _, piece := range this.Src {
-		src += strings.Trim(piece, ";") + ";"
+	for _, s := range this.Src {
+		src += s + ";"
 	}
-	src = strings.TrimSuffix(src, ";")
-	fmt.Println("src:", src)
+	src = strings.Trim(src, ";")
+	log.Debugf("src: %s", src)
 	return src
 }
