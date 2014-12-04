@@ -37,6 +37,7 @@ type TaskManager interface {
 
 func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
+	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
 	if err := ret.db.Open(); err != nil {
 		return nil, err
@@ -60,36 +61,36 @@ type taskManager struct {
 	flow *ast.Flow
 	exec map[string]exec.Exec
 	db   storage.DB
-	todo []*ast.Job
+	todo map[string]*ast.Job
 }
 
 func (this *taskManager) Run(flow *ast.Flow) error {
-	this.flow = flow
-
 	log.Debug("start to run")
-
+	this.flow = flow
 	this.scanStep(this.flow.Entry)
 	for len(this.todo) != 0 {
 		var wg sync.WaitGroup
 
-		for _, j := range this.todo {
-			e, ok := this.exec[j.Type]
+		for _, job := range this.todo {
+			e, ok := this.exec[job.Type]
 			if !ok {
-				log.Fatalf("no exec for %s", j.Type)
+				log.Fatalf("no exec for %s", job.Type)
 				continue
 			}
 			go func() {
 				wg.Add(1)
 				defer wg.Done()
-				status, err := e.Run(j)
+				status, err := e.Run(job)
 				if err != nil {
 					log.Fatalf("job failed: %v", err)
-					j.Status = ast.FAIL
+					job.Status = ast.FAIL
 				}
-				j.Status = status
+				job.Status = status
+				log.Debugf("status: %s", status)
 			}()
-			wg.Wait()
 		}
+
+		wg.Wait()
 	}
 
 	return nil
@@ -106,7 +107,7 @@ func (this *taskManager) scanStep(s *ast.Step) {
 
 func (this *taskManager) scanJob(j *ast.Job) {
 	if j.Status == "todo" {
-		this.todo = append(this.todo, j)
+		this.todo[j.Name] = j
 		log.Debugf("ready to go: %s", j.Name)
 	}
 }

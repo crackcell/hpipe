@@ -21,9 +21,10 @@ package exec
 import (
 	"../../log"
 	"../../yafl/ast"
-	"bufio"
+	//"bufio"
 	"fmt"
-	"os/exec"
+	//"os/exec"
+	"time"
 )
 
 //===================================================================
@@ -51,41 +52,51 @@ func (this *ODPSExec) Setup(prop map[string]string) error {
 }
 
 func (this *ODPSExec) Run(job *ast.Job) (string, error) {
-	cmd := exec.Command("odpscmd",
-		"-u "+this.getEnv("odps_access_id"),
-		"-p "+this.getEnv("odps_access_key"),
-		"--project="+this.getEnv("odps_project"),
-		"--endpoint="+this.getEnv("odps_endpoint"),
-		"-e \""+this.cmd+"\"")
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Fatal(err)
-		return ast.FAIL, err
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		log.Fatal(err)
-		return ast.FAIL, err
-	}
-	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
-		return ast.FAIL, err
-	}
-	errscanner := bufio.NewScanner(stderr)
-	for errscanner.Scan() {
-		log.Info(errscanner.Text())
-	}
-	if err := errscanner.Err(); err != nil {
-		log.Fatalf("reading standard input: %v", err)
-	}
-	outscanner := bufio.NewScanner(stdout)
-	for outscanner.Scan() {
-		log.Info(outscanner.Text())
-	}
-	if err := outscanner.Err(); err != nil {
-		log.Fatalf("reading standard input: %v", err)
-	}
+	log.Debug(job.Name + " - odpscmd" +
+		" -u " + this.getEnv("odps_access_id") +
+		" -p " + this.getEnv("odps_access_key") +
+		" --project=" + this.getEnv("odps_project") +
+		" --endpoint=" + this.getEnv("odps_endpoint") +
+		" -e \"" + this.cmd + "\"")
+	time.Sleep(10000)
 	return ast.DONE, nil
+	/*
+		cmd := exec.Command("odpscmd",
+			"-u "+this.getEnv("odps_access_id"),
+			"-p "+this.getEnv("odps_access_key"),
+			"--project="+this.getEnv("odps_project"),
+			"--endpoint="+this.getEnv("odps_endpoint"),
+			"-e \""+this.cmd+"\"")
+		stdout, err := cmd.StdoutPipe()
+		if err != nil {
+			log.Fatal(err)
+			return ast.FAIL, err
+		}
+		stderr, err := cmd.StderrPipe()
+		if err != nil {
+			log.Fatal(err)
+			return ast.FAIL, err
+		}
+		if err := cmd.Start(); err != nil {
+			log.Fatal(err)
+			return ast.FAIL, err
+		}
+		errscanner := bufio.NewScanner(stderr)
+		for errscanner.Scan() {
+			log.Info(errscanner.Text())
+		}
+		if err := errscanner.Err(); err != nil {
+			log.Fatalf("reading standard input: %v", err)
+		}
+		outscanner := bufio.NewScanner(stdout)
+		for outscanner.Scan() {
+			log.Info(outscanner.Text())
+		}
+		if err := outscanner.Err(); err != nil {
+			log.Fatalf("reading standard input: %v", err)
+		}
+		return ast.DONE, nil
+	*/
 }
 
 //===================================================================
