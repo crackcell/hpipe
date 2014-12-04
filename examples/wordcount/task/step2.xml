@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<job>
+
+  <property>
+    <name>hpipe.job.name</name>
+    <value>step2</value>
+  </property>
+
+  <property>
+    <name>mapred.job.name</name>
+    <value>${hpipe.job.name}: ${today-27d}</value>
+  </property>
+
+  <property>
+    <name>hpipe.input.dir</name>
+    <value>/hpipe/wordcount/input/part-*</value>
+  </property>
+
+  <property>
+    <name>hpipe.output.dir</name>
+    <value>/hpipe/wordcount/step2</value>
+  </property>
+
+  <property>
+    <name>hpipe.mapper</name>
+    <value>examples/wordcount/task/step2/mapper.pl</value>
+  </property>
+
+  <property>
+    <name>hpipe.reducer</name>
+    <value>examples/wordcount/task/step2/reducer.pl</value>
+  </property>
+
+  <property>
+    <name>hpipe.file</name>
+    <value>
+      <array>
+        <item>examples/wordcount/task/step2/mapper.pl</item>
+        <item>examples/wordcount/task/step2/reducer.pl</item>
+      </array>
+    </value>
+  </property>
+
+</job>

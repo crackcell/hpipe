@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<flow name="join">
+
+  <node>
+    <name>join</name>
+    <resource>examples/join/task/join.xml</resource>
+  </node>
+
+</flow>

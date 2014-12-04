@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<job>
+
+  <property>
+    <name>hpipe.job.name</name>
+    <value>join</value>
+  </property>
+
+  <property>
+    <name>mapred.job.name</name>
+    <value>${hpipe.job.name}: ${today}</value>
+  </property>
+
+  <property>
+    <name>hpipe.smartflow.mi.inputs</name>
+    <value>pv,click</value>
+  </property>
+
+  <property>
+    <name>hpipe.smartflow.mi.pv.input.dir</name>
+    <value>/hpipe/join/pvlog/part-*</value>
+  </property>
+
+  <property>
+    <name>hpipe.smartflow.mi.pv.mapper</name>
+    <value>examples/join/task/pv_mapper.py</value>
+  </property>
+
+  <property>
+    <name>hpipe.smartflow.mi.click.input.dir</name>
+    <value>/hpipe/join/clicklog/part-*</value>
+  </property>
+
+  <property>
+    <name>hpipe.smartflow.mi.click.mapper</name>
+    <value>examples/join/task/click_mapper.py</value>
+  </property>
+
+  <property>
+    <name>hpipe.output.dir</name>
+    <value>/hpipe/join/output</value>
+  </property>
+
+  <property>
+    <name>hpipe.mapper</name>
+    <value>hpipe/smartflow/dataflow/multiple_input/mi_mapper.py</value>
+  </property>
+
+  <property>
+    <name>hpipe.reducer</name>
+    <value>examples/join/task/reducer.py</value>
+    <!--<value>cat</value>-->
+  </property>
+
+  <property>
+    <name>hpipe.file</name>
+    <value>
+      <array>
+        <item>hpipe/smartflow/dataflow/multiple_input/mi_mapper.py</item>
+        <item>hpipe/smartflow/dataflow/join/join_reducer.py</item>
+        <item>examples/join/task/pv_mapper.py</item>
+        <item>examples/join/task/click_mapper.py</item>
+        <item>examples/join/task/reducer.py</item>
+      </array>
+    </value>
+  </property>
+
+</job>
