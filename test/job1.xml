@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <job name="job1" type="odps">
-	<property>
-		<name>instance_id</name>
-		<value>job1-${date}</value>
-	</property>
+	<instance_id>job1-${date}</instance_id>
 	<property>
 		<name>access_id</name>
 		<value></value>

@@ -120,7 +120,6 @@ PRIMARY KEY(instance_id));`)
 func (this *SqliteDB) walkStep(s *ast.Step, f func(j *ast.Job) error) error {
 	for _, dep := range s.Dep {
 		if err := this.walkStep(dep, f); err != nil {
-			log.Fatalf("%v", err)
 			return err
 		}
 	}
@@ -163,9 +162,10 @@ func (this *SqliteDB) restoreJob(j *ast.Job) error {
 	case err == sql.ErrNoRows:
 	case err != nil:
 		log.Fatalf("%v", err)
+		return err
 	default:
 		log.Debugf("restore %s=%s", j.InstanceID, status)
 		j.Status = status
 	}
-	return err
+	return nil
 }

@@ -43,14 +43,14 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 		return "", fmt.Errorf("not valid job")
 	}
 	this.job = job
-	log.Debug(job.DebugString())
+	//log.Debug(job.DebugString())
 	cmdstr := "odpscmd -u " + this.getProp("access_id") +
 		" -p " + this.getProp("access_key") +
 		" --project=" + this.getProp("project") +
 		" --endpoint=" + this.getProp("endpoint") +
 		" -e " + this.getProp("cmd")
 	log.Debugf("cmd: %s", cmdstr)
-	exitcode, err := CmdExec(this.getProp("instance_id"), "odpscmd",
+	exitcode, err := CmdExec(job.InstanceID, "odpscmd",
 		"-u ", this.getProp("access_id"),
 		"-p ", this.getProp("access_key"),
 		"--project="+this.getProp("project"),
@@ -70,7 +70,6 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 //===================================================================
 
 var propNames []string = []string{
-	"instance_id",
 	"access_id",
 	"access_key",
 	"project",

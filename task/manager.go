@@ -39,9 +39,6 @@ func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
 	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
-	if err := ret.db.Open(); err != nil {
-		return nil, err
-	}
 	ret.exec = map[string]exec.Exec{
 		"odps": exec.NewODPSExec(),
 	}
@@ -61,7 +58,17 @@ type taskManager struct {
 
 func (this *taskManager) Run(flow *ast.Flow) error {
 	log.Debug("start to run")
+
 	this.flow = flow
+
+	if err := this.db.Open(); err != nil {
+		return err
+	}
+	defer this.db.Close()
+
+	if err := this.db.RestoreFlow(this.flow); err != nil {
+		return err
+	}
 
 	this.todo = make(map[string]*ast.Job)
 	this.scanStep(this.flow.Entry)
@@ -110,8 +117,9 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 			}
 		}
 
+		this.db.SaveFlow(this.flow)
 		this.todo = make(map[string]*ast.Job)
-		//this.scanStep(this.flow.Entry)
+		this.scanStep(this.flow.Entry)
 	}
 	return nil
 }
