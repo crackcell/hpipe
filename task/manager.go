@@ -37,6 +37,7 @@ type TaskManager interface {
 
 func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
+	ret.trys = make(map[string]int)
 	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
 	ret.exec = map[string]exec.Exec{
@@ -53,6 +54,7 @@ type taskManager struct {
 	flow *ast.Flow
 	exec map[string]exec.Exec
 	db   storage.DB
+	trys map[string]int
 	todo map[string]*ast.Job
 }
 
@@ -73,11 +75,6 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 	this.todo = make(map[string]*ast.Job)
 	this.scanStep(this.flow.Entry)
 	for len(this.todo) != 0 {
-		//log.Debugf("-------------------> todo len: %d", len(this.todo))
-		for k, v := range this.todo {
-			log.Debugf("todo: %s - %v", k, v)
-		}
-
 		jobCount := 0
 		ch := make(chan []string)
 		for _, job := range this.todo {
@@ -134,8 +131,12 @@ func (this *taskManager) scanStep(s *ast.Step) {
 }
 
 func (this *taskManager) scanJob(j *ast.Job) {
-	if j.Status == "todo" {
+	switch j.Status {
+	case "todo":
 		this.todo[j.Name] = j
-		log.Debugf("ready to go: %s", j.Name)
+		log.Debugf("ready to start: %s", j.Name)
+	case "fail":
+		this.todo[j.Name] = j
+		log.Debugf("ready to retry: %s", j.Name)
 	}
 }

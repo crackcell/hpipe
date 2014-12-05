@@ -40,7 +40,7 @@ type ODPSExec struct {
 
 func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 	if !validateJob(job) {
-		return "", fmt.Errorf("not valid job")
+		return ast.FAIL, fmt.Errorf("not valid job")
 	}
 	this.job = job
 	//log.Debug(job.DebugString())
@@ -79,8 +79,8 @@ var propNames []string = []string{
 
 func validateJob(job *ast.Job) bool {
 	for _, p := range propNames {
-		if _, ok := job.Prop[p]; !ok {
-			log.Fatalf("%s not found", p)
+		if v, ok := job.Prop[p]; !ok || len(v) == 0 {
+			log.Fatalf("%s not found or empty", p)
 			return false
 		}
 	}
