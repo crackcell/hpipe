@@ -1,5 +1,27 @@
 <?xml version="1.0"?>
-<job name="job2" type="hadoop">
-	<instance_id>job2-${date}</instance_id>
-	<var>mapred.job.name="test"</var>
+<job name="job2" type="odps">
+	<property>
+		<name>instance_id</name>
+		<value>job2-${date}</value>
+	</property>
+	<property>
+		<name>access_id</name>
+		<value></value>
+	</property>
+	<property>
+		<name>access_key</name>
+		<value></value>
+	</property>
+	<property>
+		<name>project</name>
+		<value></value>
+	</property>
+	<property>
+		<name>endpoint</name>
+		<value></value>
+	</property>
+	<property>
+		<name>cmd</name>
+		<value>select count(*) from tttt;</value>
+	</property>
 </job>

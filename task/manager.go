@@ -24,8 +24,7 @@ import (
 	"../yafl/ast"
 	"./exec"
 	"./storage"
-	"sync"
-	"time"
+	"fmt"
 )
 
 //===================================================================
@@ -46,11 +45,6 @@ func NewTaskManager() (TaskManager, error) {
 	ret.exec = map[string]exec.Exec{
 		"odps": exec.NewODPSExec(),
 	}
-	for _, e := range ret.exec {
-		if err := e.Setup(config.Env); err != nil {
-			return nil, err
-		}
-	}
 	return ret, nil
 }
 
@@ -68,32 +62,56 @@ type taskManager struct {
 func (this *taskManager) Run(flow *ast.Flow) error {
 	log.Debug("start to run")
 	this.flow = flow
+
+	this.todo = make(map[string]*ast.Job)
 	this.scanStep(this.flow.Entry)
 	for len(this.todo) != 0 {
-		var wg sync.WaitGroup
+		//log.Debugf("-------------------> todo len: %d", len(this.todo))
+		for k, v := range this.todo {
+			log.Debugf("todo: %s - %v", k, v)
+		}
+
+		jobCount := 0
+		ch := make(chan []string)
 		for _, job := range this.todo {
+			//log.Debugf("------------> run: %s", job.Name)
 			e, ok := this.exec[job.Type]
 			if !ok {
 				log.Fatalf("no exec for %s", job.Type)
 				continue
 			}
-			wg.Add(1)
+
+			jobCount++
+
 			go func(j *ast.Job, e exec.Exec) {
-				defer wg.Done()
-				/*
-					status, err := e.Run(job)
-					if err != nil {
-						log.Fatalf("job failed: %v", err)
-						job.Status = ast.FAIL
-					}
-					job.Status = status
-				*/
-				time.Sleep(10000)
-				status := "done"
-				log.Debugf("status: %s", status)
+				//log.Debugf("------------> run in go: %s", j.Name)
+				status, err := e.Run(j)
+				if err != nil {
+					log.Fatalf("job failed: %v", err)
+					j.Status = ast.FAIL
+				}
+				ch <- []string{j.Name, status}
 			}(job, e)
 		}
-		wg.Wait()
+
+		for jobCount > 0 {
+			select {
+			case ret, ok := <-ch:
+				if len(ret) != 2 {
+					panic(fmt.Errorf("invalid return"))
+				}
+				job, ok := this.todo[ret[0]]
+				if !ok {
+					panic(fmt.Errorf("no job"))
+				}
+				job.Status = ret[1]
+				jobCount--
+				//log.Debugf("%s <--- %s", job.Name, job.Status)
+			}
+		}
+
+		this.todo = make(map[string]*ast.Job)
+		//this.scanStep(this.flow.Entry)
 	}
 	return nil
 }

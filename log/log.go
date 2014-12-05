@@ -136,19 +136,27 @@ func (this *levelLogger) getLogger(level int) underlayLogger {
 	return l
 }
 
-func (this *levelLogger) print(level int, v ...interface{}) {
+func (this *levelLogger) print(level int, verbose bool, v ...interface{}) {
 	l := this.getLogger(level)
 	this.mu.Lock()
 	defer this.mu.Unlock()
-	v = append([]interface{}{getCallerInfo(this.callerpath) + ": "}, v...)
+	if verbose {
+		v = append([]interface{}{getCallerMoreInfo(this.callerpath) + ": "}, v...)
+	} else {
+		v = append([]interface{}{getCallerInfo(this.callerpath) + ": "}, v...)
+	}
 	l.Print(v...)
 }
 
-func (this *levelLogger) printf(level int, fmt string, v ...interface{}) {
+func (this *levelLogger) printf(level int, verbose bool, fmt string, v ...interface{}) {
 	l := this.getLogger(level)
 	this.mu.Lock()
 	defer this.mu.Unlock()
-	fmt = getCallerInfo(this.callerpath) + ": " + fmt
+	if verbose {
+		fmt = getCallerMoreInfo(this.callerpath) + ": " + fmt
+	} else {
+		fmt = getCallerInfo(this.callerpath) + ": " + fmt
+	}
 	l.Printf(fmt, v...)
 }
 
@@ -201,54 +209,59 @@ func Fatalf(fmt string, v ...interface{}) {
 }
 
 func (this *levelLogger) Debug(v ...interface{}) {
-	this.print(LOG_LEVEL_DEBUG, v...)
+	this.print(LOG_LEVEL_DEBUG, true, v...)
 }
 
 func (this *levelLogger) Debugf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_DEBUG, fmt, v...)
+	this.printf(LOG_LEVEL_DEBUG, true, fmt, v...)
 }
 
 func (this *levelLogger) Trace(v ...interface{}) {
-	this.print(LOG_LEVEL_TRACE, v...)
+	this.print(LOG_LEVEL_TRACE, true, v...)
 }
 
 func (this *levelLogger) Tracef(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_TRACE, fmt, v...)
+	this.printf(LOG_LEVEL_TRACE, true, fmt, v...)
 }
 
 func (this *levelLogger) Info(v ...interface{}) {
-	this.print(LOG_LEVEL_INFO, v...)
+	this.print(LOG_LEVEL_INFO, false, v...)
 }
 
 func (this *levelLogger) Infof(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_INFO, fmt, v...)
+	this.printf(LOG_LEVEL_INFO, false, fmt, v...)
 }
 
 func (this *levelLogger) Warn(v ...interface{}) {
-	this.print(LOG_LEVEL_WARN, v...)
+	this.print(LOG_LEVEL_WARN, true, v...)
 }
 
 func (this *levelLogger) Warnf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_WARN, fmt, v...)
+	this.printf(LOG_LEVEL_WARN, true, fmt, v...)
 }
 
 func (this *levelLogger) Error(v ...interface{}) {
-	this.print(LOG_LEVEL_ERROR, v...)
+	this.print(LOG_LEVEL_ERROR, true, v...)
 }
 
 func (this *levelLogger) Errorf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_ERROR, fmt, v...)
+	this.printf(LOG_LEVEL_ERROR, true, fmt, v...)
 }
 
 func (this *levelLogger) Fatal(v ...interface{}) {
-	this.print(LOG_LEVEL_FATAL, v...)
+	this.print(LOG_LEVEL_FATAL, true, v...)
 }
 
 func (this *levelLogger) Fatalf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_FATAL, fmt, v...)
+	this.printf(LOG_LEVEL_FATAL, true, fmt, v...)
 }
 
 func getCallerInfo(callpath int) string {
+	pc, _, _, _ := runtime.Caller(callpath)
+	return shorten(runtime.FuncForPC(pc).Name())
+}
+
+func getCallerMoreInfo(callpath int) string {
 	pc, file, line, ok := runtime.Caller(callpath)
 	if !ok {
 		file = "???"

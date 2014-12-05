@@ -1,19 +1,3 @@
 <flow name="testflow">
 	<entry>step1.xml</entry>
-	<property>
-		<name>odps_access_id</name>
-		<value>testaccessid</value>
-	</property>
-	<property>
-		<name>odps_access_key</name>
-		<value>testaccessid</value>
-	</property>
-	<property>
-		<name>odps_project</name>
-		<value>test_proj</value>
-	</property>
-	<property>
-		<name>odps_endpoint</name>
-		<value>test_endpoint</value>
-	</property>
 </flow>

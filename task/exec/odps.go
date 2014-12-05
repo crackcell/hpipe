@@ -21,10 +21,8 @@ package exec
 import (
 	"../../log"
 	"../../yafl/ast"
-	//"bufio"
 	"fmt"
-	//"os/exec"
-	"time"
+	_ "time"
 )
 
 //===================================================================
@@ -36,67 +34,35 @@ func NewODPSExec() Exec {
 }
 
 type ODPSExec struct {
-	prop map[string]string
-	cmd  string
-}
-
-func (this *ODPSExec) Setup(prop map[string]string) error {
-	for _, p := range propNames {
-		if _, ok := prop[p]; !ok {
-			log.Fatalf("%s not found", p)
-			return fmt.Errorf("%s not found", p)
-		}
-	}
-	this.prop = prop
-	return nil
+	job *ast.Job
+	cmd string
 }
 
 func (this *ODPSExec) Run(job *ast.Job) (string, error) {
-	log.Debug(job.Name + " - odpscmd" +
-		" -u " + this.getEnv("odps_access_id") +
-		" -p " + this.getEnv("odps_access_key") +
-		" --project=" + this.getEnv("odps_project") +
-		" --endpoint=" + this.getEnv("odps_endpoint") +
-		" -e \"" + this.cmd + "\"")
-	time.Sleep(100000)
+	if !validateJob(job) {
+		return "", fmt.Errorf("not valid job")
+	}
+	this.job = job
+	log.Debug(job.DebugString())
+	cmdstr := "odpscmd -u " + this.getProp("access_id") +
+		" -p " + this.getProp("access_key") +
+		" --project=" + this.getProp("project") +
+		" --endpoint=" + this.getProp("endpoint") +
+		" -e " + this.getProp("cmd")
+	log.Debugf("cmd: %s", cmdstr)
+	exitcode, err := CmdExec(this.getProp("instance_id"), "odpscmd",
+		"-u ", this.getProp("access_id"),
+		"-p ", this.getProp("access_key"),
+		"--project="+this.getProp("project"),
+		"--endpoint="+this.getProp("endpoint"),
+		"-e", this.getProp("cmd"))
+	if err != nil {
+		return ast.FAIL, err
+	}
+	if exitcode != 0 {
+		return ast.FAIL, nil
+	}
 	return ast.DONE, nil
-	/*
-		cmd := exec.Command("odpscmd",
-			"-u "+this.getEnv("odps_access_id"),
-			"-p "+this.getEnv("odps_access_key"),
-			"--project="+this.getEnv("odps_project"),
-			"--endpoint="+this.getEnv("odps_endpoint"),
-			"-e \""+this.cmd+"\"")
-		stdout, err := cmd.StdoutPipe()
-		if err != nil {
-			log.Fatal(err)
-			return ast.FAIL, err
-		}
-		stderr, err := cmd.StderrPipe()
-		if err != nil {
-			log.Fatal(err)
-			return ast.FAIL, err
-		}
-		if err := cmd.Start(); err != nil {
-			log.Fatal(err)
-			return ast.FAIL, err
-		}
-		errscanner := bufio.NewScanner(stderr)
-		for errscanner.Scan() {
-			log.Info(errscanner.Text())
-		}
-		if err := errscanner.Err(); err != nil {
-			log.Fatalf("reading standard input: %v", err)
-		}
-		outscanner := bufio.NewScanner(stdout)
-		for outscanner.Scan() {
-			log.Info(outscanner.Text())
-		}
-		if err := outscanner.Err(); err != nil {
-			log.Fatalf("reading standard input: %v", err)
-		}
-		return ast.DONE, nil
-	*/
 }
 
 //===================================================================
@@ -104,14 +70,26 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 //===================================================================
 
 var propNames []string = []string{
-	"odps_access_id",
-	"odps_access_key",
-	"odps_project",
-	"odps_endpoint",
+	"instance_id",
+	"access_id",
+	"access_key",
+	"project",
+	"endpoint",
+	"cmd",
 }
 
-func (this *ODPSExec) getEnv(key string) string {
-	v, ok := this.prop[key]
+func validateJob(job *ast.Job) bool {
+	for _, p := range propNames {
+		if _, ok := job.Prop[p]; !ok {
+			log.Fatalf("%s not found", p)
+			return false
+		}
+	}
+	return true
+}
+
+func (this *ODPSExec) getProp(key string) string {
+	v, ok := this.job.Prop[key]
 	if !ok {
 		panic(fmt.Errorf("no prop for %s", key))
 	}

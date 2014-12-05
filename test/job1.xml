@@ -1,8 +1,27 @@
 <?xml version="1.0"?>
 <job name="job1" type="odps">
-	<instance_id>job1-${date}</instance_id>
+	<property>
+		<name>instance_id</name>
+		<value>job1-${date}</value>
+	</property>
+	<property>
+		<name>access_id</name>
+		<value></value>
+	</property>
+	<property>
+		<name>access_key</name>
+		<value></value>
+	</property>
+	<property>
+		<name>project</name>
+		<value></value>
+	</property>
+	<property>
+		<name>endpoint</name>
+		<value></value>
+	</property>
 	<property>
 		<name>cmd</name>
-		<value>select count(*) from test where ds=${date};</value>
+		<value>select count(*) from xxx;</value>
 	</property>
 </job>

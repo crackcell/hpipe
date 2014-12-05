@@ -28,7 +28,6 @@ import (
 //===================================================================
 
 type Exec interface {
-	Setup(prop map[string]string) error
 	Run(job *ast.Job) (string, error) // ret_status, error
 }
 
