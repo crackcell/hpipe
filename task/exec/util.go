@@ -19,10 +19,12 @@
 package exec
 
 import (
+	"../../config"
 	"../../log"
 	"bufio"
 	"fmt"
 	"os/exec"
+	"strings"
 	"syscall"
 )
 
@@ -94,8 +96,38 @@ func CmdExec(jobname, name string, arg ...string) (int, error) {
 
 func GetProp(m map[string]string, key string) string {
 	v, ok := m[key]
+	if ok {
+		return v
+	}
+	v, ok = config.Env[key]
 	if !ok {
 		panic(fmt.Errorf("no prop for %s", key))
 	}
 	return v
+}
+
+func ExistProp(m map[string]string, key string) bool {
+	_, ok1 := m[key]
+	_, ok2 := config.Env[key]
+	return ok1 || ok2
+}
+
+func LogArgList(cmd string, args ...string) {
+	var argstr string
+	for _, arg := range args {
+		argstr += " " + arg
+	}
+	log.Debugf("command: %s %s", cmd, argstr)
+}
+
+func PrepareArg(prop map[string]string, propname, argname string) []string {
+	p := []string{}
+	for _, v := range strings.Split(GetProp(prop, propname), ",") {
+		p = append(p, strings.Trim(v, " "))
+	}
+	a := []string{}
+	for _, v := range p {
+		a = append(a, argname, v)
+	}
+	return a
 }

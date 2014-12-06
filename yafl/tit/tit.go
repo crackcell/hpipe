@@ -19,7 +19,7 @@
 package tit
 
 import (
-	"../../log"
+	_ "../../log"
 	"./ast"
 	"./eval"
 	"./lexer"
@@ -85,6 +85,6 @@ func (this *Tit) assembleStmt() string {
 		src += s + ";"
 	}
 	src = strings.Trim(src, ";")
-	log.Debugf("src: %s", src)
+	//log.Debugf("src: %s", src)
 	return src
 }

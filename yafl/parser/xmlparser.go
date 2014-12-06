@@ -48,7 +48,7 @@ type XMLFlow struct {
 	Name    string    `xml:"name,attr"`
 	Entry   string    `xml:"entry"`
 	Var     []string  `xml:"var"`
-	Prop    []XMLProp `xml:"property"`
+	Env     []XMLProp `xml:"env"`
 }
 
 type XMLStep struct {
@@ -105,11 +105,11 @@ func (this *xmlParser) ParseFile(filename string,
 	flow := ast.NewFlow()
 	flow.Name = f.Name
 
-	for _, env := range f.Prop {
+	for _, env := range f.Env {
 		config.Env[env.Name] = env.Value
 	}
 
-	log.Debug(propToVar(config.Env))
+	//log.Debug(propToVar(config.Env))
 	s, err := parseStep(f.Entry, workpath, nil)
 	if err != nil {
 		return nil, err
@@ -316,6 +316,5 @@ func propToVar(prop map[string]string) map[string]string {
 	for k, v := range prop {
 		va[k] = `"` + v + `"`
 	}
-	log.Debug(va)
 	return va
 }

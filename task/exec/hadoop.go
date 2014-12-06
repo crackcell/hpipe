@@ -22,7 +22,6 @@ import (
 	"../../log"
 	"../../yafl/ast"
 	"fmt"
-	"strings"
 )
 
 //===================================================================
@@ -34,9 +33,11 @@ func NewHadoopExec() Exec {
 }
 
 type HadoopExec struct {
-	job  *ast.Job
-	jar  []string
-	file []string
+	job    *ast.Job
+	jar    []string
+	file   []string
+	input  []string
+	output []string
 }
 
 func (this *HadoopExec) Run(job *ast.Job) (string, error) {
@@ -44,14 +45,12 @@ func (this *HadoopExec) Run(job *ast.Job) (string, error) {
 	if !this.valid() {
 		return ast.FAIL, fmt.Errorf("not valid job")
 	}
-	if err := this.setup(); err != nil {
-		return ast.FAIL, err
-	}
-	cmdstr := "hadoop" + "jar" +
-		"/home/a/lib/hadoop/default/hadoop-examples-*.jar" +
-		"grep input output 'dfs[a-z.]+'"
-	log.Debugf("cmd: %s", cmdstr)
-	exitcode, err := CmdExec(job.InstanceID, "hadoop")
+
+	args := this.prepareArgList()
+
+	LogArgList("hadoop", args...)
+
+	exitcode, err := CmdExec(job.InstanceID, "hadoop", args...)
 	if err != nil || exitcode != 0 {
 		return ast.FAIL, err
 	}
@@ -62,28 +61,29 @@ func (this *HadoopExec) Run(job *ast.Job) (string, error) {
 // Private
 //===================================================================
 
-func (this *HadoopExec) setup() error {
-	for _, file := range strings.Split(GetProp(this.job.Prop, "file"), ",") {
-		file = strings.Trim(file, " ")
-		this.file = append(this.file, file)
-	}
-	for _, jar := range strings.Split(GetProp(this.job.Prop, "jar"), ",") {
-		jar = strings.Trim(jar, " ")
-		this.file = append(this.jar, jar)
-	}
-	return nil
-}
-
 var hadoopPropNames []string = []string{
 	"hadoop_home",
 }
 
 func (this *HadoopExec) valid() bool {
 	for _, p := range hadoopPropNames {
-		if v, ok := this.job.Prop[p]; !ok || len(v) == 0 {
+		if !ExistProp(this.job.Prop, p) {
 			log.Fatalf("%s not found or empty", p)
 			return false
 		}
 	}
 	return true
+}
+
+func (this *HadoopExec) prepareArgList() []string {
+	var args []string
+
+	args = append(args, PrepareArg(this.job.Prop, "jar", "jar")...)
+	args = append(args, PrepareArg(this.job.Prop, "file", "-file")...)
+	args = append(args, PrepareArg(this.job.Prop, "mapper", "-mapper")...)
+	args = append(args, PrepareArg(this.job.Prop, "reducer", "-reducer")...)
+	args = append(args, PrepareArg(this.job.Prop, "input", "-input")...)
+	args = append(args, PrepareArg(this.job.Prop, "output", "-output")...)
+
+	return args
 }

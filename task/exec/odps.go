@@ -74,7 +74,7 @@ var odpsPropNames []string = []string{
 
 func (this *ODPSExec) valid() bool {
 	for _, p := range odpsPropNames {
-		if v, ok := this.job.Prop[p]; !ok || len(v) == 0 {
+		if !ExistProp(this.job.Prop, p) {
 			log.Fatalf("%s not found or empty", p)
 			return false
 		}

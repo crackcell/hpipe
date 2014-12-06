@@ -6,6 +6,14 @@
 		<value>/home/a/lib/hadoop/default/contrib/streaming/hadoop-streaming-1.2.1.jar</value>
 	</property>
 	<property>
+		<name>input</name>
+		<value>/example/wordcount/input</value>
+	</property>
+	<property>
+		<name>output</name>
+		<value>/example/wordcount/output</value>
+	</property>
+	<property>
 		<name>file</name>
 		<value>mapper.py,reducer.py</value>
 	</property>
