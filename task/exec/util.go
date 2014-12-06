@@ -120,14 +120,48 @@ func LogArgList(cmd string, args ...string) {
 	log.Debugf("command: %s %s", cmd, argstr)
 }
 
-func PrepareArg(prop map[string]string, propname, argname string) []string {
+func PrepareArgList(prop map[string]string, args [][]string) []string {
+	var str []string
+	for _, a := range args {
+		if len(a) != 4 {
+			panic(fmt.Errorf("not valid args"))
+		}
+		str = append(str, PrepareArg(prop, a[0], a[1], a[2] == "s", a[3] == "s")...)
+	}
+	return str
+}
+
+func PrepareArg(prop map[string]string, propname, argname string,
+	separate, split bool) []string {
+
 	p := []string{}
-	for _, v := range strings.Split(GetProp(prop, propname), ",") {
-		p = append(p, strings.Trim(v, " "))
+	var t []string
+	if split {
+		t = strings.Split(GetProp(prop, propname), ",")
+	} else {
+		t = append(t, GetProp(prop, propname))
+	}
+
+	for _, v := range t {
+		tmp := strings.Trim(v, " ")
+		if strings.Contains(tmp, " ") {
+			tmp = `"` + tmp + `"`
+		}
+		p = append(p, tmp)
 	}
 	a := []string{}
 	for _, v := range p {
 		a = append(a, argname, v)
 	}
 	return a
+}
+
+func ValidProp(prop map[string]string, names []string) bool {
+	for _, p := range names {
+		if !ExistProp(prop, p) {
+			log.Fatalf("%s not found or empty", p)
+			return false
+		}
+	}
+	return true
 }

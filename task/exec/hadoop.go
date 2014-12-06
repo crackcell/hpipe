@@ -19,7 +19,8 @@
 package exec
 
 import (
-	"../../log"
+	"../../../hpipe"
+	_ "../../log"
 	"../../yafl/ast"
 	"fmt"
 )
@@ -33,28 +34,24 @@ func NewHadoopExec() Exec {
 }
 
 type HadoopExec struct {
-	job    *ast.Job
-	jar    []string
-	file   []string
-	input  []string
-	output []string
+	job *ast.Job
 }
 
 func (this *HadoopExec) Run(job *ast.Job) (string, error) {
 	this.job = job
-	if !this.valid() {
-		return ast.FAIL, fmt.Errorf("not valid job")
+	if !ValidProp(this.job.Prop, hadoopPropNames) {
+		return hpipe.FAIL, fmt.Errorf("not valid job")
 	}
 
-	args := this.prepareArgList()
-
+	args := PrepareArgList(this.job.Prop, hadoopArgs)
 	LogArgList("hadoop", args...)
 
 	exitcode, err := CmdExec(job.InstanceID, "hadoop", args...)
 	if err != nil || exitcode != 0 {
-		return ast.FAIL, err
+		return hpipe.FAIL, err
 	}
-	return ast.DONE, nil
+
+	return hpipe.DONE, nil
 }
 
 //===================================================================
@@ -65,25 +62,11 @@ var hadoopPropNames []string = []string{
 	"hadoop_home",
 }
 
-func (this *HadoopExec) valid() bool {
-	for _, p := range hadoopPropNames {
-		if !ExistProp(this.job.Prop, p) {
-			log.Fatalf("%s not found or empty", p)
-			return false
-		}
-	}
-	return true
-}
-
-func (this *HadoopExec) prepareArgList() []string {
-	var args []string
-
-	args = append(args, PrepareArg(this.job.Prop, "jar", "jar")...)
-	args = append(args, PrepareArg(this.job.Prop, "file", "-file")...)
-	args = append(args, PrepareArg(this.job.Prop, "mapper", "-mapper")...)
-	args = append(args, PrepareArg(this.job.Prop, "reducer", "-reducer")...)
-	args = append(args, PrepareArg(this.job.Prop, "input", "-input")...)
-	args = append(args, PrepareArg(this.job.Prop, "output", "-output")...)
-
-	return args
+var hadoopArgs [][]string = [][]string{
+	[]string{"jar", "jar", "s", "s"},
+	[]string{"file", "-file", "s", "s"},
+	[]string{"mapper", "-mapper", "s", "s"},
+	[]string{"reducer", "-reducer", "s", "s"},
+	[]string{"input", "-input", "s", "s"},
+	[]string{"output", "-output", "s", "s"},
 }

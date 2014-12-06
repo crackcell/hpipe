@@ -19,6 +19,7 @@
 package ast
 
 import (
+	"../../../hpipe"
 	titast "../tit/ast"
 	"fmt"
 	"strings"
@@ -27,13 +28,6 @@ import (
 //===================================================================
 // Public APIs
 //===================================================================
-
-const (
-	TODO = "todo"
-	RUN  = "run"
-	DONE = "done"
-	FAIL = "fail"
-)
 
 type Flow struct {
 	Name  string
@@ -72,7 +66,7 @@ func (this *Flow) DebugString() string {
 func NewStep() *Step {
 	return &Step{
 		Var:    make(map[string]*titast.Stmt),
-		Status: TODO,
+		Status: hpipe.TODO,
 	}
 }
 
@@ -125,7 +119,7 @@ func NewJob() *Job {
 	return &Job{
 		Var:    make(map[string]*titast.Stmt),
 		Prop:   make(map[string]string),
-		Status: TODO,
+		Status: hpipe.TODO,
 	}
 }
 

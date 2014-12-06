@@ -19,6 +19,7 @@
 package task
 
 import (
+	"../../hpipe"
 	"../config"
 	"../log"
 	"../yafl/ast"
@@ -101,7 +102,7 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 				status, err := e.Run(j)
 				if err != nil {
 					log.Fatalf("job failed: %v", err)
-					j.Status = ast.FAIL
+					j.Status = hpipe.FAIL
 				}
 				ch <- []string{j.Name, status}
 			}(job, e)

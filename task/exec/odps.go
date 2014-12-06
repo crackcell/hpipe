@@ -19,10 +19,9 @@
 package exec
 
 import (
-	"../../log"
+	"../../../hpipe"
 	"../../yafl/ast"
 	"fmt"
-	_ "time"
 )
 
 //===================================================================
@@ -39,25 +38,19 @@ type ODPSExec struct {
 
 func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 	this.job = job
-	if !this.valid() {
-		return ast.FAIL, fmt.Errorf("not valid job")
+	if !ValidProp(this.job.Prop, odpsPropNames) {
+		return hpipe.FAIL, fmt.Errorf("not valid job")
 	}
-	cmdstr := "odpscmd -u " + GetProp(this.job.Prop, "access_id") +
-		" -p " + GetProp(this.job.Prop, "access_key") +
-		" --project=" + GetProp(this.job.Prop, "project") +
-		" --endpoint=" + GetProp(this.job.Prop, "endpoint") +
-		" -e " + GetProp(this.job.Prop, "cmd")
-	log.Debugf("cmd: %s", cmdstr)
-	exitcode, err := CmdExec(job.InstanceID, "odpscmd",
-		"-u ", GetProp(this.job.Prop, "access_id"),
-		"-p ", GetProp(this.job.Prop, "access_key"),
-		"--project="+GetProp(this.job.Prop, "project"),
-		"--endpoint="+GetProp(this.job.Prop, "endpoint"),
-		"-e", GetProp(this.job.Prop, "cmd"))
+
+	args := PrepareArgList(this.job.Prop, odpsArgs)
+	LogArgList("odpscmd", args...)
+
+	exitcode, err := CmdExec(job.InstanceID, "odpscmd", args...)
 	if err != nil || exitcode != 0 {
-		return ast.FAIL, err
+		return hpipe.FAIL, err
 	}
-	return ast.DONE, nil
+
+	return hpipe.DONE, nil
 }
 
 //===================================================================
@@ -71,13 +64,10 @@ var odpsPropNames []string = []string{
 	"endpoint",
 	"cmd",
 }
-
-func (this *ODPSExec) valid() bool {
-	for _, p := range odpsPropNames {
-		if !ExistProp(this.job.Prop, p) {
-			log.Fatalf("%s not found or empty", p)
-			return false
-		}
-	}
-	return true
+var odpsArgs [][]string = [][]string{
+	[]string{"access_id", "-u", "s", "n"},
+	[]string{"access_key", "-p", "s", "n"},
+	[]string{"project", "--project=", "c", "n"},
+	[]string{"endpoint", "--endpoint=", "c", "n"},
+	[]string{"cmd", "-e", "s", "n"},
 }
