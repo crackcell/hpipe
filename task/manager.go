@@ -31,12 +31,17 @@ import (
 // Public APIs
 //===================================================================
 
+const (
+	DEFAULT_MAX_TRYS = 3
+)
+
 type TaskManager interface {
 	Run(flow *ast.Flow) error
 }
 
 func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
+	ret.maxTrys = DEFAULT_MAX_TRYS
 	ret.trys = make(map[string]int)
 	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
@@ -52,11 +57,12 @@ func NewTaskManager() (TaskManager, error) {
 //===================================================================
 
 type taskManager struct {
-	flow *ast.Flow
-	exec map[string]exec.Exec
-	db   storage.DB
-	trys map[string]int
-	todo map[string]*ast.Job
+	flow    *ast.Flow
+	exec    map[string]exec.Exec
+	db      storage.DB
+	maxTrys int
+	trys    map[string]int
+	todo    map[string]*ast.Job
 }
 
 func (this *taskManager) Run(flow *ast.Flow) error {
@@ -79,7 +85,6 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 		jobCount := 0
 		ch := make(chan []string)
 		for _, job := range this.todo {
-			//log.Debugf("------------> run: %s", job.Name)
 			e, ok := this.exec[job.Type]
 			if !ok {
 				log.Fatalf("no exec for %s", job.Type)
@@ -88,8 +93,11 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 
 			jobCount++
 
+			if trys, ok := this.trys[job.InstanceID]; ok {
+				this.trys[job.InstanceID] = trys + 1
+			} // no need to put init value which is done in scanjob
+
 			go func(j *ast.Job, e exec.Exec) {
-				//log.Debugf("------------> run in go: %s", j.Name)
 				status, err := e.Run(j)
 				if err != nil {
 					log.Fatalf("job failed: %v", err)
@@ -111,7 +119,6 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 				}
 				job.Status = ret[1]
 				jobCount--
-				//log.Debugf("%s <--- %s", job.Name, job.Status)
 			}
 		}
 
@@ -132,6 +139,15 @@ func (this *taskManager) scanStep(s *ast.Step) {
 }
 
 func (this *taskManager) scanJob(j *ast.Job) {
+	if trys, ok := this.trys[j.InstanceID]; ok {
+		if trys >= this.maxTrys {
+			log.Fatalf("<%s> reaches max trys %d", j.InstanceID,
+				this.maxTrys)
+			return
+		}
+	} else {
+		this.trys[j.InstanceID] = 0
+	}
 	switch j.Status {
 	case "todo":
 		this.todo[j.Name] = j
