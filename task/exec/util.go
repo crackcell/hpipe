@@ -91,3 +91,11 @@ func CmdExec(jobname, name string, arg ...string) (int, error) {
 	}
 	return 0, err
 }
+
+func GetProp(m map[string]string, key string) string {
+	v, ok := m[key]
+	if !ok {
+		panic(fmt.Errorf("no prop for %s", key))
+	}
+	return v
+}

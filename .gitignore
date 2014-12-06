@@ -39,3 +39,4 @@ doc/_build
 conf/hpipe.env
 
 *.db
+*.db-journal

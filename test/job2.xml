@@ -1,24 +1,20 @@
 <?xml version="1.0"?>
-<job name="job2" type="odps">
+<job name="job2" type="hadoop">
 	<instance_id>job2-${date}</instance_id>
 	<property>
-		<name>access_id</name>
-		<value></value>
+		<name>jar</name>
+		<value>/home/a/lib/hadoop/default/contrib/streaming/hadoop-streaming-1.2.1.jar</value>
 	</property>
 	<property>
-		<name>access_key</name>
-		<value></value>
+		<name>file</name>
+		<value>mapper.py,reducer.py</value>
 	</property>
 	<property>
-		<name>project</name>
-		<value></value>
+		<name>mapper</name>
+		<value>mapper.py</value>
 	</property>
 	<property>
-		<name>endpoint</name>
-		<value></value>
-	</property>
-	<property>
-		<name>cmd</name>
-		<value>select count(*) from tttt;</value>
+		<name>reducer</name>
+		<value>reducer.py</value>
 	</property>
 </job>

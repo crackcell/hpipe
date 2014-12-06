@@ -10,9 +10,9 @@
 /**
  *
  *
- * @file odps.go
+ * @file hadoop.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Fri Nov 28 16:57:33 2014
+ * @date Sat Dec  6 15:19:43 2014
  *
  **/
 
@@ -22,38 +22,36 @@ import (
 	"../../log"
 	"../../yafl/ast"
 	"fmt"
-	_ "time"
+	"strings"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-func NewODPSExec() Exec {
-	return new(ODPSExec)
+func NewHadoopExec() Exec {
+	return new(HadoopExec)
 }
 
-type ODPSExec struct {
-	job *ast.Job
+type HadoopExec struct {
+	job  *ast.Job
+	jar  []string
+	file []string
 }
 
-func (this *ODPSExec) Run(job *ast.Job) (string, error) {
+func (this *HadoopExec) Run(job *ast.Job) (string, error) {
 	this.job = job
 	if !this.valid() {
 		return ast.FAIL, fmt.Errorf("not valid job")
 	}
-	cmdstr := "odpscmd -u " + GetProp(this.job.Prop, "access_id") +
-		" -p " + GetProp(this.job.Prop, "access_key") +
-		" --project=" + GetProp(this.job.Prop, "project") +
-		" --endpoint=" + GetProp(this.job.Prop, "endpoint") +
-		" -e " + GetProp(this.job.Prop, "cmd")
+	if err := this.setup(); err != nil {
+		return ast.FAIL, err
+	}
+	cmdstr := "hadoop" + "jar" +
+		"/home/a/lib/hadoop/default/hadoop-examples-*.jar" +
+		"grep input output 'dfs[a-z.]+'"
 	log.Debugf("cmd: %s", cmdstr)
-	exitcode, err := CmdExec(job.InstanceID, "odpscmd",
-		"-u ", GetProp(this.job.Prop, "access_id"),
-		"-p ", GetProp(this.job.Prop, "access_key"),
-		"--project="+GetProp(this.job.Prop, "project"),
-		"--endpoint="+GetProp(this.job.Prop, "endpoint"),
-		"-e", GetProp(this.job.Prop, "cmd"))
+	exitcode, err := CmdExec(job.InstanceID, "hadoop")
 	if err != nil || exitcode != 0 {
 		return ast.FAIL, err
 	}
@@ -64,16 +62,24 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 // Private
 //===================================================================
 
-var odpsPropNames []string = []string{
-	"access_id",
-	"access_key",
-	"project",
-	"endpoint",
-	"cmd",
+func (this *HadoopExec) setup() error {
+	for _, file := range strings.Split(GetProp(this.job.Prop, "file"), ",") {
+		file = strings.Trim(file, " ")
+		this.file = append(this.file, file)
+	}
+	for _, jar := range strings.Split(GetProp(this.job.Prop, "jar"), ",") {
+		jar = strings.Trim(jar, " ")
+		this.file = append(this.jar, jar)
+	}
+	return nil
 }
 
-func (this *ODPSExec) valid() bool {
-	for _, p := range odpsPropNames {
+var hadoopPropNames []string = []string{
+	"hadoop_home",
+}
+
+func (this *HadoopExec) valid() bool {
+	for _, p := range hadoopPropNames {
 		if v, ok := this.job.Prop[p]; !ok || len(v) == 0 {
 			log.Fatalf("%s not found or empty", p)
 			return false
