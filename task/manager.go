@@ -47,7 +47,7 @@ func NewTaskManager() (TaskManager, error) {
 	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
 	ret.exec = map[string]exec.Exec{
-		"odps":   exec.NewODPSExec(),
+		"odps":   exec.NewOdpsExec(),
 		"hadoop": exec.NewHadoopExec(),
 	}
 	return ret, nil

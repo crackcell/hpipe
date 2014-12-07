@@ -28,15 +28,19 @@ import (
 // Public APIs
 //===================================================================
 
-func NewODPSExec() Exec {
-	return new(ODPSExec)
+func NewOdpsExec() Exec {
+	return new(odpsExec)
 }
 
-type ODPSExec struct {
+//===================================================================
+// Private
+//===================================================================
+
+type odpsExec struct {
 	job *ast.Job
 }
 
-func (this *ODPSExec) Run(job *ast.Job) (string, error) {
+func (this *odpsExec) Run(job *ast.Job) (string, error) {
 	this.job = job
 	if !ValidProp(this.job.Prop, odpsPropNames) {
 		return hpipe.FAIL, fmt.Errorf("not valid job")
@@ -52,10 +56,6 @@ func (this *ODPSExec) Run(job *ast.Job) (string, error) {
 
 	return hpipe.DONE, nil
 }
-
-//===================================================================
-// Private
-//===================================================================
 
 var odpsPropNames []string = []string{
 	"access_id",

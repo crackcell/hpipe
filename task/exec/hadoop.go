@@ -30,14 +30,18 @@ import (
 //===================================================================
 
 func NewHadoopExec() Exec {
-	return new(HadoopExec)
+	return new(hadoopExec)
 }
 
-type HadoopExec struct {
+//===================================================================
+// Private
+//===================================================================
+
+type hadoopExec struct {
 	job *ast.Job
 }
 
-func (this *HadoopExec) Run(job *ast.Job) (string, error) {
+func (this *hadoopExec) Run(job *ast.Job) (string, error) {
 	this.job = job
 	if !ValidProp(this.job.Prop, hadoopPropNames) {
 		return hpipe.FAIL, fmt.Errorf("not valid job")
@@ -53,10 +57,6 @@ func (this *HadoopExec) Run(job *ast.Job) (string, error) {
 
 	return hpipe.DONE, nil
 }
-
-//===================================================================
-// Private
-//===================================================================
 
 var hadoopPropNames []string = []string{
 	"hadoop_home",
