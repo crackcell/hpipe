@@ -65,9 +65,9 @@ var odpsPropNames []string = []string{
 	"cmd",
 }
 var odpsArgs [][]string = [][]string{
-	[]string{"access_id", "-u", "s", "n"},
-	[]string{"access_key", "-p", "s", "n"},
-	[]string{"project", "--project=", "c", "n"},
-	[]string{"endpoint", "--endpoint=", "c", "n"},
-	[]string{"cmd", "-e", "s", "n"},
+	[]string{"access_id", "-u", "n"},
+	[]string{"access_key", "-p", "n"},
+	[]string{"project", "--project=", "n"},
+	[]string{"endpoint", "--endpoint=", "n"},
+	[]string{"cmd", "-e", "n"},
 }

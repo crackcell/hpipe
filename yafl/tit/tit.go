@@ -19,7 +19,6 @@
 package tit
 
 import (
-	_ "../../log"
 	"./ast"
 	"./eval"
 	"./lexer"
@@ -64,12 +63,15 @@ func (this *Tit) AddSrcMap(m map[string]string) {
 
 func (this *Tit) DoEval() (map[string]*ast.Stmt, error) {
 	src := this.assembleStmt()
+	if len(src) == 0 {
+		return make(map[string]*ast.Stmt), nil
+	}
 
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	a, err := p.Parse(l)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	e := eval.NewEval()
 	return e.DoEval(a.([]*ast.Stmt))

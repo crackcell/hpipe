@@ -42,9 +42,13 @@ Usage:
 
 Options:
     -h, --help     Print this message
-    -w, --worddir  Root path of workflow
-    -f, --flow     Entry filename of workflow
     -v, --verbose  Use verbose output
+
+    -w, --work     Root path of workflow
+    -m, --meta     Path of meta data
+    -f, --flow     Entry filename of workflow
+
+    --rerun        Rerun jobs with status DONE
 `
 )
 

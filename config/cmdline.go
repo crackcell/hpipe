@@ -33,6 +33,8 @@ var (
 	WorkPath  string
 	MetaPath  string
 	EntryFile string
+	Rerun     bool
+	MaxRetry  int64
 )
 
 func InitFlags() {
@@ -46,6 +48,8 @@ func InitFlags() {
 	flag.StringVar(&MetaPath, "m", "./", "Path of meta data")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
+	flag.BoolVar(&Rerun, "rerun", false, "Rerun done job")
+	flag.Int64Var(&MaxRetry, "max_retry", 3, "Max retry times")
 }
 
 func Parse() {

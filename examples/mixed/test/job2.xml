@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<job name="job2" type="hadoop">
+	<instance_id>job2-${date}</instance_id>
+	<property>
+		<name>jar</name>
+		<value>/home/a/lib/hadoop/default/contrib/streaming/hadoop-streaming-1.2.1.jar</value>
+	</property>
+	<property>
+		<name>input</name>
+		<value>/example/wordcount/input</value>
+	</property>
+	<property>
+		<name>output</name>
+		<value>/example/wordcount/output</value>
+	</property>
+	<property>
+		<name>file</name>
+		<value>mapper.py,reducer.py</value>
+	</property>
+	<property>
+		<name>mapper</name>
+		<value>mapper.py</value>
+	</property>
+	<property>
+		<name>reducer</name>
+		<value>reducer.py</value>
+	</property>
+</job>

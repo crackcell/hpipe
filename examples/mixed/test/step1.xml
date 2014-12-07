@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<step name="step1">
+	<var>date="20141111"</var>
+	<dep>
+		<res>step2.xml</res>
+		<arg>date=date-1</arg>
+	</dep>
+</step>

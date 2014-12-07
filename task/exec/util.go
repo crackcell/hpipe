@@ -55,7 +55,9 @@ func CmdExec(jobname, name string, arg ...string) (int, error) {
 	errscanner := bufio.NewScanner(stderr)
 	for errscanner.Scan() {
 		if len(errscanner.Text()) != 0 {
-			log.Fatal(fmt.Sprintf("<%s> %s", jobname, errscanner.Text()))
+			//log.Fatalf("<%s> %s", jobname, errscanner.Text())
+			log.Infof("<%s> %s", jobname, errscanner.Text())
+			//fmt.Printf("<%s> %s", jobname, errscanner.Text())
 		}
 	}
 	if err := errscanner.Err(); err != nil {
@@ -64,7 +66,8 @@ func CmdExec(jobname, name string, arg ...string) (int, error) {
 	outscanner := bufio.NewScanner(stdout)
 	for outscanner.Scan() {
 		if len(outscanner.Text()) != 0 {
-			log.Info(fmt.Sprintf("<%s> %s", jobname, outscanner.Text()))
+			log.Infof("<%s> %s", jobname, outscanner.Text())
+			//fmt.Printf("<%s> %s", jobname, outscanner.Text())
 		}
 	}
 	if err := outscanner.Err(); err != nil {
@@ -123,16 +126,16 @@ func LogArgList(cmd string, args ...string) {
 func PrepareArgList(prop map[string]string, args [][]string) []string {
 	var str []string
 	for _, a := range args {
-		if len(a) != 4 {
+		if len(a) != 3 {
 			panic(fmt.Errorf("not valid args"))
 		}
-		str = append(str, PrepareArg(prop, a[0], a[1], a[2] == "s", a[3] == "s")...)
+		str = append(str, PrepareArg(prop, a[0], a[1], a[2] == "s")...)
 	}
 	return str
 }
 
 func PrepareArg(prop map[string]string, propname, argname string,
-	separate, split bool) []string {
+	split bool) []string {
 
 	p := []string{}
 	var t []string
@@ -144,6 +147,9 @@ func PrepareArg(prop map[string]string, propname, argname string,
 
 	for _, v := range t {
 		tmp := strings.Trim(v, " ")
+		if len(tmp) == 0 {
+			continue
+		}
 		if strings.Contains(tmp, " ") {
 			tmp = `"` + tmp + `"`
 		}

@@ -58,7 +58,7 @@ func (this *SqliteDB) Open() error {
 			return err
 		}
 	}
-	log.Debugf("open: %s", this.path)
+	//log.Debugf("open: %s", this.path)
 	return nil
 }
 
@@ -144,7 +144,6 @@ func (this *SqliteDB) saveJob(j *ast.Job) error {
 		"INSERT INTO hpipe_task_info (instance_id, status) VALUES (?,?)",
 		j.InstanceID, j.Status,
 	)
-	log.Debugf("save %s=%s", j.InstanceID, j.Status)
 	if err != nil {
 		log.Fatalf("%v", err)
 		return err
@@ -164,7 +163,7 @@ func (this *SqliteDB) restoreJob(j *ast.Job) error {
 		log.Fatalf("%v", err)
 		return err
 	default:
-		log.Debugf("restore %s=%s", j.InstanceID, status)
+		//log.Debugf("restore %s=%s", j.InstanceID, status)
 		j.Status = status
 	}
 	return nil

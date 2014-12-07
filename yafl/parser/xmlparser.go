@@ -154,7 +154,6 @@ func parseStep(filename string, workpath string,
 		}
 		j, err := parseJob(do.Res, workpath, localVar)
 		if err != nil {
-			log.Fatal(err)
 			return nil, err
 		}
 		step.Do = append(step.Do, j)
@@ -207,7 +206,6 @@ func parseJob(filename string, workpath string,
 	}
 	newprop, err := applySrcMap(job.Prop, localVar)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 	newinstid, err := applySrc(j.InstanceID, localVar)
@@ -261,11 +259,7 @@ func evalSrc(src string, maps ...map[string]*titast.Stmt) (map[string]*titast.St
 		}
 	}
 	c.AddSrc(src)
-	output, err := c.DoEval()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return output, err
+	return c.DoEval()
 }
 
 func evalMap(src map[string]string, maps ...map[string]*titast.Stmt) (

@@ -32,17 +32,12 @@ import (
 // Public APIs
 //===================================================================
 
-const (
-	DEFAULT_MAX_TRYS = 3
-)
-
 type TaskManager interface {
 	Run(flow *ast.Flow) error
 }
 
 func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
-	ret.maxTrys = DEFAULT_MAX_TRYS
 	ret.trys = make(map[string]int)
 	ret.todo = make(map[string]*ast.Job)
 	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
@@ -58,17 +53,14 @@ func NewTaskManager() (TaskManager, error) {
 //===================================================================
 
 type taskManager struct {
-	flow    *ast.Flow
-	exec    map[string]exec.Exec
-	db      storage.DB
-	maxTrys int
-	trys    map[string]int
-	todo    map[string]*ast.Job
+	flow *ast.Flow
+	exec map[string]exec.Exec
+	db   storage.DB
+	trys map[string]int
+	todo map[string]*ast.Job
 }
 
 func (this *taskManager) Run(flow *ast.Flow) error {
-	log.Debug("start to run")
-
 	this.flow = flow
 
 	if err := this.db.Open(); err != nil {
@@ -114,11 +106,13 @@ func (this *taskManager) Run(flow *ast.Flow) error {
 				if len(ret) != 2 {
 					panic(fmt.Errorf("invalid return"))
 				}
-				job, ok := this.todo[ret[0]]
+				name := ret[0]
+				status := ret[1]
+				job, ok := this.todo[name]
 				if !ok {
 					panic(fmt.Errorf("no job"))
 				}
-				job.Status = ret[1]
+				job.Status = status
 				jobCount--
 			}
 		}
@@ -140,21 +134,21 @@ func (this *taskManager) scanStep(s *ast.Step) {
 }
 
 func (this *taskManager) scanJob(j *ast.Job) {
-	if trys, ok := this.trys[j.InstanceID]; ok {
-		if trys >= this.maxTrys {
-			log.Fatalf("<%s> reaches max trys %d", j.InstanceID,
-				this.maxTrys)
+	trys, ok := this.trys[j.InstanceID]
+	if ok {
+		if trys >= int(config.MaxRetry) {
+			log.Fatalf("<%s> reaches max trys %v",
+				j.InstanceID, config.MaxRetry)
 			return
 		}
 	} else {
 		this.trys[j.InstanceID] = 0
+		trys = 0
 	}
-	switch j.Status {
-	case "todo":
+
+	switch {
+	case j.Status == "todo" || j.Status == "fail" ||
+		(j.Status == "done" && config.Rerun && trys == 0):
 		this.todo[j.Name] = j
-		log.Debugf("ready to start: %s", j.Name)
-	case "fail":
-		this.todo[j.Name] = j
-		log.Debugf("ready to retry: %s", j.Name)
 	}
 }

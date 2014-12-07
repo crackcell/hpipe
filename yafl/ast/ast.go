@@ -53,6 +53,7 @@ type Job struct {
 	File       string
 	Prop       map[string]string
 	Status     string
+	Exitcode   int
 }
 
 func NewFlow() *Flow {
@@ -147,7 +148,7 @@ func (this *Job) debugString(depth int) string {
 	}
 
 	str += fmt.Sprintf("%s\tprop:{", indent)
-	if len(this.Var) == 0 {
+	if len(this.Prop) == 0 {
 		str += "}\n"
 	} else {
 		str += "\n"
