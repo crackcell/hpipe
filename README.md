@@ -5,3 +5,11 @@
              |__|       |__|
 
 # Hpipe v2
+
+Hpipe is a workflow engine for various jobs (eg. Hadoop, Aliyun ODPS)
+
+## Examples
+
+    hpipe-run -f wordcount.xml -w PATH-TO-EXAMPLEs/hadoop/wordcount -m ./ -v
+
+
