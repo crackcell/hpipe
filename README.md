@@ -14,7 +14,11 @@ Features include:
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
 * Join/Aggregation/Filter support.
 
+## Quick Start
+
+    $ make
+    $ ./output
+
 ## Examples
 
-    hpipe-run -f wordcount.xml -w PATH-OF-HPIPE/examples/hadoop/wordcount -m ./ -v --rerun
-
+    ./output/bin/hpipe-run -f wordcount.xml -w PATH-OF-HPIPE/examples/hadoop/wordcount -m ./ -v --rerun

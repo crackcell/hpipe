@@ -40,3 +40,5 @@ conf/hpipe.env
 
 *.db
 *.db-journal
+
+output
