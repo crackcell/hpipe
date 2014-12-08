@@ -1,0 +1,8 @@
+<step name="wordcount">
+	<do>
+		<res>job1.xml</res>
+	</do>
+	<do>
+		<res>job2.xml</res>
+	</do>
+</step>
