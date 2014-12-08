@@ -6,10 +6,15 @@
 
 # Hpipe v2
 
-Hpipe is a workflow engine for various jobs (eg. Hadoop, Aliyun ODPS)
+hpipe is a workflow engine for various computing systems (Hadoop, Aliyun ODPS etc.). The main purpose of this project is to simplify muilti-job tasks like click-through-rate prediction in online advertising systems.
+
+Features include:
+
+* Workflow definition language based on XML.
+* Built-in failover machanism: auto-clean & auto-retry failed jobs.
+* Join/Aggregation/Filter support.
 
 ## Examples
 
-    hpipe-run -f wordcount.xml -w PATH-TO-EXAMPLEs/hadoop/wordcount -m ./ -v
-
+    hpipe-run -f wordcount.xml -w PATH-OF-HPIPE/examples/hadoop/wordcount -m ./ -v --rerun
 

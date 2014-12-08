@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<job name="job3" type="shell">
-	<instance_id>job3</instance_id>
-	<property>
-		<name>cmd</name>
-		<value>echo "hello world"</value>
-	</property>
-</job>
