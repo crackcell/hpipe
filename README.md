@@ -27,3 +27,8 @@ Hpipe是一个支持多种计算平台的工作流引擎。它的设计初衷是
 ### Hadoop wordcount
 
     ./output/bin/hpipe-run -f wordcount.xml -w PATH-OF-HPIPE/examples/hadoop/wordcount -m ./ -v --rerun
+
+## 其它
+
+* [设计文档](doc/design.md)
+
