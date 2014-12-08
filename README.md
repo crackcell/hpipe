@@ -10,9 +10,12 @@ hpipe is a workflow engine for various computing systems (Hadoop, Aliyun ODPS et
 
 Features include:
 
-* Workflow definition language based on XML.
+* Support for various job types (Hadoop, Aliyun ODPS and shell jobs).
+* Simple workflow definition language based on XML.
+* Tracking job status in persistent storage, thus we can save the flow progress.
 * Built-in failover machanism: auto-clean & auto-retry failed jobs.
-* Join/Aggregation/Filter support.
+* [TODO] Web-based UI
+* [TODO] Join/Aggregation/Filter support.
 
 ## Quick Start
 
