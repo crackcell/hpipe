@@ -6,7 +6,7 @@
 
 # Hpipe v2
 
-hpipe is a workflow engine for various computing systems (Hadoop, Aliyun ODPS etc.). The main purpose of this project is to simplify muilti-job tasks like click-through-rate prediction in online advertising systems.
+hpipe is a workflow engine for various computing systems (Hadoop, Aliyun ODPS etc.). At first, the main purpose of this project is to simplify muilti-job tasks like click-through-rate prediction in online advertising systems. But by now, it's used widely in our daily data mining tasks.
 
 Features include:
 
