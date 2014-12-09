@@ -137,7 +137,7 @@ func (this *taskManager) scanJob(j *ast.Job) {
 	trys, ok := this.trys[j.InstanceID]
 	if ok {
 		if trys >= int(config.MaxRetry) {
-			log.Fatalf("<%s> reaches max trys %v",
+			log.Fatalf("<%s> reaches max retrys %v",
 				j.InstanceID, config.MaxRetry)
 			return
 		}
