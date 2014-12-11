@@ -9,15 +9,17 @@
 #
 #===========================================================================
 
-.PHONY : all output clean help
+.PHONY : all output clean help hpipe-run
 
 all : output
 
-output :
+output : hpipe-run
 	mkdir -p output/bin
-	cd main; go build
-	mv main/main output/bin/hpipe
-	cp scripts/* output/bin/
+	mv hpipe-run/hpipe-run output/bin/
+#	cp scripts/* output/bin/
+
+hpipe-run :
+	cd hpipe-run; go build
 
 clean :
 	rm -rf output

@@ -10,7 +10,7 @@
 /**
  * Main
  *
- * @file hpipe.go
+ * @file hpipe-run.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Nov 18 17:18:03 2014
  *
@@ -19,11 +19,11 @@
 package main
 
 import (
-	"./config"
-	"./log"
-	"./task"
-	"./util"
-	"./yafl/parser"
+	"../config"
+	"../log"
+	"../task"
+	"../util"
+	"../yafl/parser"
 	"fmt"
 	"os"
 )
@@ -38,7 +38,7 @@ const (
 	HelpString = `Execute a hpipe workflow
 
 Usage:
-    hpipe [options]
+    hpipe-run [options]
 
 Options:
     -h, --help     Print this message
