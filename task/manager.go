@@ -19,8 +19,8 @@
 package task
 
 import (
-	"../../hpipe"
 	"../config"
+	"../hpipe"
 	"../log"
 	"../yafl/ast"
 	"./exec"

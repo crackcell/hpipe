@@ -19,7 +19,7 @@
 package ast
 
 import (
-	"../../../hpipe"
+	"../../hpipe"
 	titast "../tit/ast"
 	"fmt"
 	"strings"

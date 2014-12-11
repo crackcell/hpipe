@@ -10,45 +10,30 @@
 /**
  *
  *
- * @file shell.go
+ * @file def.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Sat Dec  6 21:12:40 2014
+ * @date Sat Dec  6 21:42:12 2014
  *
  **/
 
-package exec
+package hpipe
 
 import (
-	"../../hpipe"
-	_ "../../log"
-	"../../yafl/ast"
-	"fmt"
+	_ "fmt"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-func NewShellExec() Exec {
-	return new(shellExec)
-}
+const (
+	TODO       = "todo"
+	RUNNING    = "run"
+	DONE       = "done"
+	FAIL       = "fail"
+	RETRY_FAIL = "retry_fail" // failed after N times retry
+)
 
 //===================================================================
 // Private
 //===================================================================
-
-type shellExec struct {
-	job *ast.Job
-}
-
-func (this *shellExec) Run(job *ast.Job) (string, error) {
-	this.job = job
-	if !ValidProp(this.job.Prop, shellPropNames) {
-		return hpipe.FAIL, fmt.Errorf("not valid job")
-	}
-	return hpipe.FAIL, nil
-}
-
-var shellPropNames []string = []string{
-	"cmd",
-}
