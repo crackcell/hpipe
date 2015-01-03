@@ -19,7 +19,7 @@
 package exec
 
 import (
-	"../../config"
+	"../../etc"
 	"../../log"
 	"bufio"
 	"fmt"
@@ -102,7 +102,7 @@ func GetProp(m map[string]string, key string) string {
 	if ok {
 		return v
 	}
-	v, ok = config.Env[key]
+	v, ok = etc.Env[key]
 	if !ok {
 		panic(fmt.Errorf("no prop for %s", key))
 	}
@@ -111,7 +111,7 @@ func GetProp(m map[string]string, key string) string {
 
 func ExistProp(m map[string]string, key string) bool {
 	_, ok1 := m[key]
-	_, ok2 := config.Env[key]
+	_, ok2 := etc.Env[key]
 	return ok1 || ok2
 }
 

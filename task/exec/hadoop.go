@@ -19,7 +19,7 @@
 package exec
 
 import (
-	"../../config"
+	"../../etc"
 	"../../hpipe"
 	"../../yafl/ast"
 	"fmt"
@@ -56,7 +56,7 @@ func (this *hadoopExec) Run(job *ast.Job) (string, error) {
 			continue
 		}
 		if string(file[0]) != "/" {
-			str += config.WorkPath + "/" + file + ","
+			str += etc.WorkPath + "/" + file + ","
 		} else {
 			str += file + ","
 		}

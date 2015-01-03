@@ -16,7 +16,7 @@
  *
  **/
 
-package config
+package etc
 
 import (
 	_ "fmt"
