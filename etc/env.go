@@ -10,45 +10,24 @@
 /**
  *
  *
- * @file shell.go
+ * @file env.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Sat Dec  6 21:12:40 2014
+ * @date Wed Dec  3 20:28:25 2014
  *
  **/
 
-package exec
+package etc
 
 import (
-	"../../hpipe"
-	_ "../../log"
-	"../../yafl/ast"
-	"fmt"
+	_ "fmt"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-func NewShellExec() Exec {
-	return new(shellExec)
-}
+var Env map[string]string = make(map[string]string)
 
 //===================================================================
 // Private
 //===================================================================
-
-type shellExec struct {
-	job *ast.Job
-}
-
-func (this *shellExec) Run(job *ast.Job) (string, error) {
-	this.job = job
-	if !ValidProp(this.job.Prop, shellPropNames) {
-		return hpipe.FAIL, fmt.Errorf("not valid job")
-	}
-	return hpipe.FAIL, nil
-}
-
-var shellPropNames []string = []string{
-	"cmd",
-}

@@ -19,7 +19,7 @@
 package parser
 
 import (
-	"../../config"
+	"../../etc"
 	"../../log"
 	"../ast"
 	"../tit"
@@ -106,10 +106,10 @@ func (this *xmlParser) ParseFile(filename string,
 	flow.Name = f.Name
 
 	for _, env := range f.Env {
-		config.Env[env.Name] = env.Value
+		etc.Env[env.Name] = env.Value
 	}
 
-	//log.Debug(propToVar(config.Env))
+	//log.Debug(propToVar(etc.Env))
 	s, err := parseStep(f.Entry, workpath, nil)
 	if err != nil {
 		return nil, err

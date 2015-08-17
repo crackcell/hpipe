@@ -19,8 +19,8 @@
 package task
 
 import (
-	"../../hpipe"
-	"../config"
+	"../etc"
+	"../hpipe"
 	"../log"
 	"../yafl/ast"
 	"./exec"
@@ -40,7 +40,7 @@ func NewTaskManager() (TaskManager, error) {
 	ret := new(taskManager)
 	ret.trys = make(map[string]int)
 	ret.todo = make(map[string]*ast.Job)
-	ret.db = storage.NewSqliteDB(config.MetaPath + "/meta.db")
+	ret.db = storage.NewSqliteDB(etc.MetaPath + "/meta.db")
 	ret.exec = map[string]exec.Exec{
 		"odps":   exec.NewOdpsExec(),
 		"hadoop": exec.NewHadoopExec(),
@@ -136,9 +136,9 @@ func (this *taskManager) scanStep(s *ast.Step) {
 func (this *taskManager) scanJob(j *ast.Job) {
 	trys, ok := this.trys[j.InstanceID]
 	if ok {
-		if trys >= int(config.MaxRetry) {
-			log.Fatalf("<%s> reaches max trys %v",
-				j.InstanceID, config.MaxRetry)
+		if trys >= int(etc.MaxRetry) {
+			log.Fatalf("<%s> reaches max retrys %v",
+				j.InstanceID, etc.MaxRetry)
 			return
 		}
 	} else {
@@ -148,7 +148,7 @@ func (this *taskManager) scanJob(j *ast.Job) {
 
 	switch {
 	case j.Status == "todo" || j.Status == "fail" ||
-		(j.Status == "done" && config.Rerun && trys == 0):
+		(j.Status == "done" && etc.Rerun && trys == 0):
 		this.todo[j.Name] = j
 	}
 }

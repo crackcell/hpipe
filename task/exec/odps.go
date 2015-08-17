@@ -19,7 +19,7 @@
 package exec
 
 import (
-	"../../../hpipe"
+	"../../hpipe"
 	"../../yafl/ast"
 	"fmt"
 )

@@ -16,7 +16,7 @@
  *
  **/
 
-package config
+package etc
 
 import (
 	"flag"
@@ -35,6 +35,8 @@ var (
 	EntryFile string
 	Rerun     bool
 	MaxRetry  int64
+	WebUIHost string
+	WebUIPort string
 )
 
 func InitFlags() {
@@ -50,6 +52,8 @@ func InitFlags() {
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
 	flag.BoolVar(&Rerun, "rerun", false, "Rerun done job")
 	flag.Int64Var(&MaxRetry, "max_retry", 3, "Max retry times")
+	flag.StringVar(&WebUIHost, "webui_host", "127.0.0.1", "address of web ui")
+	flag.StringVar(&WebUIPort, "webui_port", "5050", "port of web ui")
 }
 
 func Parse() {

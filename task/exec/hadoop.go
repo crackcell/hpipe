@@ -19,8 +19,8 @@
 package exec
 
 import (
-	"../../../hpipe"
-	"../../config"
+	"../../etc"
+	"../../hpipe"
 	"../../yafl/ast"
 	"fmt"
 	"strings"
@@ -56,18 +56,25 @@ func (this *hadoopExec) Run(job *ast.Job) (string, error) {
 			continue
 		}
 		if string(file[0]) != "/" {
-			str += config.WorkPath + "/" + file + ","
+			str += etc.WorkPath + "/" + file + ","
 		} else {
 			str += file + ","
 		}
 	}
 	this.job.Prop["file"] = str
 
+	// Submit hadoop job
 	args := PrepareArgList(this.job.Prop, hadoopArgs)
 	LogArgList("hadoop", args...)
+	if ret, err := CmdExec(job.InstanceID,
+		"hadoop", args...); err != nil || ret != 0 {
+		return hpipe.FAIL, err
+	}
 
-	exitcode, err := CmdExec(job.InstanceID, "hadoop", args...)
-	if err != nil || exitcode != 0 {
+	// Check output
+	args = []string{"fs", "-test", "-e", GetProp(this.job.Prop, "output")}
+	if ret, err := CmdExec(job.InstanceID,
+		"hadoop", args...); err != nil || ret != 0 {
 		return hpipe.FAIL, err
 	}
 

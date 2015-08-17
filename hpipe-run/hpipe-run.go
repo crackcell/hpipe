@@ -10,7 +10,7 @@
 /**
  * Main
  *
- * @file main.go
+ * @file hpipe-run.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Nov 18 17:18:03 2014
  *
@@ -19,7 +19,7 @@
 package main
 
 import (
-	"../config"
+	"../etc"
 	"../log"
 	"../task"
 	"../util"
@@ -58,22 +58,22 @@ func showHelp() {
 }
 
 func main() {
-	config.InitFlags()
-	config.Parse()
-	if config.Help {
+	etc.InitFlags()
+	etc.Parse()
+	if etc.Help {
 		showHelp()
 	}
-	if len(config.EntryFile) == 0 {
+	if len(etc.EntryFile) == 0 {
 		showHelp()
 	}
 
 	p := parser.NewXMLParser()
-	f, err := p.ParseFile(config.EntryFile, config.WorkPath)
+	f, err := p.ParseFile(etc.EntryFile, etc.WorkPath)
 	if err != nil {
 		panic(err)
 	}
 
-	if config.Verbose {
+	if etc.Verbose {
 		util.LogLines(LogoString, log.Debug)
 		util.LogLines(f.DebugString(), log.Debug)
 	}
