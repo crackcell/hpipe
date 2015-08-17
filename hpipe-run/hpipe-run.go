@@ -38,7 +38,7 @@ const (
 	HelpString = `Execute a hpipe workflow
 
 Usage:
-    hpipe-run [options]
+    hpipe [options]
 
 Options:
     -h, --help     Print this message
