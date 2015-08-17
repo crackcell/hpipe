@@ -20,13 +20,14 @@ package dag
 
 import (
 	"fmt"
-	"github.com/awalterschulze/gographviz"
+	//"github.com/awalterschulze/gographviz"
 	"testing"
 )
 
-func TestAll(t *testing.T) {
-	g, err := gographviz.Read([]byte(`
-digraph "example - wordcount" {
+func TestDotLoaderLoadBytes(t *testing.T) {
+	d := NewDotLoader()
+	g, err := d.LoadBytes([]byte(`
+digraph wordcount_example {
   wordcount1 [
     name="wordcount1"
     input="/hpipe/examples/wordcount/input",
@@ -44,5 +45,5 @@ digraph "example - wordcount" {
 		t.Error(err)
 		return
 	}
-	fmt.Println(g.String())
+	fmt.Println(g)
 }

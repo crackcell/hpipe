@@ -26,44 +26,20 @@ import (
 // Public APIs
 //===================================================================
 
-const (
-	DUMMY_NODE = iota
-	HADOOP_STREAMING_NODE
-	DAG_NODE_COUNT
-)
-
 type DAG struct {
-	Name string
-	Root *Node
-}
-
-type Node struct {
-	Name string
-	Type int
-	Attr map[string]string
+	Name  string
+	Nodes *Nodes
+	Edges *Edges
 }
 
 func NewDAG(name string) *DAG {
 	p := new(DAG)
+	p.Name = name
 	return p
 }
 
 func (this *DAG) String() string {
-	return fmt.Sprintf("DAG{name=%s}")
-}
-
-func NewNode(name string, typ int) (*Node, error) {
-	if typ < DUMMY_NODE || typ >= DAG_NODE_COUNT {
-		return nil, InvalidNodeType
-	}
-	p := new(Node)
-	p.Name = name
-	p.Type = typ
-	return p, nil
-}
-
-func (this *Node) String() string {
-	return fmt.Sprintf("Node{name=%s,attr=%v}", this.Name, this.Attr)
+	return fmt.Sprintf("DAG{name=%s}", this.Name)
 }
 
 //===================================================================

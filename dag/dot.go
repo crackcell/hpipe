@@ -20,26 +20,40 @@ package dag
 
 import (
 	//"fmt"
-	"github.com/awalterschulze/gographviz"
+	dot "github.com/awalterschulze/gographviz"
+	dotparser "github.com/awalterschulze/gographviz/parser"
+	"io/ioutil"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-type DotLoader struct {
+type DotLoader struct{}
+
+func NewDotLoader() *DotLoader {
+	p := new(DotLoader)
+	return p
 }
 
 func (this *DotLoader) LoadFile(path string) (*DAG, error) {
-	return nil, nil
-}
-
-func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
-	dot, err := gographviz.Read(data)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return this.LoadBytes(data)
+}
+
+func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
+	ast, err := dotparser.ParseBytes(data)
+	if err != nil {
+		return nil, err
+	}
+	graph := dot.NewGraph()
+	dot.Analyse(ast, graph)
+
+	d := NewDAG(graph.Name)
+	return d, nil
 }
 
 //===================================================================
