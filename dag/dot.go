@@ -19,7 +19,7 @@
 package dag
 
 import (
-	"fmt"
+	//"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"io/ioutil"
@@ -56,28 +56,28 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 	for src, dests := range graph.Edges.SrcToDsts {
 		for dest, _ := range dests {
 
-			if orig, ok := p.LookupNode[src]; !ok {
+			if orig, ok := p.Nodes[src]; !ok {
 				n := dotNameToDAGNode(graph, src)
 				n.Post = append(n.Post, dest)
-				p.LookupNode[src] = n
+				p.Nodes[src] = n
 			} else {
 				orig.Post = append(orig.Post, dest)
 			}
-			if orig, ok := p.LookupNode[dest]; !ok {
+			if orig, ok := p.Nodes[dest]; !ok {
 				n := dotNameToDAGNode(graph, dest)
 				n.Prev = append(n.Prev, src)
-				p.LookupNode[dest] = n
+				p.Nodes[dest] = n
 			} else {
 				orig.Prev = append(orig.Prev, src)
 			}
 
-			if _, ok := p.LookupIndegree[src]; !ok {
-				p.LookupIndegree[src] = 0
+			if _, ok := p.InDegrees[src]; !ok {
+				p.InDegrees[src] = 0
 			}
-			if orig, ok := p.LookupIndegree[dest]; !ok {
-				p.LookupIndegree[dest] = 1
+			if orig, ok := p.InDegrees[dest]; !ok {
+				p.InDegrees[dest] = 1
 			} else {
-				p.LookupIndegree[dest] = orig + 1
+				p.InDegrees[dest] = orig + 1
 			}
 
 		}
