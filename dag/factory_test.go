@@ -10,9 +10,9 @@
 /**
  *
  *
- * @file dot_test.go
+ * @file factory_test.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Mon Aug 17 21:17:34 2015
+ * @date Wed Aug 19 00:45:32 2015
  *
  **/
 
@@ -23,9 +23,19 @@ import (
 	"testing"
 )
 
-func TestDotLoaderLoadBytes(t *testing.T) {
-	d := NewDotLoader()
-	g, err := d.LoadBytes([]byte(`
+func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
+	f := NewDAGFactory(NewDotLoader())
+	d, err := f.CreateDAGFromFile("./test.dot")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(d)
+}
+
+func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
+	f := NewDAGFactory(NewDotLoader())
+	d, err := f.CreateDAGFromBytes([]byte(`
 digraph wordcount_example {
   wordcount1 [
     name="wordcount1"
@@ -41,15 +51,5 @@ digraph wordcount_example {
 		t.Error(err)
 		return
 	}
-	fmt.Println(g)
-}
-
-func TestDotLoaderLoadFile(t *testing.T) {
-	d := NewDotLoader()
-	g, err := d.LoadFile("./test.dot")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Println(g)
+	fmt.Println(d)
 }
