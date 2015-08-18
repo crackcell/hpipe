@@ -30,15 +30,12 @@ func TestDotLoaderLoadBytes(t *testing.T) {
 digraph wordcount_example {
   wordcount1 [
     name="wordcount1"
-    input="/hpipe/examples/wordcount/input",
-    output="/hpipe/examples/wordcount/output1"
   ]
   wordcount2 [
     name="wordcount2"
-    input="/hpipe/examples/wordcount/input",
-    output="/hpipe/examples/wordcount/output2"
   ]
-  wordcount1 -> wordcount2
+  wordcount1 -> wordcount2 -> wordcount3
+  wordcount1 -> wordcount3
 }
 `))
 	if err != nil {

@@ -27,19 +27,23 @@ import (
 //===================================================================
 
 type DAG struct {
-	Name  string
-	Nodes *Nodes
-	Edges *Edges
+	Name           string
+	LookupNode     map[string]*Node
+	LookupIndegree map[string]int
 }
 
 func NewDAG(name string) *DAG {
-	p := new(DAG)
-	p.Name = name
-	return p
+	return &DAG{
+		Name:           name,
+		LookupNode:     make(map[string]*Node),
+		LookupIndegree: make(map[string]int),
+	}
 }
 
 func (this *DAG) String() string {
-	return fmt.Sprintf("DAG{name=%s}", this.Name)
+	return fmt.Sprintf(
+		"DAG{name=%s,node=%v,indegree=%v}",
+		this.Name, this.LookupNode, this.LookupIndegree)
 }
 
 //===================================================================

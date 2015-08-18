@@ -19,7 +19,7 @@
 package dag
 
 import (
-	//"fmt"
+	"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"io/ioutil"
@@ -32,8 +32,7 @@ import (
 type DotLoader struct{}
 
 func NewDotLoader() *DotLoader {
-	p := new(DotLoader)
-	return p
+	return &DotLoader{}
 }
 
 func (this *DotLoader) LoadFile(path string) (*DAG, error) {
@@ -52,10 +51,73 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 	graph := dot.NewGraph()
 	dot.Analyse(ast, graph)
 
-	d := NewDAG(graph.Name)
-	return d, nil
+	p := NewDAG(graph.Name)
+
+	for src, dests := range graph.Edges.SrcToDsts {
+		for dest, _ := range dests {
+
+			if orig, ok := p.LookupNode[src]; !ok {
+				n := dotNameToDAGNode(graph, src)
+				n.Post = append(n.Post, dest)
+				p.LookupNode[src] = n
+			} else {
+				orig.Post = append(orig.Post, dest)
+			}
+			if orig, ok := p.LookupNode[dest]; !ok {
+				n := dotNameToDAGNode(graph, dest)
+				n.Prev = append(n.Prev, src)
+				p.LookupNode[dest] = n
+			} else {
+				orig.Prev = append(orig.Prev, src)
+			}
+
+			if _, ok := p.LookupIndegree[src]; !ok {
+				p.LookupIndegree[src] = 0
+			}
+			if orig, ok := p.LookupIndegree[dest]; !ok {
+				p.LookupIndegree[dest] = 1
+			} else {
+				p.LookupIndegree[dest] = orig + 1
+			}
+
+		}
+	}
+
+	return p, nil
 }
 
 //===================================================================
 // Private
 //===================================================================
+
+func dotToDAGNode(node *dot.Node) *Node {
+	p := NewNode()
+	p.Name = node.Name
+	p.Attrs = dotToDAGAttrs(node.Attrs)
+	p.Type = getNodeTypeFromAttrs(p.Attrs)
+	return p
+}
+
+func dotNameToDAGNode(graph *dot.Graph, name string) *Node {
+	if dotNode, ok := graph.Nodes.Lookup[name]; !ok {
+		panic("no corresponding node")
+	} else {
+		return dotToDAGNode(dotNode)
+	}
+}
+
+func dotToDAGAttrs(attrs dot.Attrs) Attrs {
+	p := NewAttrs()
+	for k, v := range attrs {
+		p.Set(k, v)
+	}
+	return p
+}
+
+func getNodeTypeFromAttrs(attrs Attrs) NodeType {
+	if val, ok := attrs["type"]; !ok {
+		return UnknownNode
+	} else {
+		return ParseNodeType(val)
+	}
+}

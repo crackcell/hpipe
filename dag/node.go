@@ -26,57 +26,53 @@ import (
 // Public APIs
 //===================================================================
 
+type NodeType int
+
+func ParseNodeType(typ string) NodeType {
+	switch typ {
+	case "dummy":
+		return DummyNode
+	case "hadoop_streaming":
+		return HadoopStreamingNode
+	default:
+		return UnknownNode
+	}
+}
+
 const (
-	DUMMY_NODE = iota
-	HADOOP_STREAMING_NODE
-	DAG_NODE_COUNT
+	DummyNode NodeType = iota
+	HadoopStreamingNode
+	NodeCount
+	UnknownNode
 )
 
 type Node struct {
-	Name string
-	Type int
-	Attr map[string]string
+	Name  string
+	Type  NodeType
+	Attrs Attrs
+	Prev  []string
+	Post  []string
 }
 
-type Nodes struct {
-	Lookup map[string]*Node
-	Nodes  []*Node
-}
-
-func NewNodes() *Nodes {
-	p := new(Nodes)
-	p.Lookup = make(map[string]*Node)
-	p.Nodes = make([]*Node, 0)
-	return p
-}
-
-func (this *Nodes) Add(node *Node) {
-	if n, ok := this.Lookup[node.Name]; ok {
-		n.Assign(node)
-		return
+func NewNode() *Node {
+	return &Node{
+		Attrs: NewAttrs(),
+		Prev:  []string{},
+		Post:  []string{},
 	}
-	this.Lookup[node.Name] = node
-	this.Nodes = append(this.Nodes, node)
-}
-
-func NewNode(name string, typ int) (*Node, error) {
-	if typ < DUMMY_NODE || typ >= DAG_NODE_COUNT {
-		return nil, InvalidNodeType
-	}
-	p := new(Node)
-	p.Name = name
-	p.Type = typ
-	return p, nil
 }
 
 func (this *Node) Assign(node *Node) {
 	this.Name = node.Name
 	this.Type = node.Type
-	this.Attr = node.Attr
+	this.Attrs = node.Attrs
+	this.Prev = node.Prev
+	this.Post = node.Post
 }
 
 func (this *Node) String() string {
-	return fmt.Sprintf("Node{name=%s,attr=%v}", this.Name, this.Attr)
+	return fmt.Sprintf("Node{name=%s,attrs=%v,prev=%v,post=%v}",
+		this.Name, this.Attrs, this.Prev, this.Post)
 }
 
 //===================================================================
