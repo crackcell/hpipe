@@ -1,0 +1,43 @@
+/* Lexical part */
+
+_digit : '0'-'9' ;
+
+_letter : 'a'-'z' | 'A'-'Z' ;
+
+_idchar : _letter | _digit | '_' ;
+
+int64 : '1' - '9' {_digit} ;
+
+string : '"' {_char} '"';
+
+id : '$' {_letter | '_' } {_idchar}
+
+!whitespace : ' ' | '\t' | '\n' | '\r' ;
+
+/* Syntax part */
+
+<<
+import(
+  "github.com/crackcell/hpipe/dag/symbol/token"
+  "github.com/crackcell/hpips/dag/symbol/ast"
+)
+>>
+
+Expr
+  : Expr "+" Term << ast.NewOperator($0, "+", $2) >>
+  | Expr "-" Term << ast.NewOperator($0, "-", $2) >>
+  | Term
+  ;
+
+Term
+  : Term "*" Factor << ast.NewOperator($0, "*", $2) >>
+  | Term "/" Factor << ast.NewOperator($0, "/", $2) >>
+  | Factor          << $0, nil >>
+  ;
+
+Factor
+  : "(" Expr ")" << $1, nil >>
+  | string       << ast.NewValueFromParser(string($0.(*token.Token).Lit)) >>
+  | int64        << ast.NewInt64FromParser(string($0.(*token.Token).Lit)) >>
+  | id           << ast.NewRightID(string($0.(*token.Token).Lit)), nil >>
+  ;
