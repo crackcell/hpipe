@@ -6,11 +6,9 @@ _letter : 'a'-'z' | 'A'-'Z' ;
 
 _idchar : _letter | _digit | '_' ;
 
-int64 : '1' - '9' {_digit} ;
+int64 : '1'-'9' {_digit} ;
 
-string : '"' {_char} '"';
-
-id : '$' {_letter | '_' } {_idchar}
+id : {_letter | '_'} {_idchar} ;
 
 !whitespace : ' ' | '\t' | '\n' | '\r' ;
 
@@ -19,7 +17,7 @@ id : '$' {_letter | '_' } {_idchar}
 <<
 import(
   "github.com/crackcell/hpipe/dag/symbol/token"
-  "github.com/crackcell/hpips/dag/symbol/ast"
+  "github.com/crackcell/hpipe/dag/symbol/ast"
 )
 >>
 
@@ -32,12 +30,16 @@ Expr
 Term
   : Term "*" Factor << ast.NewOperator($0, "*", $2) >>
   | Term "/" Factor << ast.NewOperator($0, "/", $2) >>
-  | Factor          << $0, nil >>
+  | Factor
   ;
 
 Factor
   : "(" Expr ")" << $1, nil >>
-  | string       << ast.NewValueFromParser(string($0.(*token.Token).Lit)) >>
   | int64        << ast.NewInt64FromParser(string($0.(*token.Token).Lit)) >>
-  | id           << ast.NewRightID(string($0.(*token.Token).Lit)), nil >>
+  | Variable
+  ;
+
+Variable
+	: "$" id        << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
+	| "${" id "}"   << ast.NewBuiltinVarFromParser(string($1.(*token.Token).Lit)) >>
   ;
