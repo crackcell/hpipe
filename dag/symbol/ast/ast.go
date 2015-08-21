@@ -40,6 +40,7 @@ const (
 type Expr struct {
 	Type     NodeType
 	Value    interface{}
+	Prop     map[string]interface{}
 	Children []*Expr
 }
 
@@ -67,6 +68,7 @@ func debugExpr(expr *Expr, depth int) string {
 	str += fmt.Sprintf("%sexpr:{\n", indent)
 	str += fmt.Sprintf("%s\ttype:%s\n", indent, expr.Type)
 	str += fmt.Sprintf("%s\tvalue:%v\n", indent, expr.Value)
+	str += fmt.Sprintf("%s\tprop:%v\n", indent, expr.Prop)
 	for _, child := range expr.Children {
 		str += debugExpr(child, depth+1)
 	}
@@ -78,6 +80,7 @@ func NewOperator(op1, op, op2 interface{}) (*Expr, error) {
 	return &Expr{
 		Type:  Operator,
 		Value: op.(string),
+		Prop:  make(map[string]interface{}),
 		Children: []*Expr{
 			op1.(*Expr),
 			op2.(*Expr),
@@ -89,17 +92,28 @@ func NewInt64FromParser(num string) (*Expr, error) {
 	if n, err := strconv.Atoi(num); err != nil {
 		return nil, err
 	} else {
-		return &Expr{Type: Int64, Value: int64(n)}, nil
+		return &Expr{
+			Type:  Int64,
+			Value: int64(n),
+			Prop:  make(map[string]interface{}),
+		}, nil
 	}
 }
 
 func NewVarFromParser(id interface{}) (*Expr, error) {
-	return &Expr{Type: Var, Value: id.(string)}, nil
+	return &Expr{
+		Type:  Var,
+		Value: id,
+		Prop:  make(map[string]interface{}),
+	}, nil
 }
 
 func NewBuiltinVarFromParser(lit interface{}) (*Expr, error) {
-	s := &Expr{Type: Date, Value: Date}
-	return s, nil
+	return &Expr{
+		Type:  Date,
+		Value: lit,
+		Prop:  make(map[string]interface{}),
+	}, nil
 }
 
 //===================================================================

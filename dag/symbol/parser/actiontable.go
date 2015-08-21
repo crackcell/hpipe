@@ -22,9 +22,10 @@ var actionTab = actionTable{
 			shift(5),		/* ( */
 			nil,		/* ) */
 			shift(6),		/* int64 */
-			nil,		/* id */
 			shift(8),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -41,9 +42,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			shift(9),		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			shift(9),		/* id */
 			
 		},
 
@@ -60,9 +62,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -79,9 +82,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -98,9 +102,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -117,9 +122,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -136,9 +142,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -155,9 +162,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -174,9 +182,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			shift(22),		/* id */
 			nil,		/* ${ */
+			shift(22),		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -185,17 +194,18 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			reduce(10),		/* $, reduce: Variable */
-			reduce(10),		/* +, reduce: Variable */
-			reduce(10),		/* -, reduce: Variable */
-			reduce(10),		/* *, reduce: Variable */
-			reduce(10),		/* /, reduce: Variable */
+			reduce(11),		/* $, reduce: Variable */
+			reduce(11),		/* +, reduce: Variable */
+			reduce(11),		/* -, reduce: Variable */
+			reduce(11),		/* *, reduce: Variable */
+			reduce(11),		/* /, reduce: Variable */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -212,9 +222,10 @@ var actionTab = actionTable{
 			shift(5),		/* ( */
 			nil,		/* ) */
 			shift(6),		/* int64 */
-			nil,		/* id */
 			shift(8),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -231,9 +242,10 @@ var actionTab = actionTable{
 			shift(5),		/* ( */
 			nil,		/* ) */
 			shift(6),		/* int64 */
-			nil,		/* id */
 			shift(8),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -250,9 +262,10 @@ var actionTab = actionTable{
 			shift(5),		/* ( */
 			nil,		/* ) */
 			shift(6),		/* int64 */
-			nil,		/* id */
 			shift(8),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -269,9 +282,10 @@ var actionTab = actionTable{
 			shift(5),		/* ( */
 			nil,		/* ) */
 			shift(6),		/* int64 */
-			nil,		/* id */
 			shift(8),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -288,9 +302,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			shift(27),		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			shift(27),		/* id */
 			
 		},
 
@@ -307,9 +322,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			shift(30),		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -326,9 +342,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(3),		/* ), reduce: Expr */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -345,9 +362,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(6),		/* ), reduce: Term */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -364,9 +382,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -383,9 +402,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(8),		/* ), reduce: Factor */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -402,9 +422,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(9),		/* ), reduce: Factor */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -421,9 +442,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			shift(34),		/* id */
 			nil,		/* ${ */
+			shift(34),		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -440,9 +462,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			shift(35),		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -459,9 +482,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -478,9 +502,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -497,9 +522,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -516,9 +542,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -528,16 +555,17 @@ var actionTab = actionTable{
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
 			nil,		/* $ */
-			reduce(10),		/* +, reduce: Variable */
-			reduce(10),		/* -, reduce: Variable */
-			reduce(10),		/* *, reduce: Variable */
-			reduce(10),		/* /, reduce: Variable */
+			reduce(11),		/* +, reduce: Variable */
+			reduce(11),		/* -, reduce: Variable */
+			reduce(11),		/* *, reduce: Variable */
+			reduce(11),		/* /, reduce: Variable */
 			nil,		/* ( */
-			reduce(10),		/* ), reduce: Variable */
+			reduce(11),		/* ), reduce: Variable */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -554,9 +582,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -573,9 +602,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -592,9 +622,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -611,9 +642,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -630,9 +662,10 @@ var actionTab = actionTable{
 			shift(18),		/* ( */
 			nil,		/* ) */
 			shift(19),		/* int64 */
-			nil,		/* id */
 			shift(21),		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -649,9 +682,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			shift(40),		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -668,9 +702,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			shift(41),		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -679,17 +714,18 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			reduce(11),		/* $, reduce: Variable */
-			reduce(11),		/* +, reduce: Variable */
-			reduce(11),		/* -, reduce: Variable */
-			reduce(11),		/* *, reduce: Variable */
-			reduce(11),		/* /, reduce: Variable */
+			reduce(10),		/* $, reduce: Variable */
+			reduce(10),		/* +, reduce: Variable */
+			reduce(10),		/* -, reduce: Variable */
+			reduce(10),		/* *, reduce: Variable */
+			reduce(10),		/* /, reduce: Variable */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -706,9 +742,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(1),		/* ), reduce: Expr */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -725,9 +762,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(2),		/* ), reduce: Expr */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -744,9 +782,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(4),		/* ), reduce: Term */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -763,9 +802,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(5),		/* ), reduce: Term */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -782,9 +822,10 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(7),		/* ), reduce: Factor */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 
@@ -794,16 +835,17 @@ var actionTab = actionTable{
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
 			nil,		/* $ */
-			reduce(11),		/* +, reduce: Variable */
-			reduce(11),		/* -, reduce: Variable */
-			reduce(11),		/* *, reduce: Variable */
-			reduce(11),		/* /, reduce: Variable */
+			reduce(10),		/* +, reduce: Variable */
+			reduce(10),		/* -, reduce: Variable */
+			reduce(10),		/* *, reduce: Variable */
+			reduce(10),		/* /, reduce: Variable */
 			nil,		/* ( */
-			reduce(11),		/* ), reduce: Variable */
+			reduce(10),		/* ), reduce: Variable */
 			nil,		/* int64 */
-			nil,		/* id */
 			nil,		/* ${ */
+			nil,		/* date */
 			nil,		/* } */
+			nil,		/* id */
 			
 		},
 

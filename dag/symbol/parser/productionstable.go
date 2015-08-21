@@ -123,23 +123,23 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Variable : "$" id	<< ast.NewVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		String: `Variable : "${" date "}"	<< ast.NewBuiltinVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
 		Id: "Variable",
 		NTType: 4,
 		Index: 10,
-		NumSymbols: 2,
-		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewVarFromParser(string(X[1].(*token.Token).Lit))
-		},
-	},
-	ProdTabEntry{
-		String: `Variable : "${" id "}"	<< ast.NewBuiltinVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
-		Id: "Variable",
-		NTType: 4,
-		Index: 11,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewBuiltinVarFromParser(string(X[1].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Variable : "$" id	<< ast.NewVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		Id: "Variable",
+		NTType: 4,
+		Index: 11,
+		NumSymbols: 2,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewVarFromParser(string(X[1].(*token.Token).Lit))
 		},
 	},
 	

@@ -8,6 +8,10 @@ _idchar : _letter | _digit | '_' ;
 
 int64 : '1'-'9' {_digit} ;
 
+_datechar : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' ;
+
+date : {_datechar} ;
+
 id : {_letter | '_'} {_idchar} ;
 
 !whitespace : ' ' | '\t' | '\n' | '\r' ;
@@ -40,6 +44,6 @@ Factor
   ;
 
 Variable
-	: "$" id        << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
-	| "${" id "}"   << ast.NewBuiltinVarFromParser(string($1.(*token.Token).Lit)) >>
+	: "${" date "}" << ast.NewBuiltinVarFromParser(string($1.(*token.Token).Lit)) >>
+	| "$" id        << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
   ;

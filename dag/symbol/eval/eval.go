@@ -21,6 +21,8 @@ package eval
 import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag/symbol/ast"
+	"github.com/crackcell/hpipe/util"
+	"time"
 )
 
 //===================================================================
@@ -29,20 +31,20 @@ import (
 
 type Eval struct {
 	Root    *ast.Expr
-	Context map[string]*ast.Expr
+	Builtin map[string]*ast.Expr
 }
 
-func NexEval() *Eval {
+func NewEval() *Eval {
 	return &Eval{
-		Context: make(map[string]*ast.Expr),
+		Builtin: make(map[string]*ast.Expr),
 	}
 }
 
-func (this *Eval) SetContext(context map[string]*ast.Expr) {
-	this.Context = context
+func (this *Eval) SetBuiltin(builtin map[string]*ast.Expr) {
+	this.Builtin = builtin
 }
 
-func (this *Eval) Evaluate(expr *ast.Expr) error {
+func (this *Eval) Evaluate(expr *ast.Expr) (*ast.Expr, error) {
 	return this.evalExpr(expr)
 }
 
@@ -50,7 +52,7 @@ func (this *Eval) Evaluate(expr *ast.Expr) error {
 // Private
 //===================================================================
 
-func (this *Expr) evalExpr(expr *ast.Expr) (*Expr, error) {
+func (this *Eval) evalExpr(expr *ast.Expr) (*ast.Expr, error) {
 	switch expr.Type {
 	case ast.Operator:
 		op1, err := this.evalExpr(expr.Children[0])
@@ -65,33 +67,49 @@ func (this *Expr) evalExpr(expr *ast.Expr) (*Expr, error) {
 	case ast.Int64:
 		return expr, nil
 	case ast.Date:
-		return this.evalDate(expr.Children[0])
+		return this.evalDate(expr)
 	case ast.Var:
-		return this.evalVar(expr.Children[0])
+		return this.evalVar(expr)
 	default:
-		return fmt.Errorf("unknown expression type: %d", expr.Type)
+		return nil, fmt.Errorf("unknown expression type: %d", expr.Type)
 	}
 }
 
-func (this *Expr) evalOperator(op1 *ast.Expr, op2 *ast.Expr,
-	opstr string) (*Expr, error) {
+func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast.Expr, error) {
 
 	if op1.Type == ast.Int64 && op2.Type == ast.Int64 {
-		return &Expr{
+		var res int64
+		a := op1.Value.(int64)
+		b := op2.Value.(int64)
+		switch opstr {
+		case "+":
+			res = a + b
+		case "-":
+			res = a - b
+		case "*":
+			res = a * b
+		case "/":
+			res = a / b
+		default:
+			return nil, fmt.Errorf("invalid operator: %s", opstr)
+		}
+		return &ast.Expr{
 			Type:  ast.Int64,
-			Value: op1.Value.(int64) + op2.Value.(int64),
+			Value: res,
 		}, nil
 	}
 
-	return nil
-}
-
-func (this *Expr) evalDate(expr *ast.Expr) (*Expr, error) {
-	fmt.Println("date:", expr.Value.(string))
 	return nil, nil
 }
 
-func (this *Expr) evalVar(expr *ast.Expr) (*Expr, error) {
+func (this *Eval) evalDate(expr *ast.Expr) (*ast.Expr, error) {
+	format := expr.Value.(string)
+	expr.Value = util.DateT(time.Now(), format)
+	expr.Prop["format"] = format
+	return expr, nil
+}
+
+func (this *Eval) evalVar(expr *ast.Expr) (*ast.Expr, error) {
 	fmt.Println("var:", expr.Value.(string))
 	return nil, nil
 }
