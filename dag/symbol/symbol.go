@@ -31,7 +31,7 @@ import (
 // Public APIs
 //===================================================================
 
-var BuiltinSymbols map[string]*ast.Expr = map[string]*ast.Expr{
+var Builtins map[string]*ast.Expr = map[string]*ast.Expr{
 	"gmtdate": &ast.Expr{
 		Type:  ast.Date,
 		Value: util.DateT(time.Now(), "YYYYMMDD"),
@@ -63,6 +63,7 @@ func (this *Resolver) Resolve(src string) (*ast.Expr, error) {
 		return nil, err
 	}
 	e := eval.NewEval()
+	e.Builtins = Builtins
 	return e.Evaluate(a.(*ast.Expr))
 }
 

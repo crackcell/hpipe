@@ -30,18 +30,14 @@ import (
 //===================================================================
 
 type Eval struct {
-	Root    *ast.Expr
-	Builtin map[string]*ast.Expr
+	Root     *ast.Expr
+	Builtins map[string]*ast.Expr
 }
 
 func NewEval() *Eval {
 	return &Eval{
-		Builtin: make(map[string]*ast.Expr),
+		Builtins: make(map[string]*ast.Expr),
 	}
-}
-
-func (this *Eval) SetBuiltin(builtin map[string]*ast.Expr) {
-	this.Builtin = builtin
 }
 
 func (this *Eval) Evaluate(expr *ast.Expr) (*ast.Expr, error) {
@@ -110,6 +106,11 @@ func (this *Eval) evalDate(expr *ast.Expr) (*ast.Expr, error) {
 }
 
 func (this *Eval) evalVar(expr *ast.Expr) (*ast.Expr, error) {
-	fmt.Println("var:", expr.Value.(string))
-	return nil, nil
+	name := expr.Value.(string)
+	expr.Prop["name"] = name
+	if v, ok := this.Builtins[name]; !ok {
+		return nil, fmt.Errorf("invalid var: %s", name)
+	} else {
+		return v, nil
+	}
 }
