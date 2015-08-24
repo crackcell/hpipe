@@ -33,7 +33,7 @@ type DAGFactory struct {
 	loader Loader
 }
 
-func NewDAGFactory() *DAGFactory {
+func NewFactory() *DAGFactory {
 	return &DAGFactory{
 		loader: NewDotLoader(),
 	}
