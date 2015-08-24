@@ -19,7 +19,10 @@
 package dag
 
 import (
-//"fmt"
+	//"fmt"
+	"github.com/crackcell/hpipe/dag/symbol"
+	"io/ioutil"
+	"strings"
 )
 
 //===================================================================
@@ -30,19 +33,18 @@ type DAGFactory struct {
 	loader Loader
 }
 
-func NewDAGFactory(loader Loader) *DAGFactory {
+func NewDAGFactory() *DAGFactory {
 	return &DAGFactory{
-		loader: loader,
+		loader: NewDotLoader(),
 	}
 }
 
 func (this *DAGFactory) CreateDAGFromFile(path string) (*DAG, error) {
-	d, err := this.loader.LoadFile(path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	// TODO: parse variables
-	return d, nil
+	return this.CreateDAGFromBytes(data)
 }
 
 func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
@@ -50,7 +52,17 @@ func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
 	if err != nil {
 		return nil, err
 	}
-	// TODO: parse variables
+	for _, node := range d.Nodes {
+		for attr, value := range node.Attrs {
+			//fmt.Printf("old: %s\n", value)
+			if resolved, err := symbol.Resolve(strings.Trim(value, "\"'")); err != nil {
+				return nil, err
+			} else {
+				node.Attrs[attr] = resolved.Value.(string)
+			}
+			//fmt.Println("new:", node.Attrs[attr])
+		}
+	}
 	return d, nil
 }
 

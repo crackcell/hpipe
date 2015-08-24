@@ -3,7 +3,7 @@
 */
 package parser
 
-const numNTSymbols = 6
+const numNTSymbols = 4
 type(
 	gotoTable [numStates]gotoRow
 	gotoRow	[numNTSymbols] int
@@ -13,11 +13,9 @@ var gotoTab = gotoTable{
 	gotoRow{ // S0
 		
 		-1, // S'
-		2, // Expr
-		3, // Term
-		4, // Factor
-		7, // Variable
-		-1, // Builtins
+		1, // Expr
+		2, // Term
+		3, // Factor
 		
 
 	},
@@ -27,8 +25,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -38,8 +34,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -49,30 +43,24 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
 	gotoRow{ // S4
 		
 		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		13, // Expr
+		14, // Term
+		15, // Factor
 		
 
 	},
 	gotoRow{ // S5
 		
 		-1, // S'
-		15, // Expr
-		16, // Term
-		17, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
 		
 
 	},
@@ -82,8 +70,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -93,8 +79,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -104,8 +88,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		22, // Builtins
 		
 
 	},
@@ -113,10 +95,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		21, // Term
+		3, // Factor
 		
 
 	},
@@ -124,10 +104,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		24, // Term
-		4, // Factor
-		7, // Variable
-		-1, // Builtins
+		22, // Term
+		3, // Factor
 		
 
 	},
@@ -135,10 +113,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		25, // Term
-		4, // Factor
-		7, // Variable
-		-1, // Builtins
+		-1, // Term
+		23, // Factor
 		
 
 	},
@@ -147,9 +123,7 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		26, // Factor
-		7, // Variable
-		-1, // Builtins
+		24, // Factor
 		
 
 	},
@@ -158,9 +132,7 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		27, // Factor
-		7, // Variable
-		-1, // Builtins
+		-1, // Factor
 		
 
 	},
@@ -170,8 +142,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -181,19 +151,15 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
 	gotoRow{ // S16
 		
 		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		30, // Expr
+		14, // Term
+		15, // Factor
 		
 
 	},
@@ -203,19 +169,15 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
 	gotoRow{ // S18
 		
 		-1, // S'
-		34, // Expr
-		16, // Term
-		17, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
 		
 
 	},
@@ -225,8 +187,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -236,8 +196,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -247,8 +205,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		35, // Builtins
 		
 
 	},
@@ -258,8 +214,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -269,8 +223,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -280,8 +232,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -289,10 +239,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		31, // Term
+		15, // Factor
 		
 
 	},
@@ -300,10 +248,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		32, // Term
+		15, // Factor
 		
 
 	},
@@ -313,8 +259,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -323,9 +267,7 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
+		33, // Factor
 		
 
 	},
@@ -333,10 +275,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		37, // Term
-		17, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Term
+		34, // Factor
 		
 
 	},
@@ -344,10 +284,8 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		38, // Term
-		17, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Term
+		-1, // Factor
 		
 
 	},
@@ -357,8 +295,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -367,9 +303,7 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		39, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Factor
 		
 
 	},
@@ -378,9 +312,7 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		40, // Factor
-		20, // Variable
-		-1, // Builtins
+		-1, // Factor
 		
 
 	},
@@ -390,8 +322,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},
@@ -401,85 +331,6 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S36
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S37
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S38
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S39
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S40
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S41
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
-		
-
-	},
-	gotoRow{ // S42
-		
-		-1, // S'
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
-		-1, // Builtins
 		
 
 	},

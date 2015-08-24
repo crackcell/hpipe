@@ -67,10 +67,9 @@ var TokMap = TokenMap{
 		"(",
 		")",
 		"int",
-		"${",
-		"}",
-		"id",
 		"date",
+		"id",
+		"string",
 	},
 
 	idMap: map[string]Type {
@@ -83,10 +82,9 @@ var TokMap = TokenMap{
 		"(": 6,
 		")": 7,
 		"int": 8,
-		"${": 9,
-		"}": 10,
-		"id": 11,
-		"date": 12,
+		"date": 9,
+		"id": 10,
+		"string": 11,
 	},
 }
 

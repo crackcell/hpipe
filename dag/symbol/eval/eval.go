@@ -81,6 +81,8 @@ func (this *Eval) evalExpr(expr *ast.Expr) (*ast.Expr, error) {
 		return expr, nil
 	case ast.Var:
 		return this.evalVar(expr)
+	case ast.String:
+		return expr, nil
 	default:
 		return nil, fmt.Errorf("unknown expression type: %d", expr.Type)
 	}
@@ -90,8 +92,8 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 
 	if op1.Type == ast.Int && op2.Type == ast.Int {
 		var res int
-		a := op1.Value.(int)
-		b := op2.Value.(int)
+		a := op1.Prop["value"].(int)
+		b := op2.Prop["value"].(int)
 		switch opstr {
 		case "+":
 			res = a + b
@@ -143,14 +145,15 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 		if opstr != "*" {
 			return nil, fmt.Errorf("invalid operator between Int and Duration: %s", opstr)
 		}
-		return ast.NewDuration(stdtime.Duration(op1.Value.(int)) * op2.Prop["time"].(stdtime.Duration)), nil
+		n := op1.Prop["value"].(int)
+		return ast.NewDuration(stdtime.Duration(n) * op2.Prop["time"].(stdtime.Duration)), nil
 	}
 
 	if op1.Type == ast.Int && op2.Type == ast.DurationExt {
 		if opstr != "*" {
 			return nil, fmt.Errorf("invalid operator between Int and Duration: %s", opstr)
 		}
-		n := op1.Value.(int)
+		n := op1.Prop["value"].(int)
 		return ast.NewDurationExt(
 			n*op2.Prop["year"].(int),
 			n*op2.Prop["month"].(int),

@@ -20,11 +20,12 @@ package dag
 
 import (
 	"fmt"
+	"io/ioutil"
 	"testing"
 )
 
 func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
-	f := NewDAGFactory(NewDotLoader())
+	f := NewDAGFactory()
 	d, err := f.CreateDAGFromFile("./test.dot")
 	if err != nil {
 		t.Error(err)
@@ -34,19 +35,13 @@ func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
 }
 
 func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
-	f := NewDAGFactory(NewDotLoader())
-	d, err := f.CreateDAGFromBytes([]byte(`
-digraph wordcount_example {
-  wordcount1 [
-    name="wordcount1"
-  ]
-  wordcount2 [
-    name="wordcount2"
-  ]
-  wordcount1 -> wordcount2 -> wordcount3
-  wordcount1 -> wordcount3
-}
-`))
+	data, err := ioutil.ReadFile("./test.dot")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	f := NewDAGFactory()
+	d, err := f.CreateDAGFromBytes(data)
 	if err != nil {
 		t.Error(err)
 		return

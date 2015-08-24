@@ -113,43 +113,33 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : Variable	<<  >>`,
+		String: `Factor : date	<< ast.NewDateFromParser(string(X[0].(*token.Token).Lit)) >>`,
 		Id: "Factor",
 		NTType: 3,
 		Index: 9,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return X[0], nil
+			return ast.NewDateFromParser(string(X[0].(*token.Token).Lit))
 		},
 	},
 	ProdTabEntry{
-		String: `Variable : "${" Builtins "}"	<< X[1], nil >>`,
-		Id: "Variable",
-		NTType: 4,
+		String: `Factor : id	<< ast.NewVarFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		Id: "Factor",
+		NTType: 3,
 		Index: 10,
-		NumSymbols: 3,
-		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return X[1], nil
-		},
-	},
-	ProdTabEntry{
-		String: `Variable : "$" id	<< ast.NewVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
-		Id: "Variable",
-		NTType: 4,
-		Index: 11,
-		NumSymbols: 2,
-		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewVarFromParser(string(X[1].(*token.Token).Lit))
-		},
-	},
-	ProdTabEntry{
-		String: `Builtins : date	<< ast.NewDateFromParser(string(X[0].(*token.Token).Lit)) >>`,
-		Id: "Builtins",
-		NTType: 5,
-		Index: 12,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewDateFromParser(string(X[0].(*token.Token).Lit))
+			return ast.NewVarFromParser(string(X[0].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Factor : string	<< ast.NewStringFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		Id: "Factor",
+		NTType: 3,
+		Index: 11,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewStringFromParser(string(X[0].(*token.Token).Lit))
 		},
 	},
 	

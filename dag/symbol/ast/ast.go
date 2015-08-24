@@ -38,6 +38,7 @@ const (
 	Date
 	Duration    // natively supported by time.Duration: hour, minute, second
 	DurationExt // extended duration: year, month, day
+	String
 	Operator
 )
 
@@ -60,6 +61,8 @@ func (this NodeType) String() string {
 		return "Duration"
 	case DurationExt:
 		return "DurationExt"
+	case String:
+		return "String"
 	case Operator:
 		return "Operator"
 	}
@@ -76,7 +79,7 @@ func (this *Expr) Equals(other *Expr) bool {
 			return false
 		}
 	case Int:
-		if this.Value.(int) != other.Value.(int) {
+		if this.Prop["value"].(int) != other.Prop["value"].(int) {
 			return false
 		}
 	case Date:
@@ -88,6 +91,10 @@ func (this *Expr) Equals(other *Expr) bool {
 			return false
 		}
 	case DurationExt:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case String:
 		if this.Value.(string) != other.Value.(string) {
 			return false
 		}
@@ -134,8 +141,10 @@ func NewOperatorFromParser(op1 *Expr, op string, op2 *Expr) (*Expr, error) {
 func NewInt(n int) *Expr {
 	return &Expr{
 		Type:  Int,
-		Value: int(n),
-		Prop:  make(map[string]interface{}),
+		Value: strconv.Itoa(n),
+		Prop: map[string]interface{}{
+			"value": n,
+		},
 	}
 }
 
@@ -145,8 +154,10 @@ func NewIntFromParser(num string) (*Expr, error) {
 	} else {
 		return &Expr{
 			Type:  Int,
-			Value: int(n),
-			Prop:  make(map[string]interface{}),
+			Value: num,
+			Prop: map[string]interface{}{
+				"value": n,
+			},
 		}, nil
 	}
 }
@@ -154,7 +165,7 @@ func NewIntFromParser(num string) (*Expr, error) {
 func NewVarFromParser(lit string) (*Expr, error) {
 	return &Expr{
 		Type:  Var,
-		Value: lit,
+		Value: strings.TrimLeft(lit, "$"),
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
@@ -173,7 +184,7 @@ func NewDate(t stdtime.Time, format string) *Expr {
 func NewDateFromParser(lit string) (*Expr, error) {
 	return &Expr{
 		Type:  Date,
-		Value: lit,
+		Value: strings.Trim(lit, "${}"),
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
@@ -198,6 +209,14 @@ func NewDurationExt(year, month, day int) *Expr {
 			"day":   day,
 		},
 	}
+}
+
+func NewStringFromParser(lit string) (*Expr, error) {
+	return &Expr{
+		Type:  String,
+		Value: lit,
+		Prop:  make(map[string]interface{}),
+	}, nil
 }
 
 //===================================================================

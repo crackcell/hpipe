@@ -14,18 +14,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(1),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(5),		/* ( */
+			shift(4),		/* ( */
 			nil,		/* ) */
-			shift(6),		/* int */
-			shift(8),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(5),		/* int */
+			shift(6),		/* date */
+			shift(7),		/* id */
+			shift(8),		/* string */
 			
 		},
 
@@ -34,18 +33,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
+			accept(true),		/* $ */
+			shift(9),		/* + */
+			shift(10),		/* - */
 			nil,		/* * */
 			nil,		/* / */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			shift(9),		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
@@ -54,43 +52,22 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			accept(true),		/* $ */
-			shift(10),		/* + */
-			shift(11),		/* - */
-			nil,		/* * */
-			nil,		/* / */
+			reduce(3),		/* $, reduce: Expr */
+			reduce(3),		/* +, reduce: Expr */
+			reduce(3),		/* -, reduce: Expr */
+			shift(11),		/* * */
+			shift(12),		/* / */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
 	actionRow{ // S3
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			reduce(3),		/* $, reduce: Expr */
-			reduce(3),		/* +, reduce: Expr */
-			reduce(3),		/* -, reduce: Expr */
-			shift(12),		/* * */
-			shift(13),		/* / */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S4
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -102,35 +79,33 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S4
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			nil,		/* + */
+			nil,		/* - */
+			nil,		/* * */
+			nil,		/* / */
+			shift(16),		/* ( */
+			nil,		/* ) */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
 			
 		},
 
 	},
 	actionRow{ // S5
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			shift(14),		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			shift(18),		/* ( */
-			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S6
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -142,15 +117,14 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S7
+	actionRow{ // S6
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -162,10 +136,28 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S7
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			reduce(10),		/* $, reduce: Factor */
+			reduce(10),		/* +, reduce: Factor */
+			reduce(10),		/* -, reduce: Factor */
+			reduce(10),		/* *, reduce: Factor */
+			reduce(10),		/* /, reduce: Factor */
+			nil,		/* ( */
+			nil,		/* ) */
+			nil,		/* int */
+			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
@@ -174,18 +166,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
+			reduce(11),		/* $, reduce: Factor */
+			reduce(11),		/* +, reduce: Factor */
+			reduce(11),		/* -, reduce: Factor */
+			reduce(11),		/* *, reduce: Factor */
+			reduce(11),		/* /, reduce: Factor */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
+			nil,		/* date */
 			nil,		/* id */
-			shift(23),		/* date */
+			nil,		/* string */
 			
 		},
 
@@ -194,18 +185,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			reduce(11),		/* $, reduce: Variable */
-			reduce(11),		/* +, reduce: Variable */
-			reduce(11),		/* -, reduce: Variable */
-			reduce(11),		/* *, reduce: Variable */
-			reduce(11),		/* /, reduce: Variable */
-			nil,		/* ( */
+			nil,		/* $ */
+			nil,		/* + */
+			nil,		/* - */
+			nil,		/* * */
+			nil,		/* / */
+			shift(4),		/* ( */
 			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(5),		/* int */
+			shift(6),		/* date */
+			shift(7),		/* id */
+			shift(8),		/* string */
 			
 		},
 
@@ -214,18 +204,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(1),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(5),		/* ( */
+			shift(4),		/* ( */
 			nil,		/* ) */
-			shift(6),		/* int */
-			shift(8),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(5),		/* int */
+			shift(6),		/* date */
+			shift(7),		/* id */
+			shift(8),		/* string */
 			
 		},
 
@@ -234,18 +223,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(1),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(5),		/* ( */
+			shift(4),		/* ( */
 			nil,		/* ) */
-			shift(6),		/* int */
-			shift(8),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(5),		/* int */
+			shift(6),		/* date */
+			shift(7),		/* id */
+			shift(8),		/* string */
 			
 		},
 
@@ -254,18 +242,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(1),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(5),		/* ( */
+			shift(4),		/* ( */
 			nil,		/* ) */
-			shift(6),		/* int */
-			shift(8),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(5),		/* int */
+			shift(6),		/* date */
+			shift(7),		/* id */
+			shift(8),		/* string */
 			
 		},
 
@@ -274,18 +261,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(1),		/* $ */
-			nil,		/* + */
-			nil,		/* - */
+			nil,		/* $ */
+			shift(25),		/* + */
+			shift(26),		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(5),		/* ( */
-			nil,		/* ) */
-			shift(6),		/* int */
-			shift(8),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
+			nil,		/* ( */
+			shift(27),		/* ) */
+			nil,		/* int */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
@@ -295,62 +281,21 @@ var actionTab = actionTable{
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
 			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
+			reduce(3),		/* +, reduce: Expr */
+			reduce(3),		/* -, reduce: Expr */
+			shift(28),		/* * */
+			shift(29),		/* / */
 			nil,		/* ( */
-			nil,		/* ) */
+			reduce(3),		/* ), reduce: Expr */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			shift(28),		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
 	actionRow{ // S15
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			shift(29),		/* + */
-			shift(30),		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			nil,		/* ( */
-			shift(31),		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S16
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			reduce(3),		/* +, reduce: Expr */
-			reduce(3),		/* -, reduce: Expr */
-			shift(32),		/* * */
-			shift(33),		/* / */
-			nil,		/* ( */
-			reduce(3),		/* ), reduce: Expr */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S17
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -362,35 +307,33 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(6),		/* ), reduce: Term */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S18
+	actionRow{ // S16
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(14),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(18),		/* ( */
+			shift(16),		/* ( */
 			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
 			
 		},
 
 	},
-	actionRow{ // S19
+	actionRow{ // S17
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -402,15 +345,14 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(8),		/* ), reduce: Factor */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S20
+	actionRow{ // S18
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -422,10 +364,47 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(9),		/* ), reduce: Factor */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S19
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			reduce(10),		/* +, reduce: Factor */
+			reduce(10),		/* -, reduce: Factor */
+			reduce(10),		/* *, reduce: Factor */
+			reduce(10),		/* /, reduce: Factor */
+			nil,		/* ( */
+			reduce(10),		/* ), reduce: Factor */
+			nil,		/* int */
+			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S20
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			reduce(11),		/* +, reduce: Factor */
+			reduce(11),		/* -, reduce: Factor */
+			reduce(11),		/* *, reduce: Factor */
+			reduce(11),		/* /, reduce: Factor */
+			nil,		/* ( */
+			reduce(11),		/* ), reduce: Factor */
+			nil,		/* int */
+			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
@@ -434,18 +413,17 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
+			reduce(1),		/* $, reduce: Expr */
+			reduce(1),		/* +, reduce: Expr */
+			reduce(1),		/* -, reduce: Expr */
+			shift(11),		/* * */
+			shift(12),		/* / */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
+			nil,		/* date */
 			nil,		/* id */
-			shift(23),		/* date */
+			nil,		/* string */
 			
 		},
 
@@ -454,83 +432,22 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
+			reduce(2),		/* $, reduce: Expr */
+			reduce(2),		/* +, reduce: Expr */
+			reduce(2),		/* -, reduce: Expr */
+			shift(11),		/* * */
+			shift(12),		/* / */
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			shift(36),		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
 	actionRow{ // S23
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			reduce(12),		/* }, reduce: Builtins */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S24
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			reduce(1),		/* $, reduce: Expr */
-			reduce(1),		/* +, reduce: Expr */
-			reduce(1),		/* -, reduce: Expr */
-			shift(12),		/* * */
-			shift(13),		/* / */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S25
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			reduce(2),		/* $, reduce: Expr */
-			reduce(2),		/* +, reduce: Expr */
-			reduce(2),		/* -, reduce: Expr */
-			shift(12),		/* * */
-			shift(13),		/* / */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S26
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -542,15 +459,14 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S27
+	actionRow{ // S24
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -562,75 +478,52 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S28
+	actionRow{ // S25
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
 			nil,		/* $ */
-			reduce(11),		/* +, reduce: Variable */
-			reduce(11),		/* -, reduce: Variable */
-			reduce(11),		/* *, reduce: Variable */
-			reduce(11),		/* /, reduce: Variable */
-			nil,		/* ( */
-			reduce(11),		/* ), reduce: Variable */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S29
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			shift(14),		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(18),		/* ( */
+			shift(16),		/* ( */
 			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
 			
 		},
 
 	},
-	actionRow{ // S30
+	actionRow{ // S26
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(14),		/* $ */
+			nil,		/* $ */
 			nil,		/* + */
 			nil,		/* - */
 			nil,		/* * */
 			nil,		/* / */
-			shift(18),		/* ( */
+			shift(16),		/* ( */
 			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
 			
 		},
 
 	},
-	actionRow{ // S31
+	actionRow{ // S27
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -642,10 +535,85 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			nil,		/* ) */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S28
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			nil,		/* + */
+			nil,		/* - */
+			nil,		/* * */
+			nil,		/* / */
+			shift(16),		/* ( */
+			nil,		/* ) */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
+			
+		},
+
+	},
+	actionRow{ // S29
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			nil,		/* + */
+			nil,		/* - */
+			nil,		/* * */
+			nil,		/* / */
+			shift(16),		/* ( */
+			nil,		/* ) */
+			shift(17),		/* int */
+			shift(18),		/* date */
+			shift(19),		/* id */
+			shift(20),		/* string */
+			
+		},
+
+	},
+	actionRow{ // S30
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			shift(25),		/* + */
+			shift(26),		/* - */
+			nil,		/* * */
+			nil,		/* / */
+			nil,		/* ( */
+			shift(35),		/* ) */
+			nil,		/* int */
+			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
+			
+		},
+
+	},
+	actionRow{ // S31
+				canRecover: false,
+		actions: [numSymbols]action{
+			nil,		/* INVALID */
+			nil,		/* $ */
+			reduce(1),		/* +, reduce: Expr */
+			reduce(1),		/* -, reduce: Expr */
+			shift(28),		/* * */
+			shift(29),		/* / */
+			nil,		/* ( */
+			reduce(1),		/* ), reduce: Expr */
+			nil,		/* int */
+			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
@@ -654,143 +622,22 @@ var actionTab = actionTable{
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
-			shift(14),		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			shift(18),		/* ( */
-			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
+			nil,		/* $ */
+			reduce(2),		/* +, reduce: Expr */
+			reduce(2),		/* -, reduce: Expr */
+			shift(28),		/* * */
+			shift(29),		/* / */
+			nil,		/* ( */
+			reduce(2),		/* ), reduce: Expr */
+			nil,		/* int */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
 	actionRow{ // S33
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			shift(14),		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			shift(18),		/* ( */
-			nil,		/* ) */
-			shift(19),		/* int */
-			shift(21),		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S34
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			shift(29),		/* + */
-			shift(30),		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			nil,		/* ( */
-			shift(41),		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S35
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			nil,		/* + */
-			nil,		/* - */
-			nil,		/* * */
-			nil,		/* / */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			shift(42),		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S36
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			reduce(10),		/* $, reduce: Variable */
-			reduce(10),		/* +, reduce: Variable */
-			reduce(10),		/* -, reduce: Variable */
-			reduce(10),		/* *, reduce: Variable */
-			reduce(10),		/* /, reduce: Variable */
-			nil,		/* ( */
-			nil,		/* ) */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S37
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			reduce(1),		/* +, reduce: Expr */
-			reduce(1),		/* -, reduce: Expr */
-			shift(32),		/* * */
-			shift(33),		/* / */
-			nil,		/* ( */
-			reduce(1),		/* ), reduce: Expr */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S38
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			reduce(2),		/* +, reduce: Expr */
-			reduce(2),		/* -, reduce: Expr */
-			shift(32),		/* * */
-			shift(33),		/* / */
-			nil,		/* ( */
-			reduce(2),		/* ), reduce: Expr */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
-			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S39
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -802,15 +649,14 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(4),		/* ), reduce: Term */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S40
+	actionRow{ // S34
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -822,15 +668,14 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(5),		/* ), reduce: Term */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
+			nil,		/* id */
+			nil,		/* string */
 			
 		},
 
 	},
-	actionRow{ // S41
+	actionRow{ // S35
 				canRecover: false,
 		actions: [numSymbols]action{
 			nil,		/* INVALID */
@@ -842,30 +687,9 @@ var actionTab = actionTable{
 			nil,		/* ( */
 			reduce(7),		/* ), reduce: Factor */
 			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
-			nil,		/* id */
 			nil,		/* date */
-			
-		},
-
-	},
-	actionRow{ // S42
-				canRecover: false,
-		actions: [numSymbols]action{
-			nil,		/* INVALID */
-			nil,		/* $ */
-			reduce(10),		/* +, reduce: Variable */
-			reduce(10),		/* -, reduce: Variable */
-			reduce(10),		/* *, reduce: Variable */
-			reduce(10),		/* /, reduce: Variable */
-			nil,		/* ( */
-			reduce(10),		/* ), reduce: Variable */
-			nil,		/* int */
-			nil,		/* ${ */
-			nil,		/* } */
 			nil,		/* id */
-			nil,		/* date */
+			nil,		/* string */
 			
 		},
 

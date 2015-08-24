@@ -19,7 +19,6 @@
 package dag
 
 import (
-	//"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"io/ioutil"

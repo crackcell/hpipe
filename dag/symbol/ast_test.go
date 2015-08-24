@@ -133,3 +133,20 @@ func TestASTDuration(t *testing.T) {
 	}
 	//fmt.Printf("res: %v\n", a)
 }
+
+func TestASTString(t *testing.T) {
+	src := "wordcount1"
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	//fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if a.(*ast.Expr).Type != ast.String {
+		t.Error(fmt.Errorf("type error"))
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+}

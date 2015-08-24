@@ -29,9 +29,11 @@ func TestDotLoaderLoadBytes(t *testing.T) {
 digraph wordcount_example {
   wordcount1 [
     name="wordcount1"
+    date="$bizdate"
   ]
   wordcount2 [
     name="wordcount2"
+    date="${YYYYMMDD}"
   ]
   wordcount1 -> wordcount2 -> wordcount3
   wordcount1 -> wordcount3

@@ -6,13 +6,15 @@ _letter : 'a'-'z' | 'A'-'Z' ;
 
 _idchar : _letter | _digit | '_' ;
 
-int : '1'-'9' { _digit } ;
-
 _time_unit : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' ;
 
-date : { _time_unit | ' ' | ':' | '-' } ;
+int : '1'-'9' { _digit } ;
 
-id : { _letter | '_' } { _idchar } ;
+date : '$' '{' { _time_unit | ' ' | ':' | '-' } '}' ;
+
+id : '$' { _letter | '_' } { _idchar } ;
+
+string : { _idchar } ;
 
 !whitespace : ' ' | '\t' | '\n' | '\r' ;
 
@@ -40,14 +42,7 @@ Term
 Factor
   : "(" Expr ")" << $1, nil >>
   | int          << ast.NewIntFromParser(string($0.(*token.Token).Lit)) >>
-  | Variable
+  | date         << ast.NewDateFromParser(string($0.(*token.Token).Lit)) >>
+	| id           << ast.NewVarFromParser(string($0.(*token.Token).Lit)) >>
+	| string       << ast.NewStringFromParser(string($0.(*token.Token).Lit)) >>
   ;
-
-Variable
-	: "${" Builtins "}" << $1, nil >>
-	| "$" id            << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
-  ;
-
-Builtins
-	: date     << ast.NewDateFromParser(string($0.(*token.Token).Lit)) >>
-	;
