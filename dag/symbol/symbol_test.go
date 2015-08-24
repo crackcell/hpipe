@@ -20,14 +20,22 @@ package symbol
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"testing"
+	"time"
 )
 
 func TestSymbolResolveAll(t *testing.T) {
-	res, err := Resolve("$gmtdate-1*$day")
+	src := "$gmtdate-1*$day"
+	res, err := Resolve(src)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(res)
+	check := ast.NewDate(time.Now().AddDate(0, 0, -1), "YYYYMMDD")
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%s=%d", src, res.Value.(string)))
+		return
+	}
+	//fmt.Println(res)
 }

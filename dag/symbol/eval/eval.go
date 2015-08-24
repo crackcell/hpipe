@@ -41,12 +41,12 @@ func NewEval() *Eval {
 			"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
 			"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
 			// Duration
-			"year":   ast.NewDurationB(1, 0, 0),
-			"month":  ast.NewDurationB(0, 1, 0),
-			"day":    ast.NewDurationB(0, 0, 1),
-			"hour":   ast.NewDurationA(stdtime.Hour),
-			"minute": ast.NewDurationA(stdtime.Minute),
-			"second": ast.NewDurationA(stdtime.Second),
+			"year":   ast.NewDurationExt(1, 0, 0),
+			"month":  ast.NewDurationExt(0, 1, 0),
+			"day":    ast.NewDurationExt(0, 0, 1),
+			"hour":   ast.NewDuration(stdtime.Hour),
+			"minute": ast.NewDuration(stdtime.Minute),
+			"second": ast.NewDuration(stdtime.Second),
 		},
 	}
 }
@@ -75,9 +75,9 @@ func (this *Eval) evalExpr(expr *ast.Expr) (*ast.Expr, error) {
 		return expr, nil
 	case ast.Date:
 		return this.evalDate(expr)
-	case ast.DurationA:
+	case ast.Duration:
 		return expr, nil
-	case ast.DurationB:
+	case ast.DurationExt:
 		return expr, nil
 	case ast.Var:
 		return this.evalVar(expr)
@@ -107,7 +107,7 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 		return ast.NewInt(res), nil
 	}
 
-	if op1.Type == ast.Date && op2.Type == ast.DurationA {
+	if op1.Type == ast.Date && op2.Type == ast.Duration {
 		var ret stdtime.Time
 		old := op1.Prop["time"].(stdtime.Time)
 		duration := op2.Prop["time"].(stdtime.Duration)
@@ -122,7 +122,7 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 		return ast.NewDate(ret, op1.Prop["format"].(string)), nil
 	}
 
-	if op1.Type == ast.Date && op2.Type == ast.DurationB {
+	if op1.Type == ast.Date && op2.Type == ast.DurationExt {
 		var ret stdtime.Time
 		old := op1.Prop["time"].(stdtime.Time)
 		year := op2.Prop["year"].(int)
@@ -139,19 +139,19 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 		return ast.NewDate(ret, op1.Prop["format"].(string)), nil
 	}
 
-	if op1.Type == ast.Int && op2.Type == ast.DurationA {
+	if op1.Type == ast.Int && op2.Type == ast.Duration {
 		if opstr != "*" {
 			return nil, fmt.Errorf("invalid operator between Int and Duration: %s", opstr)
 		}
-		return ast.NewDurationA(stdtime.Duration(op1.Value.(int)) * op2.Prop["time"].(stdtime.Duration)), nil
+		return ast.NewDuration(stdtime.Duration(op1.Value.(int)) * op2.Prop["time"].(stdtime.Duration)), nil
 	}
 
-	if op1.Type == ast.Int && op2.Type == ast.DurationB {
+	if op1.Type == ast.Int && op2.Type == ast.DurationExt {
 		if opstr != "*" {
 			return nil, fmt.Errorf("invalid operator between Int and Duration: %s", opstr)
 		}
 		n := op1.Value.(int)
-		return ast.NewDurationB(
+		return ast.NewDurationExt(
 			n*op2.Prop["year"].(int),
 			n*op2.Prop["month"].(int),
 			n*op2.Prop["day"].(int)), nil

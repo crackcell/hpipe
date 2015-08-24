@@ -25,6 +25,7 @@ import (
 	"github.com/crackcell/hpipe/dag/symbol/lexer"
 	"github.com/crackcell/hpipe/dag/symbol/parser"
 	"testing"
+	"time"
 )
 
 func getTestEvalResult(src string, t *testing.T) *ast.Expr {
@@ -46,88 +47,90 @@ func getTestEvalResult(src string, t *testing.T) *ast.Expr {
 
 func TestEvalAdd(t *testing.T) {
 	src := "1+2"
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	if res.Value.(int) != 3 {
+	check := ast.NewInt(3)
+	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
-	fmt.Printf("src: %s\nres: %v", src, res)
+	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalMinus(t *testing.T) {
 	src := "1-2"
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	if res.Value.(int) != -1 {
+	check := ast.NewInt(-1)
+	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
-	fmt.Printf("src: %s\nres: %v", src, res)
+	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalTimes(t *testing.T) {
 	src := "3*9"
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	if res.Value.(int) != 27 {
+	check := ast.NewInt(27)
+	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
-	fmt.Printf("src: %s\nres: %v", src, res)
+	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalDate(t *testing.T) {
-	src := "${YYYYMMDD hh:mm:ss}"
+	src := "${YYYYMMDD}"
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	fmt.Printf("src: %s\nres: %v", src, res)
-}
-
-func TestEvalDateDurationAAdd(t *testing.T) {
-	src := "${YYYYMMDD hh:mm:ss}+2*$hour"
-	fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	check := ast.NewDate(time.Now(), "YYYYMMDD")
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
 	}
-	fmt.Printf("res: %v", res)
+	//fmt.Printf("res: %v\n", res)
 }
 
-func TestEvalDateDurationAMinus(t *testing.T) {
-	src := "${YYYYMMDD hh:mm:ss}-2*$hour"
-	fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
-		return
-	}
-	fmt.Printf("res: %v", res)
-}
-
-func TestEvalDateDurationBAdd(t *testing.T) {
+func TestEvalDateDurationExtAdd(t *testing.T) {
 	src := "${YYYYMMDD}+2*$day"
-	fmt.Printf("src: %s\n", src)
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	fmt.Printf("res: %v", res)
+	check := ast.NewDate(time.Now().AddDate(0, 0, 2), "YYYYMMDD")
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
+		return
+	}
+	//fmt.Printf("res: %v\n", res)
 }
 
-func TestEvalDateDurationBMinus(t *testing.T) {
+func TestEvalDateDurationExtMinus(t *testing.T) {
 	src := "${YYYYMMDD}-2*$day"
-	fmt.Printf("src: %s\n", src)
+	//fmt.Printf("src: %s\n", src)
 	res := getTestEvalResult(src, t)
 	if res == nil {
 		return
 	}
-	fmt.Printf("res: %v", res)
+	check := ast.NewDate(time.Now().AddDate(0, 0, -2), "YYYYMMDD")
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
+		return
+	}
+	//fmt.Printf("res: %v\n", res)
 }

@@ -36,8 +36,8 @@ const (
 	Var NodeType = iota
 	Int
 	Date
-	DurationA // natively supported by time.Duration: hour, minute, second
-	DurationB // extended duration: year, month, day
+	Duration    // natively supported by time.Duration: hour, minute, second
+	DurationExt // extended duration: year, month, day
 	Operator
 )
 
@@ -56,14 +56,49 @@ func (this NodeType) String() string {
 		return "Int"
 	case Date:
 		return "Date"
-	case DurationA:
-		return "DurationA"
-	case DurationB:
-		return "DurationB"
+	case Duration:
+		return "Duration"
+	case DurationExt:
+		return "DurationExt"
 	case Operator:
 		return "Operator"
 	}
 	return "unknown"
+}
+
+func (this *Expr) Equals(other *Expr) bool {
+	if this.Type != other.Type {
+		return false
+	}
+	switch this.Type {
+	case Var:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case Int:
+		if this.Value.(int) != other.Value.(int) {
+			return false
+		}
+	case Date:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case Duration:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case DurationExt:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case Operator:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	default:
+		panic(fmt.Errorf("invalid expression type: %v", this.Type))
+	}
+	return true
 }
 
 func (this *Expr) String() string {
@@ -143,9 +178,9 @@ func NewDateFromParser(lit string) (*Expr, error) {
 	}, nil
 }
 
-func NewDurationA(d stdtime.Duration) *Expr {
+func NewDuration(d stdtime.Duration) *Expr {
 	return &Expr{
-		Type:  DurationA,
+		Type:  Duration,
 		Value: d.String(),
 		Prop: map[string]interface{}{
 			"time": d,
@@ -153,9 +188,9 @@ func NewDurationA(d stdtime.Duration) *Expr {
 	}
 }
 
-func NewDurationB(year, month, day int) *Expr {
+func NewDurationExt(year, month, day int) *Expr {
 	return &Expr{
-		Type:  DurationB,
+		Type:  DurationExt,
 		Value: fmt.Sprintf("%dY%dM%dD", year, month, day),
 		Prop: map[string]interface{}{
 			"year":  year,
