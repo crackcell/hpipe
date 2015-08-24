@@ -41,9 +41,19 @@ func NewDAG(name string) *DAG {
 }
 
 func (this *DAG) String() string {
-	return fmt.Sprintf(
-		"DAG{name=%s,nodes=%v,indegrees=%v}",
-		this.Name, this.Nodes, this.InDegrees)
+	str := fmt.Sprintf("dag{\n\tname=%s,\n", this.Name)
+	for name, node := range this.Nodes {
+		str += fmt.Sprintf("\tnode{\n")
+		str += fmt.Sprintf("\t\tname=%s,\n", name)
+		str += fmt.Sprintf("\t\tattrs{\n")
+		for attr, value := range node.Attrs {
+			str += fmt.Sprintf("\t\t\t%s=%s,\n", attr, value)
+		}
+		str += fmt.Sprintf("\t\t}\n")
+		str += fmt.Sprintf("\t}\n")
+	}
+	str += fmt.Sprintf("}\n")
+	return str
 }
 
 //===================================================================
