@@ -6,13 +6,13 @@ _letter : 'a'-'z' | 'A'-'Z' ;
 
 _idchar : _letter | _digit | '_' ;
 
-int64 : '1'-'9' {_digit} ;
+int : '1'-'9' { _digit } ;
 
-_datechar : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' ;
+_time_unit : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' ;
 
-date : {_datechar} ;
+date : { _time_unit | ' ' | ':' | '-' } ;
 
-id : {_letter | '_'} {_idchar} ;
+id : { _letter | '_' } { _idchar } ;
 
 !whitespace : ' ' | '\t' | '\n' | '\r' ;
 
@@ -26,24 +26,28 @@ import(
 >>
 
 Expr
-  : Expr "+" Term << ast.NewOperator($0, "+", $2) >>
-  | Expr "-" Term << ast.NewOperator($0, "-", $2) >>
+  : Expr "+" Term << ast.NewOperatorFromParser($0.(*ast.Expr), "+", $2.(*ast.Expr)) >>
+  | Expr "-" Term << ast.NewOperatorFromParser($0.(*ast.Expr), "-", $2.(*ast.Expr)) >>
   | Term
   ;
 
 Term
-  : Term "*" Factor << ast.NewOperator($0, "*", $2) >>
-  | Term "/" Factor << ast.NewOperator($0, "/", $2) >>
+  : Term "*" Factor << ast.NewOperatorFromParser($0.(*ast.Expr), "*", $2.(*ast.Expr)) >>
+  | Term "/" Factor << ast.NewOperatorFromParser($0.(*ast.Expr), "/", $2.(*ast.Expr)) >>
   | Factor
   ;
 
 Factor
   : "(" Expr ")" << $1, nil >>
-  | int64        << ast.NewInt64FromParser(string($0.(*token.Token).Lit)) >>
+  | int          << ast.NewIntFromParser(string($0.(*token.Token).Lit)) >>
   | Variable
   ;
 
 Variable
-	: "${" date "}" << ast.NewBuiltinVarFromParser(string($1.(*token.Token).Lit)) >>
-	| "$" id        << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
+	: "${" Builtins "}" << $1, nil >>
+	| "$" id            << ast.NewVarFromParser(string($1.(*token.Token).Lit)) >>
   ;
+
+Builtins
+	: date     << ast.NewDateFromParser(string($0.(*token.Token).Lit)) >>
+	;

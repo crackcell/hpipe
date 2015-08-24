@@ -3,7 +3,7 @@
 */
 package parser
 
-const numNTSymbols = 5
+const numNTSymbols = 6
 type(
 	gotoTable [numStates]gotoRow
 	gotoRow	[numNTSymbols] int
@@ -17,6 +17,7 @@ var gotoTab = gotoTable{
 		3, // Term
 		4, // Factor
 		7, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -27,6 +28,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -37,6 +39,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -47,6 +50,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -57,6 +61,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -67,6 +72,7 @@ var gotoTab = gotoTable{
 		16, // Term
 		17, // Factor
 		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -77,6 +83,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -87,6 +94,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -97,6 +105,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		22, // Builtins
 		
 
 	},
@@ -107,6 +116,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -114,9 +124,10 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		23, // Term
+		24, // Term
 		4, // Factor
 		7, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -124,9 +135,10 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		24, // Term
+		25, // Term
 		4, // Factor
 		7, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -135,8 +147,9 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		25, // Factor
+		26, // Factor
 		7, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -145,8 +158,9 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		26, // Factor
+		27, // Factor
 		7, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -157,6 +171,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -167,6 +182,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -177,6 +193,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -187,16 +204,18 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
 	gotoRow{ // S18
 		
 		-1, // S'
-		33, // Expr
+		34, // Expr
 		16, // Term
 		17, // Factor
 		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -207,6 +226,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -217,6 +237,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -227,6 +248,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		35, // Builtins
 		
 
 	},
@@ -237,6 +259,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -247,6 +270,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -257,6 +281,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -267,6 +292,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -277,6 +303,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -287,6 +314,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -294,9 +322,10 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		36, // Term
-		17, // Factor
-		20, // Variable
+		-1, // Term
+		-1, // Factor
+		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -307,6 +336,7 @@ var gotoTab = gotoTable{
 		37, // Term
 		17, // Factor
 		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -314,9 +344,10 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
-		-1, // Variable
+		38, // Term
+		17, // Factor
+		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -325,8 +356,9 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		38, // Factor
-		20, // Variable
+		-1, // Factor
+		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -337,6 +369,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		39, // Factor
 		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -345,8 +378,9 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // Expr
 		-1, // Term
-		-1, // Factor
-		-1, // Variable
+		40, // Factor
+		20, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -357,6 +391,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -367,6 +402,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -377,6 +413,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -387,6 +424,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -397,6 +435,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -407,6 +446,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -417,6 +457,7 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
 		
 
 	},
@@ -427,6 +468,18 @@ var gotoTab = gotoTable{
 		-1, // Term
 		-1, // Factor
 		-1, // Variable
+		-1, // Builtins
+		
+
+	},
+	gotoRow{ // S42
+		
+		-1, // S'
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Variable
+		-1, // Builtins
 		
 
 	},

@@ -23,19 +23,8 @@ import (
 	"testing"
 )
 
-func TestSymbolResolverBuiltins1(t *testing.T) {
-	r := NewResolver()
-	res, err := r.Resolve("$gmtdate")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Println(res)
-}
-
-func TestSymbolResolverBuiltins2(t *testing.T) {
-	r := NewResolver()
-	res, err := r.Resolve("$bizdate")
+func TestSymbolResolveAll(t *testing.T) {
+	res, err := Resolve("$gmtdate-1*$day")
 	if err != nil {
 		t.Error(err)
 		return

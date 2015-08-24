@@ -66,12 +66,13 @@ func TestASTDateFormat1(t *testing.T) {
 	src := "${YYYYMMDD}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
+	fmt.Printf("src: %s\n", src)
 	a, err := p.Parse(l)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Printf("src: %s\nres: %v\n", src, a)
+	fmt.Printf("res: %v\n", a)
 	if a.(*ast.Expr).Type != ast.Date {
 		t.Error(fmt.Errorf("type error"))
 	}
@@ -81,12 +82,13 @@ func TestASTDateFormat2(t *testing.T) {
 	src := "${YYYYMMDD hh:mm:ss}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
+	fmt.Printf("src: %s\n", src)
 	a, err := p.Parse(l)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Printf("src: %s\nres: %v\n", src, a)
+	fmt.Printf("res: %v\n", a)
 	if a.(*ast.Expr).Type != ast.Date {
 		t.Error(fmt.Errorf("type error"))
 	}
@@ -114,4 +116,17 @@ func TestASTVarAddDate(t *testing.T) {
 		return
 	}
 	fmt.Printf("src: %s\nres: %v\n", src, a)
+}
+
+func TestASTDuration(t *testing.T) {
+	src := "10*$day"
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Printf("res: %v\n", a)
 }

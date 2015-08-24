@@ -20,8 +20,10 @@ package ast
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/util/time"
 	"strconv"
 	"strings"
+	stdtime "time"
 )
 
 //===================================================================
@@ -32,8 +34,10 @@ type NodeType int
 
 const (
 	Var NodeType = iota
-	Int64
+	Int
 	Date
+	DurationA // natively supported by time.Duration: hour, minute, second
+	DurationB // extended duration: year, month, day
 	Operator
 )
 
@@ -48,10 +52,14 @@ func (this NodeType) String() string {
 	switch this {
 	case Var:
 		return "Var"
-	case Int64:
-		return "Int64"
+	case Int:
+		return "Int"
 	case Date:
 		return "Date"
+	case DurationA:
+		return "DurationA"
+	case DurationB:
+		return "DurationB"
 	case Operator:
 		return "Operator"
 	}
@@ -76,44 +84,85 @@ func debugExpr(expr *Expr, depth int) string {
 	return str
 }
 
-func NewOperator(op1, op, op2 interface{}) (*Expr, error) {
+func NewOperatorFromParser(op1 *Expr, op string, op2 *Expr) (*Expr, error) {
 	return &Expr{
 		Type:  Operator,
-		Value: op.(string),
+		Value: op,
 		Prop:  make(map[string]interface{}),
 		Children: []*Expr{
-			op1.(*Expr),
-			op2.(*Expr),
+			op1,
+			op2,
 		},
 	}, nil
 }
 
-func NewInt64FromParser(num string) (*Expr, error) {
+func NewInt(n int) *Expr {
+	return &Expr{
+		Type:  Int,
+		Value: int(n),
+		Prop:  make(map[string]interface{}),
+	}
+}
+
+func NewIntFromParser(num string) (*Expr, error) {
 	if n, err := strconv.Atoi(num); err != nil {
 		return nil, err
 	} else {
 		return &Expr{
-			Type:  Int64,
-			Value: int64(n),
+			Type:  Int,
+			Value: int(n),
 			Prop:  make(map[string]interface{}),
 		}, nil
 	}
 }
 
-func NewVarFromParser(id interface{}) (*Expr, error) {
+func NewVarFromParser(lit string) (*Expr, error) {
 	return &Expr{
 		Type:  Var,
-		Value: id,
+		Value: lit,
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
 
-func NewBuiltinVarFromParser(lit interface{}) (*Expr, error) {
+func NewDate(t stdtime.Time, format string) *Expr {
+	return &Expr{
+		Type:  Date,
+		Value: time.Format(t, format),
+		Prop: map[string]interface{}{
+			"time":   t,
+			"format": format,
+		},
+	}
+}
+
+func NewDateFromParser(lit string) (*Expr, error) {
 	return &Expr{
 		Type:  Date,
 		Value: lit,
 		Prop:  make(map[string]interface{}),
 	}, nil
+}
+
+func NewDurationA(d stdtime.Duration) *Expr {
+	return &Expr{
+		Type:  DurationA,
+		Value: d.String(),
+		Prop: map[string]interface{}{
+			"time": d,
+		},
+	}
+}
+
+func NewDurationB(year, month, day int) *Expr {
+	return &Expr{
+		Type:  DurationB,
+		Value: fmt.Sprintf("%dY%dM%dD", year, month, day),
+		Prop: map[string]interface{}{
+			"year":  year,
+			"month": month,
+			"day":   day,
+		},
+	}
 }
 
 //===================================================================

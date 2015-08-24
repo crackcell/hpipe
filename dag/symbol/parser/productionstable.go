@@ -33,23 +33,23 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Expr : Expr "+" Term	<< ast.NewOperator(X[0], "+", X[2]) >>`,
+		String: `Expr : Expr "+" Term	<< ast.NewOperatorFromParser(X[0].(*ast.Expr), "+", X[2].(*ast.Expr)) >>`,
 		Id: "Expr",
 		NTType: 1,
 		Index: 1,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewOperator(X[0], "+", X[2])
+			return ast.NewOperatorFromParser(X[0].(*ast.Expr), "+", X[2].(*ast.Expr))
 		},
 	},
 	ProdTabEntry{
-		String: `Expr : Expr "-" Term	<< ast.NewOperator(X[0], "-", X[2]) >>`,
+		String: `Expr : Expr "-" Term	<< ast.NewOperatorFromParser(X[0].(*ast.Expr), "-", X[2].(*ast.Expr)) >>`,
 		Id: "Expr",
 		NTType: 1,
 		Index: 2,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewOperator(X[0], "-", X[2])
+			return ast.NewOperatorFromParser(X[0].(*ast.Expr), "-", X[2].(*ast.Expr))
 		},
 	},
 	ProdTabEntry{
@@ -63,23 +63,23 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Term : Term "*" Factor	<< ast.NewOperator(X[0], "*", X[2]) >>`,
+		String: `Term : Term "*" Factor	<< ast.NewOperatorFromParser(X[0].(*ast.Expr), "*", X[2].(*ast.Expr)) >>`,
 		Id: "Term",
 		NTType: 2,
 		Index: 4,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewOperator(X[0], "*", X[2])
+			return ast.NewOperatorFromParser(X[0].(*ast.Expr), "*", X[2].(*ast.Expr))
 		},
 	},
 	ProdTabEntry{
-		String: `Term : Term "/" Factor	<< ast.NewOperator(X[0], "/", X[2]) >>`,
+		String: `Term : Term "/" Factor	<< ast.NewOperatorFromParser(X[0].(*ast.Expr), "/", X[2].(*ast.Expr)) >>`,
 		Id: "Term",
 		NTType: 2,
 		Index: 5,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewOperator(X[0], "/", X[2])
+			return ast.NewOperatorFromParser(X[0].(*ast.Expr), "/", X[2].(*ast.Expr))
 		},
 	},
 	ProdTabEntry{
@@ -103,13 +103,13 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : int64	<< ast.NewInt64FromParser(string(X[0].(*token.Token).Lit)) >>`,
+		String: `Factor : int	<< ast.NewIntFromParser(string(X[0].(*token.Token).Lit)) >>`,
 		Id: "Factor",
 		NTType: 3,
 		Index: 8,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewInt64FromParser(string(X[0].(*token.Token).Lit))
+			return ast.NewIntFromParser(string(X[0].(*token.Token).Lit))
 		},
 	},
 	ProdTabEntry{
@@ -123,13 +123,13 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Variable : "${" date "}"	<< ast.NewBuiltinVarFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		String: `Variable : "${" Builtins "}"	<< X[1], nil >>`,
 		Id: "Variable",
 		NTType: 4,
 		Index: 10,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewBuiltinVarFromParser(string(X[1].(*token.Token).Lit))
+			return X[1], nil
 		},
 	},
 	ProdTabEntry{
@@ -140,6 +140,16 @@ var productionsTable = ProdTab {
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewVarFromParser(string(X[1].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Builtins : date	<< ast.NewDateFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		Id: "Builtins",
+		NTType: 5,
+		Index: 12,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewDateFromParser(string(X[0].(*token.Token).Lit))
 		},
 	},
 	

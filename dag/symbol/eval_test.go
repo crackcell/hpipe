@@ -50,8 +50,8 @@ func TestEvalAdd(t *testing.T) {
 	if res == nil {
 		return
 	}
-	if res.Value.(int64) != 3 {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int64)))
+	if res.Value.(int) != 3 {
+		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
 	fmt.Printf("src: %s\nres: %v", src, res)
@@ -63,8 +63,8 @@ func TestEvalMinus(t *testing.T) {
 	if res == nil {
 		return
 	}
-	if res.Value.(int64) != -1 {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int64)))
+	if res.Value.(int) != -1 {
+		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
 	fmt.Printf("src: %s\nres: %v", src, res)
@@ -76,8 +76,8 @@ func TestEvalTimes(t *testing.T) {
 	if res == nil {
 		return
 	}
-	if res.Value.(int64) != 27 {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int64)))
+	if res.Value.(int) != 27 {
+		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
 		return
 	}
 	fmt.Printf("src: %s\nres: %v", src, res)
@@ -90,4 +90,44 @@ func TestEvalDate(t *testing.T) {
 		return
 	}
 	fmt.Printf("src: %s\nres: %v", src, res)
+}
+
+func TestEvalDateDurationAAdd(t *testing.T) {
+	src := "${YYYYMMDD hh:mm:ss}+2*$hour"
+	fmt.Printf("src: %s\n", src)
+	res := getTestEvalResult(src, t)
+	if res == nil {
+		return
+	}
+	fmt.Printf("res: %v", res)
+}
+
+func TestEvalDateDurationAMinus(t *testing.T) {
+	src := "${YYYYMMDD hh:mm:ss}-2*$hour"
+	fmt.Printf("src: %s\n", src)
+	res := getTestEvalResult(src, t)
+	if res == nil {
+		return
+	}
+	fmt.Printf("res: %v", res)
+}
+
+func TestEvalDateDurationBAdd(t *testing.T) {
+	src := "${YYYYMMDD}+2*$day"
+	fmt.Printf("src: %s\n", src)
+	res := getTestEvalResult(src, t)
+	if res == nil {
+		return
+	}
+	fmt.Printf("res: %v", res)
+}
+
+func TestEvalDateDurationBMinus(t *testing.T) {
+	src := "${YYYYMMDD}-2*$day"
+	fmt.Printf("src: %s\n", src)
+	res := getTestEvalResult(src, t)
+	if res == nil {
+		return
+	}
+	fmt.Printf("res: %v", res)
 }
