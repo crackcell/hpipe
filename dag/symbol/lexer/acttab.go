@@ -19,7 +19,7 @@ func (this ActionRow) String() string {
 
 var ActTab = ActionTable{
  	ActionRow{ // S0
-		Accept: 11,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S1
@@ -27,59 +27,59 @@ var ActTab = ActionTable{
  		Ignore: "!whitespace",
  	},
  	ActionRow{ // S2
-		Accept: 10,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S3
-		Accept: 6,
- 		Ignore: "",
- 	},
- 	ActionRow{ // S4
-		Accept: 7,
- 		Ignore: "",
- 	},
- 	ActionRow{ // S5
-		Accept: 4,
- 		Ignore: "",
- 	},
- 	ActionRow{ // S6
-		Accept: 2,
- 		Ignore: "",
- 	},
- 	ActionRow{ // S7
 		Accept: 3,
  		Ignore: "",
  	},
- 	ActionRow{ // S8
+ 	ActionRow{ // S4
+		Accept: 9,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S5
+		Accept: 10,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S6
+		Accept: 7,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S7
 		Accept: 5,
  		Ignore: "",
  	},
- 	ActionRow{ // S9
-		Accept: 11,
+ 	ActionRow{ // S8
+		Accept: 6,
  		Ignore: "",
  	},
- 	ActionRow{ // S10
+ 	ActionRow{ // S9
 		Accept: 8,
  		Ignore: "",
  	},
- 	ActionRow{ // S11
+ 	ActionRow{ // S10
 		Accept: 11,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S11
+		Accept: 2,
  		Ignore: "",
  	},
  	ActionRow{ // S12
-		Accept: 11,
+		Accept: 4,
  		Ignore: "",
  	},
  	ActionRow{ // S13
-		Accept: 10,
+		Accept: 13,
  		Ignore: "",
  	},
  	ActionRow{ // S14
-		Accept: 10,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S15
-		Accept: 10,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S16
@@ -87,19 +87,39 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S17
-		Accept: 10,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S18
-		Accept: 10,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S19
-		Accept: 0,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S20
-		Accept: 9,
+		Accept: 0,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S21
+		Accept: 11,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S22
+		Accept: 3,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S23
+		Accept: 3,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S24
+		Accept: 0,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S25
+		Accept: 12,
  		Ignore: "",
  	},
  		

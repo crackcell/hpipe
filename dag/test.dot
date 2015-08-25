@@ -2,17 +2,17 @@ digraph wordcount {
     wordcount1 [
                 name="wordcount1"
                 type="hadoop_streaming"
-                date="${YYYYMMDD}"
+                vars="$date=${YYYYMMDD}"
                 ]
     wordcount2 [
                 name="wordcount2"
                 type="hadoop_streaming"
-                date="$bizdate"
+                vars="$date=$bizdate"
                 ]
     dummy [
            name="dummy"
            type="dummy"
-           bizdate="${YYYYMMDD}+2*$day"
+           vars="$bizdate=${YYYYMMDD}+2*$day"
            ]
     dummy -> wordcount1 -> wordcount2
     dummy -> wordcount2

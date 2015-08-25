@@ -25,7 +25,7 @@ import (
 )
 
 func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
-	f := NewDAGFactory()
+	f := NewFactory()
 	d, err := f.CreateDAGFromFile("./test.dot")
 	if err != nil {
 		t.Error(err)
@@ -40,7 +40,7 @@ func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	f := NewDAGFactory()
+	f := NewFactory()
 	d, err := f.CreateDAGFromBytes(data)
 	if err != nil {
 		t.Error(err)

@@ -53,14 +53,14 @@ func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
 		return nil, err
 	}
 	for _, node := range d.Nodes {
-		for attr, value := range node.Attrs {
-			//fmt.Printf("old: %s\n", value)
-			if resolved, err := symbol.Resolve(strings.Trim(value, "\"'")); err != nil {
+		if v, ok := node.Attrs["vars"]; ok {
+			if resolved, err := symbol.Resolve(strings.Trim(v, "\"'")); err != nil {
 				return nil, err
 			} else {
-				node.Attrs[attr] = resolved.Value.(string)
+				for _, stmt := range resolved {
+					node.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
+				}
 			}
-			//fmt.Println("new:", node.Attrs[attr])
 		}
 	}
 	return d, nil

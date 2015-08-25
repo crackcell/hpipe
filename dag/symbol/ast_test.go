@@ -27,46 +27,23 @@ import (
 )
 
 func TestASTAdd(t *testing.T) {
-	src := "1+2"
+	src := "$res=1+2"
 	//fmt.Printf("src: %s\n", src)
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
-	_, err := p.Parse(l)
+	a, err := p.Parse(l)
 	if err != nil {
 		t.Error(t)
 		return
 	}
 	//fmt.Printf("src: %s\n", a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
 }
 
 func TestASTMinus(t *testing.T) {
-	src := "1-2"
-	//fmt.Printf("src: %s\n", src)
-	p := parser.NewParser()
-	l := lexer.NewLexer([]byte(src))
-	_, err := p.Parse(l)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	//fmt.Printf("res: %v\n", a)
-}
-
-func TestASTTimes(t *testing.T) {
-	src := "3*9"
-	//fmt.Printf("src: %s\n", src)
-	p := parser.NewParser()
-	l := lexer.NewLexer([]byte(src))
-	_, err := p.Parse(l)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	//fmt.Printf("res: %v\n", a)
-}
-
-func TestASTDateFormat1(t *testing.T) {
-	src := "${YYYYMMDD}"
+	src := "$res=1-2"
 	//fmt.Printf("src: %s\n", src)
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
@@ -76,13 +53,45 @@ func TestASTDateFormat1(t *testing.T) {
 		return
 	}
 	//fmt.Printf("res: %v\n", a)
-	if a.(*ast.Expr).Type != ast.Date {
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
+}
+
+func TestASTTimes(t *testing.T) {
+	src := "$res=3*9"
+	//fmt.Printf("src: %s\n", src)
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
+}
+
+func TestASTDateFormat1(t *testing.T) {
+	src := "$res=${YYYYMMDD}"
+	//fmt.Printf("src: %s\n", src)
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
 		t.Error(fmt.Errorf("type error"))
 	}
 }
 
 func TestASTDateFormat2(t *testing.T) {
-	src := "${YYYYMMDD hh:mm:ss}"
+	src := "$res=${YYYYMMDD hh:mm:ss}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)
@@ -92,50 +101,28 @@ func TestASTDateFormat2(t *testing.T) {
 		return
 	}
 	//fmt.Printf("res: %v\n", a)
-	if a.(*ast.Expr).Type != ast.Date {
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
 		t.Error(fmt.Errorf("type error"))
 	}
 }
 
 func TestASTVarAdd(t *testing.T) {
-	src := "$var0+1"
+	src := "$res=$var0+1"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
-	_, err := p.Parse(l)
+	a, err := p.Parse(l)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	//fmt.Printf("src: %s\nres: %v\n", src, a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
 }
 
 func TestASTVarAddDate(t *testing.T) {
-	src := "$var0+${YYYYYMMDD hh:mm:ss}"
-	p := parser.NewParser()
-	l := lexer.NewLexer([]byte(src))
-	_, err := p.Parse(l)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	//fmt.Printf("src: %s\nres: %v\n", src, a)
-}
-
-func TestASTDuration(t *testing.T) {
-	src := "10*$day"
-	p := parser.NewParser()
-	l := lexer.NewLexer([]byte(src))
-	//fmt.Printf("src: %s\n", src)
-	_, err := p.Parse(l)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	//fmt.Printf("res: %v\n", a)
-}
-
-func TestASTString(t *testing.T) {
-	src := "wordcount1"
+	src := "$res=$var0+${YYYYYMMDD hh:mm:ss}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)
@@ -144,7 +131,39 @@ func TestASTString(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if a.(*ast.Expr).Type != ast.String {
+	//fmt.Printf("src: %s\nres: %v\n", src, a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
+}
+
+func TestASTDuration(t *testing.T) {
+	src := "$res=10*$day"
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	//fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+	}
+}
+
+func TestASTString(t *testing.T) {
+	src := "$res=\"wordcount1\""
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	//fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
 		t.Error(fmt.Errorf("type error"))
 		return
 	}

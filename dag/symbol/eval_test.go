@@ -28,7 +28,7 @@ import (
 	"time"
 )
 
-func getTestEvalResult(src string, t *testing.T) *ast.Expr {
+func getTestEvalResult(src string, t *testing.T) []*ast.Stmt {
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	a, err := p.Parse(l)
@@ -37,7 +37,7 @@ func getTestEvalResult(src string, t *testing.T) *ast.Expr {
 		return nil
 	}
 	e := eval.NewEval()
-	res, err := e.Evaluate(a.(*ast.Expr))
+	res, err := e.Evaluate(a.([]*ast.Stmt))
 	if err != nil {
 		t.Error(err)
 		return nil
@@ -46,58 +46,62 @@ func getTestEvalResult(src string, t *testing.T) *ast.Expr {
 }
 
 func TestEvalAdd(t *testing.T) {
-	src := "1+2"
+	src := "$res=1+2"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewInt(3)
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewInt(3))
 	if !res.Equals(check) {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
+		t.Error(fmt.Errorf("%s => %d", src, res.Value.(int)))
 		return
 	}
 	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalMinus(t *testing.T) {
-	src := "1-2"
+	src := "$res=1-2"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewInt(-1)
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewInt(-1))
 	if !res.Equals(check) {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
+		t.Error(fmt.Errorf("%s => %d", src, res.Value.(int)))
 		return
 	}
 	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalTimes(t *testing.T) {
-	src := "3*9"
+	src := "$res=3*9"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewInt(27)
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewInt(27))
 	if !res.Equals(check) {
-		t.Error(fmt.Errorf("%s=%d", src, res.Value.(int)))
+		t.Error(fmt.Errorf("%s => %d", src, res.Value.(int)))
 		return
 	}
 	//fmt.Printf("res: %v\n", res)
 }
 
 func TestEvalDate(t *testing.T) {
-	src := "${YYYYMMDD}"
+	src := "$res=${YYYYMMDD}"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewDate(time.Now(), "YYYYMMDD")
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewDate(time.Now(), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
@@ -106,13 +110,15 @@ func TestEvalDate(t *testing.T) {
 }
 
 func TestEvalDateDurationExtAdd(t *testing.T) {
-	src := "${YYYYMMDD}+2*$day"
+	src := "$res=${YYYYMMDD}+2*$day"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewDate(time.Now().AddDate(0, 0, 2), "YYYYMMDD")
+	res := ret[0]
+	check := ast.NewLeftID("res",
+		ast.NewDate(time.Now().AddDate(0, 0, 2), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
@@ -121,13 +127,15 @@ func TestEvalDateDurationExtAdd(t *testing.T) {
 }
 
 func TestEvalDateDurationExtMinus(t *testing.T) {
-	src := "${YYYYMMDD}-2*$day"
+	src := "$res=${YYYYMMDD}-2*$day"
 	//fmt.Printf("src: %s\n", src)
-	res := getTestEvalResult(src, t)
-	if res == nil {
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
 		return
 	}
-	check := ast.NewDate(time.Now().AddDate(0, 0, -2), "YYYYMMDD")
+	res := ret[0]
+	check := ast.NewLeftID("res",
+		ast.NewDate(time.Now().AddDate(0, 0, -2), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return

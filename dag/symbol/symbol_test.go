@@ -26,13 +26,15 @@ import (
 )
 
 func TestSymbolResolveAll(t *testing.T) {
-	src := "$gmtdate-1*$day"
-	res, err := Resolve(src)
+	src := "$res=$gmtdate-1*$day"
+	ret, err := Resolve(src)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	check := ast.NewDate(time.Now().AddDate(0, 0, -1), "YYYYMMDD")
+	res := ret[0]
+	check := ast.NewLeftID("res",
+		ast.NewDate(time.Now().AddDate(0, 0, -1), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%s=%d", src, res.Value.(string)))
 		return

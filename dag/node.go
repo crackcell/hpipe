@@ -52,6 +52,7 @@ type Node struct {
 	Attrs Attrs
 	Prev  []string
 	Post  []string
+	Vars  map[string]string
 }
 
 func NewNode() *Node {
@@ -59,6 +60,7 @@ func NewNode() *Node {
 		Attrs: NewAttrs(),
 		Prev:  []string{},
 		Post:  []string{},
+		Vars:  make(map[string]string),
 	}
 }
 

@@ -33,7 +33,8 @@ import (
 type NodeType int
 
 const (
-	Var NodeType = iota
+	LeftID NodeType = iota
+	RightID
 	Int
 	Date
 	Duration    // natively supported by time.Duration: hour, minute, second
@@ -42,17 +43,19 @@ const (
 	Operator
 )
 
-type Expr struct {
+type Stmt struct {
 	Type     NodeType
 	Value    interface{}
 	Prop     map[string]interface{}
-	Children []*Expr
+	Children []*Stmt
 }
 
 func (this NodeType) String() string {
 	switch this {
-	case Var:
-		return "Var"
+	case LeftID:
+		return "LeftID"
+	case RightID:
+		return "RightID"
 	case Int:
 		return "Int"
 	case Date:
@@ -69,12 +72,19 @@ func (this NodeType) String() string {
 	return "unknown"
 }
 
-func (this *Expr) Equals(other *Expr) bool {
+func (this *Stmt) Equals(other *Stmt) bool {
 	if this.Type != other.Type {
 		return false
 	}
 	switch this.Type {
-	case Var:
+	case LeftID:
+		if this.Value.(string) != other.Value.(string) ||
+			len(this.Children) != len(other.Children) ||
+			len(this.Children) == 0 ||
+			!this.Children[0].Equals(other.Children[0]) {
+			return false
+		}
+	case RightID:
 		if this.Value.(string) != other.Value.(string) {
 			return false
 		}
@@ -108,11 +118,11 @@ func (this *Expr) Equals(other *Expr) bool {
 	return true
 }
 
-func (this *Expr) String() string {
-	return debugExpr(this, 0)
+func (this *Stmt) String() string {
+	return debugStmt(this, 0)
 }
 
-func debugExpr(expr *Expr, depth int) string {
+func debugStmt(expr *Stmt, depth int) string {
 	indent := strings.Repeat("\t", depth)
 	var str string
 	str += fmt.Sprintf("%sexpr:{\n", indent)
@@ -120,26 +130,37 @@ func debugExpr(expr *Expr, depth int) string {
 	str += fmt.Sprintf("%s\tvalue:%v\n", indent, expr.Value)
 	str += fmt.Sprintf("%s\tprop:%v\n", indent, expr.Prop)
 	for _, child := range expr.Children {
-		str += debugExpr(child, depth+1)
+		str += debugStmt(child, depth+1)
 	}
 	str += fmt.Sprintf("%s}\n", indent)
 	return str
 }
 
-func NewOperatorFromParser(op1 *Expr, op string, op2 *Expr) (*Expr, error) {
-	return &Expr{
+func NewStmtList(stmt *Stmt) []*Stmt {
+	return []*Stmt{stmt}
+}
+
+func AppendStmtList(stmtlist []*Stmt, stmt *Stmt) []*Stmt {
+	return append(stmtlist, stmt)
+}
+
+func NewOperatorFromParser(op1 *Stmt, op string, op2 *Stmt) (*Stmt, error) {
+	if op != "+" && op != "-" && op != "*" && op != "/" && op != "=" {
+		return nil, fmt.Errorf("invalid operator: %s", op)
+	}
+	return &Stmt{
 		Type:  Operator,
 		Value: op,
 		Prop:  make(map[string]interface{}),
-		Children: []*Expr{
+		Children: []*Stmt{
 			op1,
 			op2,
 		},
 	}, nil
 }
 
-func NewInt(n int) *Expr {
-	return &Expr{
+func NewInt(n int) *Stmt {
+	return &Stmt{
 		Type:  Int,
 		Value: strconv.Itoa(n),
 		Prop: map[string]interface{}{
@@ -148,11 +169,11 @@ func NewInt(n int) *Expr {
 	}
 }
 
-func NewIntFromParser(num string) (*Expr, error) {
+func NewIntFromParser(num string) (*Stmt, error) {
 	if n, err := strconv.Atoi(num); err != nil {
 		return nil, err
 	} else {
-		return &Expr{
+		return &Stmt{
 			Type:  Int,
 			Value: num,
 			Prop: map[string]interface{}{
@@ -162,16 +183,41 @@ func NewIntFromParser(num string) (*Expr, error) {
 	}
 }
 
-func NewVarFromParser(lit string) (*Expr, error) {
-	return &Expr{
-		Type:  Var,
+func NewLeftID(id string, children ...*Stmt) *Stmt {
+	return &Stmt{
+		Type:     LeftID,
+		Value:    strings.TrimLeft(id, "$"),
+		Prop:     make(map[string]interface{}),
+		Children: children,
+	}
+}
+
+func NewLeftIDFromParser(lit string) (*Stmt, error) {
+	return &Stmt{
+		Type:  LeftID,
 		Value: strings.TrimLeft(lit, "$"),
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
 
-func NewDate(t stdtime.Time, format string) *Expr {
-	return &Expr{
+func NewRightID(id string) *Stmt {
+	return &Stmt{
+		Type:  RightID,
+		Value: strings.TrimLeft(id, "$"),
+		Prop:  make(map[string]interface{}),
+	}
+}
+
+func NewRightIDFromParser(lit string) (*Stmt, error) {
+	return &Stmt{
+		Type:  RightID,
+		Value: strings.TrimLeft(lit, "$"),
+		Prop:  make(map[string]interface{}),
+	}, nil
+}
+
+func NewDate(t stdtime.Time, format string) *Stmt {
+	return &Stmt{
 		Type:  Date,
 		Value: time.Format(t, format),
 		Prop: map[string]interface{}{
@@ -181,16 +227,16 @@ func NewDate(t stdtime.Time, format string) *Expr {
 	}
 }
 
-func NewDateFromParser(lit string) (*Expr, error) {
-	return &Expr{
+func NewDateFromParser(lit string) (*Stmt, error) {
+	return &Stmt{
 		Type:  Date,
 		Value: strings.Trim(lit, "${}"),
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
 
-func NewDuration(d stdtime.Duration) *Expr {
-	return &Expr{
+func NewDuration(d stdtime.Duration) *Stmt {
+	return &Stmt{
 		Type:  Duration,
 		Value: d.String(),
 		Prop: map[string]interface{}{
@@ -199,8 +245,8 @@ func NewDuration(d stdtime.Duration) *Expr {
 	}
 }
 
-func NewDurationExt(year, month, day int) *Expr {
-	return &Expr{
+func NewDurationExt(year, month, day int) *Stmt {
+	return &Stmt{
 		Type:  DurationExt,
 		Value: fmt.Sprintf("%dY%dM%dD", year, month, day),
 		Prop: map[string]interface{}{
@@ -211,8 +257,8 @@ func NewDurationExt(year, month, day int) *Expr {
 	}
 }
 
-func NewStringFromParser(lit string) (*Expr, error) {
-	return &Expr{
+func NewStringFromParser(lit string) (*Stmt, error) {
+	return &Stmt{
 		Type:  String,
 		Value: lit,
 		Prop:  make(map[string]interface{}),

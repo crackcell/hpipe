@@ -10,35 +10,21 @@
 /**
  *
  *
- * @file var.go
+ * @file yarn.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Wed Aug 19 11:28:39 2015
+ * @date Tue Aug 25 18:28:05 2015
  *
  **/
 
-package symbol
+package exec
 
 import (
-	"github.com/crackcell/hpipe/dag/symbol/ast"
-	"github.com/crackcell/hpipe/dag/symbol/eval"
-	"github.com/crackcell/hpipe/dag/symbol/lexer"
-	"github.com/crackcell/hpipe/dag/symbol/parser"
+//"fmt"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
-
-func Resolve(src string) ([]*ast.Stmt, error) {
-	p := parser.NewParser()
-	l := lexer.NewLexer([]byte(src))
-	a, err := p.Parse(l)
-	if err != nil {
-		return nil, err
-	}
-	e := eval.NewEval()
-	return e.Evaluate(a.([]*ast.Stmt))
-}
 
 //===================================================================
 // Private

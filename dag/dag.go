@@ -50,6 +50,11 @@ func (this *DAG) String() string {
 			str += fmt.Sprintf("\t\t\t%s=%s,\n", attr, value)
 		}
 		str += fmt.Sprintf("\t\t}\n")
+		str += fmt.Sprintf("\t\tvars{\n")
+		for v, value := range node.Vars {
+			str += fmt.Sprintf("\t\t\t%s=%s,\n", v, value)
+		}
+		str += fmt.Sprintf("\t\t}\n")
 		str += fmt.Sprintf("\t}\n")
 	}
 	str += fmt.Sprintf("}\n")

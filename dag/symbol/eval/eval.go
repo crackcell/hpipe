@@ -30,13 +30,13 @@ import (
 //===================================================================
 
 type Eval struct {
-	Root     *ast.Expr
-	Builtins map[string]*ast.Expr
+	Root     *ast.Stmt
+	Builtins map[string]*ast.Stmt
 }
 
 func NewEval() *Eval {
 	return &Eval{
-		Builtins: map[string]*ast.Expr{
+		Builtins: map[string]*ast.Stmt{
 			// Date
 			"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
 			"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
@@ -51,44 +51,54 @@ func NewEval() *Eval {
 	}
 }
 
-func (this *Eval) Evaluate(expr *ast.Expr) (*ast.Expr, error) {
-	return this.evalExpr(expr)
+func (this *Eval) Evaluate(stmtlist []*ast.Stmt) ([]*ast.Stmt, error) {
+	list := []*ast.Stmt{}
+	for _, stmt := range stmtlist {
+		if s, err := this.evalStmt(stmt); err != nil {
+			return nil, err
+		} else {
+			list = append(list, s)
+		}
+	}
+	return list, nil
 }
 
 //===================================================================
 // Private
 //===================================================================
 
-func (this *Eval) evalExpr(expr *ast.Expr) (*ast.Expr, error) {
-	switch expr.Type {
+func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
+	switch stmt.Type {
 	case ast.Operator:
-		op1, err := this.evalExpr(expr.Children[0])
+		op1, err := this.evalStmt(stmt.Children[0])
 		if err != nil {
 			return nil, err
 		}
-		op2, err := this.evalExpr(expr.Children[1])
+		op2, err := this.evalStmt(stmt.Children[1])
 		if err != nil {
 			return nil, err
 		}
-		return this.evalOperator(op1, op2, expr.Value.(string))
+		return this.evalOperator(op1, op2, stmt.Value.(string))
 	case ast.Int:
-		return expr, nil
+		return stmt, nil
 	case ast.Date:
-		return this.evalDate(expr)
+		return this.evalDate(stmt)
 	case ast.Duration:
-		return expr, nil
+		return stmt, nil
 	case ast.DurationExt:
-		return expr, nil
-	case ast.Var:
-		return this.evalVar(expr)
+		return stmt, nil
+	case ast.LeftID:
+		return stmt, nil
+	case ast.RightID:
+		return this.evalRightID(stmt)
 	case ast.String:
-		return expr, nil
+		return stmt, nil
 	default:
-		return nil, fmt.Errorf("unknown expression type: %d", expr.Type)
+		return nil, fmt.Errorf("unknown stmtession type: %d", stmt.Type)
 	}
 }
 
-func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast.Expr, error) {
+func (this *Eval) evalOperator(op1 *ast.Stmt, op2 *ast.Stmt, opstr string) (*ast.Stmt, error) {
 
 	if op1.Type == ast.Int && op2.Type == ast.Int {
 		var res int
@@ -107,6 +117,13 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 			return nil, fmt.Errorf("invalid operator between Integers: %s", opstr)
 		}
 		return ast.NewInt(res), nil
+	}
+
+	if op1.Type == ast.LeftID {
+		if opstr != "=" {
+			return nil, fmt.Errorf("invalid operator for LeftID: %s", opstr)
+		}
+		return ast.NewLeftID(op1.Value.(string), op2), nil
 	}
 
 	if op1.Type == ast.Date && op2.Type == ast.Duration {
@@ -164,29 +181,29 @@ func (this *Eval) evalOperator(op1 *ast.Expr, op2 *ast.Expr, opstr string) (*ast
 		op1.Type, op2.Type)
 }
 
-func (this *Eval) evalDate(expr *ast.Expr) (*ast.Expr, error) {
-	format := expr.Value.(string)
+func (this *Eval) evalDate(stmt *ast.Stmt) (*ast.Stmt, error) {
+	format := stmt.Value.(string)
 	t := stdtime.Now()
-	expr.Value = time.Format(t, format)
-	expr.Prop["time"] = t
-	expr.Prop["format"] = format
-	return expr, nil
+	stmt.Value = time.Format(t, format)
+	stmt.Prop["time"] = t
+	stmt.Prop["format"] = format
+	return stmt, nil
 }
 
-func (this *Eval) evalDuration(expr *ast.Expr) (*ast.Expr, error) {
-	format := expr.Value.(string)
+func (this *Eval) evalDuration(stmt *ast.Stmt) (*ast.Stmt, error) {
+	format := stmt.Value.(string)
 	d, err := stdtime.ParseDuration(format)
 	if err != nil {
 		return nil, fmt.Errorf("invalid duration: %s", format)
 	}
-	expr.Value = d
-	expr.Prop["format"] = format
-	return expr, nil
+	stmt.Value = d
+	stmt.Prop["format"] = format
+	return stmt, nil
 }
 
-func (this *Eval) evalVar(expr *ast.Expr) (*ast.Expr, error) {
-	name := expr.Value.(string)
-	expr.Prop["name"] = name
+func (this *Eval) evalRightID(stmt *ast.Stmt) (*ast.Stmt, error) {
+	name := stmt.Value.(string)
+	stmt.Prop["name"] = name
 	if v, ok := this.Builtins[name]; !ok {
 		return nil, fmt.Errorf("invalid var: %s", name)
 	} else {
