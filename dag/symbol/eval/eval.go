@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/util/time"
+	"os"
 	stdtime "time"
 )
 
@@ -205,7 +206,12 @@ func (this *Eval) evalRightID(stmt *ast.Stmt) (*ast.Stmt, error) {
 	name := stmt.Value.(string)
 	stmt.Prop["name"] = name
 	if v, ok := this.Builtins[name]; !ok {
-		return nil, fmt.Errorf("invalid var: %s", name)
+		env := os.Getenv(name)
+		if len(env) == 0 {
+			return nil, fmt.Errorf("invalid var: %s", name)
+		} else {
+			return ast.NewString(env), nil
+		}
 	} else {
 		return v, nil
 	}

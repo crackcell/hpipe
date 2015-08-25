@@ -200,11 +200,12 @@ func NewLeftIDFromParser(lit string) (*Stmt, error) {
 	}, nil
 }
 
-func NewRightID(id string) *Stmt {
+func NewRightID(id string, children ...*Stmt) *Stmt {
 	return &Stmt{
-		Type:  RightID,
-		Value: strings.TrimLeft(id, "$"),
-		Prop:  make(map[string]interface{}),
+		Type:     RightID,
+		Value:    strings.TrimLeft(id, "$"),
+		Prop:     make(map[string]interface{}),
+		Children: children,
 	}
 }
 
@@ -254,6 +255,14 @@ func NewDurationExt(year, month, day int) *Stmt {
 			"month": month,
 			"day":   day,
 		},
+	}
+}
+
+func NewString(str string) *Stmt {
+	return &Stmt{
+		Type:  String,
+		Value: str,
+		Prop:  make(map[string]interface{}),
 	}
 }
 

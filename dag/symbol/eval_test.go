@@ -24,6 +24,7 @@ import (
 	"github.com/crackcell/hpipe/dag/symbol/eval"
 	"github.com/crackcell/hpipe/dag/symbol/lexer"
 	"github.com/crackcell/hpipe/dag/symbol/parser"
+	"os"
 	"testing"
 	"time"
 )
@@ -136,6 +137,23 @@ func TestEvalDateDurationExtMinus(t *testing.T) {
 	res := ret[0]
 	check := ast.NewLeftID("res",
 		ast.NewDate(time.Now().AddDate(0, 0, -2), "YYYYMMDD"))
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
+		return
+	}
+	//fmt.Printf("res: %v\n", res)
+}
+
+func TestEvalEnv(t *testing.T) {
+	src := "$res=$HADOOP_HOME"
+	os.Setenv("HADOOP_HOME", "/hadoop_home")
+	//fmt.Printf("src: %s\n", src)
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
+		return
+	}
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewString("/hadoop_home"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
