@@ -26,37 +26,41 @@ import (
 // Public APIs
 //===================================================================
 
-type NodeType int
+type JobType int
 
-func ParseNodeType(typ string) NodeType {
+func ParseJobType(typ string) JobType {
 	switch typ {
 	case "dummy":
-		return DummyNode
+		return DummyJob
 	case "hadoop_streaming":
-		return HadoopStreamingNode
+		return HadoopStreamingJob
+	case "shell":
+		return ShellJob
 	default:
-		return UnknownNode
+		return UnknownJob
 	}
 }
 
 const (
-	DummyNode NodeType = iota
-	HadoopStreamingNode
-	NodeCount
-	UnknownNode
+	DummyJob JobType = iota
+	HadoopStreamingJob
+	ShellJob
+	JobCount
+	UnknownJob
 )
 
-type Node struct {
-	Name  string
-	Type  NodeType
-	Attrs Attrs
-	Prev  []string
-	Post  []string
-	Vars  map[string]string
+type Job struct {
+	Name     string
+	Type     JobType
+	Attrs    Attrs
+	Prev     []string
+	Post     []string
+	Vars     map[string]string
+	Finished bool
 }
 
-func NewNode() *Node {
-	return &Node{
+func NewJob() *Job {
+	return &Job{
 		Attrs: NewAttrs(),
 		Prev:  []string{},
 		Post:  []string{},
@@ -64,16 +68,16 @@ func NewNode() *Node {
 	}
 }
 
-func (this *Node) Assign(node *Node) {
-	this.Name = node.Name
-	this.Type = node.Type
-	this.Attrs = node.Attrs
-	this.Prev = node.Prev
-	this.Post = node.Post
+func (this *Job) Assign(job *Job) {
+	this.Name = job.Name
+	this.Type = job.Type
+	this.Attrs = job.Attrs
+	this.Prev = job.Prev
+	this.Post = job.Post
 }
 
-func (this *Node) String() string {
-	return fmt.Sprintf("Node{name=%s,attrs=%v,prev=%v,post=%v}",
+func (this *Job) String() string {
+	return fmt.Sprintf("Job{name=%s,attrs=%v,prev=%v,post=%v}",
 		this.Name, this.Attrs, this.Prev, this.Post)
 }
 

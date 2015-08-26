@@ -30,6 +30,7 @@ import (
 var (
 	Help      bool
 	Verbose   bool
+	WorkPath  string
 	EntryFile string
 )
 
@@ -38,6 +39,8 @@ func InitFlags() {
 	flag.BoolVar(&Help, "h", false, "Print help message")
 	flag.BoolVar(&Verbose, "verbose", false, "Use verbose output")
 	flag.BoolVar(&Verbose, "v", false, "Use verbose output")
+	flag.StringVar(&WorkPath, "path", "./", "Working path")
+	flag.StringVar(&WorkPath, "p", "./", "Working path")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
 }

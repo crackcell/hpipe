@@ -55,17 +55,17 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 	for src, dests := range graph.Edges.SrcToDsts {
 		for dest, _ := range dests {
 
-			if orig, ok := p.Nodes[src]; !ok {
-				n := dotNameToDAGNode(graph, src)
+			if orig, ok := p.Jobs[src]; !ok {
+				n := dotNameToDAGJob(graph, src)
 				n.Post = append(n.Post, dest)
-				p.Nodes[src] = n
+				p.Jobs[src] = n
 			} else {
 				orig.Post = append(orig.Post, dest)
 			}
-			if orig, ok := p.Nodes[dest]; !ok {
-				n := dotNameToDAGNode(graph, dest)
+			if orig, ok := p.Jobs[dest]; !ok {
+				n := dotNameToDAGJob(graph, dest)
 				n.Prev = append(n.Prev, src)
-				p.Nodes[dest] = n
+				p.Jobs[dest] = n
 			} else {
 				orig.Prev = append(orig.Prev, src)
 			}
@@ -89,19 +89,19 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 // Private
 //===================================================================
 
-func dotToDAGNode(node *dot.Node) *Node {
-	p := NewNode()
-	p.Name = node.Name
-	p.Attrs = dotToDAGAttrs(node.Attrs)
-	p.Type = getNodeTypeFromAttrs(p.Attrs)
+func dotToDAGJob(job *dot.Node) *Job {
+	p := NewJob()
+	p.Name = job.Name
+	p.Attrs = dotToDAGAttrs(job.Attrs)
+	p.Type = getJobTypeFromAttrs(p.Attrs)
 	return p
 }
 
-func dotNameToDAGNode(graph *dot.Graph, name string) *Node {
-	if dotNode, ok := graph.Nodes.Lookup[name]; !ok {
-		panic("no corresponding node")
+func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
+	if dotJob, ok := graph.Nodes.Lookup[name]; !ok {
+		panic("no corresponding job")
 	} else {
-		return dotToDAGNode(dotNode)
+		return dotToDAGJob(dotJob)
 	}
 }
 
@@ -113,10 +113,10 @@ func dotToDAGAttrs(attrs dot.Attrs) Attrs {
 	return p
 }
 
-func getNodeTypeFromAttrs(attrs Attrs) NodeType {
+func getJobTypeFromAttrs(attrs Attrs) JobType {
 	if val, ok := attrs["type"]; !ok {
-		return UnknownNode
+		return UnknownJob
 	} else {
-		return ParseNodeType(val)
+		return ParseJobType(val)
 	}
 }

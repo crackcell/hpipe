@@ -52,13 +52,13 @@ func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, node := range d.Nodes {
-		if v, ok := node.Attrs["vars"]; ok {
+	for _, job := range d.Jobs {
+		if v, ok := job.Attrs["vars"]; ok {
 			if resolved, err := symbol.Resolve(strings.Trim(v, "\"'")); err != nil {
 				return nil, err
 			} else {
 				for _, stmt := range resolved {
-					node.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
+					job.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
 				}
 			}
 		}

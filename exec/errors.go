@@ -10,36 +10,25 @@
 /**
  *
  *
- * @file shell.go
+ * @file errors.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Tue Aug 25 18:32:30 2015
+ * @date Wed Aug 26 18:12:08 2015
  *
  **/
 
 package exec
 
 import (
-	//"fmt"
-	"github.com/crackcell/hpipe/dag"
+	"errors"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-type ShellExec struct {
-	WorkPath string
-}
-
-func NewShellExec(workPath string) *ShellExec {
-	return &ShellExec{
-		WorkPath: workPath,
-	}
-}
-
-func (this *ShellExec) Submit(job *dag.Job) error {
-	return nil
-}
+var (
+	JobFailedError = errors.New("job failed")
+)
 
 //===================================================================
 // Private

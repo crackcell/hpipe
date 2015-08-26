@@ -28,30 +28,30 @@ import (
 
 type DAG struct {
 	Name      string
-	Nodes     map[string]*Node
+	Jobs      map[string]*Job
 	InDegrees map[string]int
 }
 
 func NewDAG(name string) *DAG {
 	return &DAG{
 		Name:      name,
-		Nodes:     make(map[string]*Node),
+		Jobs:      make(map[string]*Job),
 		InDegrees: make(map[string]int),
 	}
 }
 
 func (this *DAG) String() string {
 	str := fmt.Sprintf("dag{\n\tname=%s,\n", this.Name)
-	for name, node := range this.Nodes {
-		str += fmt.Sprintf("\tnode{\n")
+	for name, job := range this.Jobs {
+		str += fmt.Sprintf("\tjob{\n")
 		str += fmt.Sprintf("\t\tname=%s,\n", name)
 		str += fmt.Sprintf("\t\tattrs{\n")
-		for attr, value := range node.Attrs {
+		for attr, value := range job.Attrs {
 			str += fmt.Sprintf("\t\t\t%s=%s,\n", attr, value)
 		}
 		str += fmt.Sprintf("\t\t}\n")
 		str += fmt.Sprintf("\t\tvars{\n")
-		for v, value := range node.Vars {
+		for v, value := range job.Vars {
 			str += fmt.Sprintf("\t\t\t%s=%s,\n", v, value)
 		}
 		str += fmt.Sprintf("\t\t}\n")

@@ -40,6 +40,7 @@ Usage:
 Options:
     -h, --help     Print this message
     -v, --verbose  Use verbose output
+    -p, --path     Working path
     -f, --flow     Entry filename of workflow
 `
 )
