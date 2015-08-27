@@ -19,7 +19,7 @@
 package exec
 
 import (
-	//"fmt"
+	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 )
@@ -36,11 +36,12 @@ func NewHadoopExec() *HadoopExec {
 }
 
 func (this *HadoopExec) Run(job *dag.Job) error {
-	if _, err := cmdExec(job.Name, "bash",
-		config.WorkPath+"/"+job.Attrs["script"]); err != nil {
+	retcode, err := cmdExec(job.Name, "bash",
+		config.WorkPath+"/"+job.Attrs["script"])
+	if err != nil {
 		return err
 	}
-	return nil
+	return fmt.Errorf("script failed: %d", retcode)
 }
 
 func (this *HadoopExec) GetJobStatus(job *dag.Job) dag.JobStatus {

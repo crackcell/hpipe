@@ -97,7 +97,9 @@ func (this *DAGExec) RunQueue(queue []*dag.Job) error {
 		if job.Type == dag.DummyJob {
 			job.Status = dag.Finished
 		} else {
-			if err := jexec.Run(job); err != nil {
+			err := jexec.Run(job)
+			if err != nil {
+				job.Status = dag.Failed
 				return err
 			}
 			job.Status = jexec.GetJobStatus(job)
