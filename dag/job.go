@@ -23,17 +23,37 @@ import (
 )
 
 //===================================================================
-// Public APIs
+// JobType
 //===================================================================
 
 type JobType int
+
+const (
+	DummyJob JobType = iota
+	HadoopJob
+	ShellJob
+	UnknownJob
+)
+
+func (typ JobType) String() string {
+	switch typ {
+	case DummyJob:
+		return "dummy"
+	case HadoopJob:
+		return "hadoop"
+	case ShellJob:
+		return "shell"
+	default:
+		return "unknown"
+	}
+}
 
 func ParseJobType(typ string) JobType {
 	switch typ {
 	case "dummy":
 		return DummyJob
-	case "hadoop_streaming":
-		return HadoopStreamingJob
+	case "hadoop":
+		return HadoopJob
 	case "shell":
 		return ShellJob
 	default:
@@ -41,22 +61,62 @@ func ParseJobType(typ string) JobType {
 	}
 }
 
+//===================================================================
+// JobStatus
+//===================================================================
+
+type JobStatus int
+
 const (
-	DummyJob JobType = iota
-	HadoopStreamingJob
-	ShellJob
-	JobCount
-	UnknownJob
+	NotStarted = iota
+	Started
+	Finished
+	Failed
+	UnknownStatus
 )
 
+func (status JobStatus) String() string {
+	switch status {
+	case NotStarted:
+		return "not_started"
+	case Started:
+		return "started"
+	case Finished:
+		return "finished"
+	case Failed:
+		return "failed"
+	default:
+		return "unknown"
+	}
+}
+
+func ParseJobStatus(status string) JobStatus {
+	switch status {
+	case "not_started":
+		return NotStarted
+	case "started":
+		return Started
+	case "finished":
+		return Finished
+	case "failed":
+		return Failed
+	default:
+		return UnknownStatus
+	}
+}
+
+//===================================================================
+// Job
+//===================================================================
+
 type Job struct {
-	Name     string
-	Type     JobType
-	Attrs    Attrs
-	Prev     []string
-	Post     []string
-	Vars     map[string]string
-	Finished bool
+	Name   string
+	Type   JobType
+	Status JobStatus
+	Attrs  Attrs
+	Prev   []string
+	Post   []string
+	Vars   map[string]string
 }
 
 func NewJob() *Job {
@@ -71,6 +131,7 @@ func NewJob() *Job {
 func (this *Job) Assign(job *Job) {
 	this.Name = job.Name
 	this.Type = job.Type
+	this.Status = job.Status
 	this.Attrs = job.Attrs
 	this.Prev = job.Prev
 	this.Post = job.Post

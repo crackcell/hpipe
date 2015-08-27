@@ -19,14 +19,38 @@
 package exec
 
 import (
-//"fmt"
+	//"fmt"
+	"github.com/crackcell/hpipe/config"
+	"github.com/crackcell/hpipe/dag"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
-type HadoopExec struct{}
+type HadoopExec struct {
+}
+
+func NewHadoopExec() *HadoopExec {
+	return &HadoopExec{}
+}
+
+func (this *HadoopExec) Run(job *dag.Job) error {
+	if _, err := cmdExec(job.Name, "bash",
+		config.WorkPath+"/"+job.Attrs["script"]); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (this *HadoopExec) GetJobStatus(job *dag.Job) dag.JobStatus {
+	// TODO
+	return dag.Finished
+}
+
+func (this *HadoopExec) CheckJobAttrs(job *dag.Job) bool {
+	return checkJobAttr(job, []string{"script", "input", "output"})
+}
 
 //===================================================================
 // Private

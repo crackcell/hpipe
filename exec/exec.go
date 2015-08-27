@@ -20,9 +20,34 @@ package exec
 
 import (
 	"fmt"
-	"github.com/crackcell/hpipe/config"
+	//"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
+	"github.com/crackcell/hpipe/log"
 )
+
+//===================================================================
+// JobExec
+//===================================================================
+
+type JobExec interface {
+	Run(job *dag.Job) error
+	GetJobStatus(job *dag.Job) dag.JobStatus
+	CheckJobAttrs(job *dag.Job) bool
+}
+
+var JobExecs = map[dag.JobType]JobExec{
+	dag.DummyJob:  NewDummyExec(),
+	dag.HadoopJob: NewHadoopExec(),
+	dag.ShellJob:  NewShellExec(),
+}
+
+func GetJobExec(job *dag.Job) (JobExec, error) {
+	if e, ok := JobExecs[job.Type]; !ok {
+		return nil, fmt.Errorf("unknown job type: %v", job.Type)
+	} else {
+		return e, nil
+	}
+}
 
 //===================================================================
 // DAGExec
@@ -44,57 +69,41 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 			}
 		}
 
-		fmt.Printf("run: ")
-		for _, j := range queue {
-			fmt.Printf("%s ", j.Name)
-		}
-		fmt.Println()
-
 		if err := this.RunQueue(queue); err != nil {
 			return err
 		}
 
-		for _, j := range queue {
-			if j.Finished == true {
-				delete(d.InDegrees, j.Name)
-				for _, post := range j.Post {
+		for _, job := range queue {
+			if job.Status == dag.Finished {
+				delete(d.InDegrees, job.Name)
+				for _, post := range job.Post {
 					d.InDegrees[post] = d.InDegrees[post] - 1
 				}
 			}
 		}
 	}
+
+	log.Info("All jobs done")
 	return nil
 }
 
 func (this *DAGExec) RunQueue(queue []*dag.Job) error {
-	for _, j := range queue {
-		j.Finished = true
+	for _, job := range queue {
+		log.Debugf("run job: %s", job.Name)
+		jexec, err := GetJobExec(job)
+		if err != nil {
+			return err
+		}
+		if job.Type == dag.DummyJob {
+			job.Status = dag.Finished
+		} else {
+			if err := jexec.Run(job); err != nil {
+				return err
+			}
+			job.Status = jexec.GetJobStatus(job)
+		}
 	}
 	return nil
-}
-
-//===================================================================
-// JobExec
-//===================================================================
-
-type JobExec interface {
-	Submit(d *dag.Job) error
-}
-
-func NewJobExec(job *dag.Job) (JobExec, error) {
-	switch job.Type {
-	case dag.DummyJob:
-		// TODO
-		return nil, nil
-	case dag.HadoopStreamingJob:
-		// TODO
-		return nil, nil
-	case dag.ShellJob:
-		fmt.Println("workpath:", config.WorkPath)
-		return NewShellExec(config.WorkPath), nil
-	default:
-		return nil, fmt.Errorf("unknown job type: %s", job.Type)
-	}
 }
 
 //===================================================================

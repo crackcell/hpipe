@@ -19,13 +19,15 @@
 package exec
 
 import (
+	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"testing"
 )
 
 func TestDAGExecRun(t *testing.T) {
+	config.WorkPath = "../example/wordcount"
 	f := dag.NewFactory()
-	d, err := f.CreateDAGFromFile("../example/wordcount.dot")
+	d, err := f.CreateDAGFromFile(config.WorkPath + "/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return

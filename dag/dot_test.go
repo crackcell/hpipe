@@ -23,32 +23,9 @@ import (
 	"testing"
 )
 
-func TestDotLoaderLoadBytes(t *testing.T) {
-	d := NewDotLoader()
-	g, err := d.LoadBytes([]byte(`
-digraph wordcount_example {
-  wordcount1 [
-    name="wordcount1"
-    date="$bizdate"
-  ]
-  wordcount2 [
-    name="wordcount2"
-    date="${YYYYMMDD}"
-  ]
-  wordcount1 -> wordcount2 -> wordcount3
-  wordcount1 -> wordcount3
-}
-`))
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Println(g)
-}
-
 func TestDotLoaderLoadFile(t *testing.T) {
 	d := NewDotLoader()
-	g, err := d.LoadFile("./test.dot")
+	g, err := d.LoadFile("../example/wordcount/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return

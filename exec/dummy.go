@@ -10,9 +10,9 @@
 /**
  *
  *
- * @file shell.go
+ * @file hadoop.go
  * @author Menglong TAN <tanmenglong@gmail.com>
- * @date Tue Aug 25 18:32:30 2015
+ * @date Tue Aug 25 18:28:05 2015
  *
  **/
 
@@ -20,6 +20,7 @@ package exec
 
 import (
 	//"fmt"
+	//"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 )
 
@@ -27,23 +28,22 @@ import (
 // Public APIs
 //===================================================================
 
-type ShellExec struct {
+type DummyExec struct {
 }
 
-func NewShellExec() *ShellExec {
-	return &ShellExec{}
+func NewDummyExec() *DummyExec {
+	return &DummyExec{}
 }
 
-func (this *ShellExec) Run(job *dag.Job) error {
+func (this *DummyExec) Run(job *dag.Job) error {
 	return nil
 }
 
-func (this *ShellExec) GetJobStatus(job *dag.Job) dag.JobStatus {
-	// TODO
-	return dag.Finished
+func (this *DummyExec) GetJobStatus(job *dag.Job) dag.JobStatus {
+	return dag.NotStarted
 }
 
-func (this *ShellExec) CheckJobAttrs(job *dag.Job) bool {
+func (this *DummyExec) CheckJobAttrs(job *dag.Job) bool {
 	return true
 }
 

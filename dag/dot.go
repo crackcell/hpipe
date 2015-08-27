@@ -19,9 +19,11 @@
 package dag
 
 import (
+	//"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"io/ioutil"
+	"strings"
 )
 
 //===================================================================
@@ -89,17 +91,17 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 // Private
 //===================================================================
 
-func dotToDAGJob(job *dot.Node) *Job {
+func dotToDAGJob(node *dot.Node) *Job {
 	p := NewJob()
-	p.Name = job.Name
-	p.Attrs = dotToDAGAttrs(job.Attrs)
+	p.Name = node.Name
+	p.Attrs = dotToDAGAttrs(node.Attrs)
 	p.Type = getJobTypeFromAttrs(p.Attrs)
 	return p
 }
 
 func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
 	if dotJob, ok := graph.Nodes.Lookup[name]; !ok {
-		panic("no corresponding job")
+		panic("no corresponding node")
 	} else {
 		return dotToDAGJob(dotJob)
 	}
@@ -108,7 +110,7 @@ func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
 func dotToDAGAttrs(attrs dot.Attrs) Attrs {
 	p := NewAttrs()
 	for k, v := range attrs {
-		p.Set(k, v)
+		p.Set(k, strings.Trim(v, "\""))
 	}
 	return p
 }
