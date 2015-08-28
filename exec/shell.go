@@ -47,10 +47,6 @@ func (this *ShellExec) GetJobStatus(job *dag.Job) dag.JobStatus {
 	return dag.Finished
 }
 
-func (this *ShellExec) CheckJobAttrs(job *dag.Job) bool {
-	return true
-}
-
 //===================================================================
 // Private
 //===================================================================

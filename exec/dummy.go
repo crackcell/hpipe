@@ -47,10 +47,6 @@ func (this *DummyExec) GetJobStatus(job *dag.Job) dag.JobStatus {
 	return dag.NotStarted
 }
 
-func (this *DummyExec) CheckJobAttrs(job *dag.Job) bool {
-	return true
-}
-
 //===================================================================
 // Private
 //===================================================================

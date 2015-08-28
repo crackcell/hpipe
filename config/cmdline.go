@@ -20,7 +20,7 @@ package config
 
 import (
 	"flag"
-	_ "fmt"
+	//"fmt"
 )
 
 //===================================================================
@@ -28,10 +28,12 @@ import (
 //===================================================================
 
 var (
-	Help      bool
-	Verbose   bool
-	WorkPath  string
-	EntryFile string
+	Help               bool
+	Verbose            bool
+	WorkPath           string
+	EntryFile          string
+	NameNode           string
+	HadoopStreamingJar string
 )
 
 func InitFlags() {
@@ -43,6 +45,8 @@ func InitFlags() {
 	flag.StringVar(&WorkPath, "p", "./", "Working path")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
+	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url, namenode:8020 eg.")
+	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
 }
 
 func Parse() {

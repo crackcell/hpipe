@@ -9,16 +9,19 @@
 #
 #===========================================================================
 
-.PHONY : all output clean help hpipe-run
+.PHONY : all deps output clean help hpipe-run
 
 all : output
+
+deps :
+	go get github.com/colinmarc/hdfs
 
 output : hpipe-run
 	mkdir -p output/bin
 	mv hpipe-run/hpipe-run output/bin/
 #	cp scripts/* output/bin/
 
-hpipe-run :
+hpipe-run : deps
 	cd hpipe-run; go build
 
 clean :

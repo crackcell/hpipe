@@ -32,6 +32,12 @@ func TestDAGExecRun(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	dexec := NewDAGExec()
+	config.NameNode = "hpc0:8020"
+	config.HadoopStreamingJar = "/usr/lib/hadoop-mapreduce/hadoop-streaming.jar"
+	dexec, err := NewDAGExec()
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	dexec.Run(d)
 }

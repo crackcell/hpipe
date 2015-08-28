@@ -33,21 +33,6 @@ type JobExec interface {
 	Setup() error
 	Run(job *dag.Job) error
 	GetJobStatus(job *dag.Job) dag.JobStatus
-	CheckJobAttrs(job *dag.Job) bool
-}
-
-var JobExecs = map[dag.JobType]JobExec{
-	dag.DummyJob:  NewDummyExec(),
-	dag.HadoopJob: NewHadoopExec(),
-	dag.ShellJob:  NewShellExec(),
-}
-
-func GetJobExec(job *dag.Job) (JobExec, error) {
-	if e, ok := JobExecs[job.Type]; !ok {
-		return nil, fmt.Errorf("unknown job type: %v", job.Type)
-	} else {
-		return e, nil
-	}
 }
 
 //===================================================================
@@ -55,10 +40,25 @@ func GetJobExec(job *dag.Job) (JobExec, error) {
 //===================================================================
 
 type DAGExec struct {
+	JobExec map[dag.JobType]JobExec
 }
 
-func NewDAGExec() *DAGExec {
-	return &DAGExec{}
+func NewDAGExec() (*DAGExec, error) {
+	jobExec := map[dag.JobType]JobExec{
+		dag.DummyJob:  NewDummyExec(),
+		dag.HadoopJob: NewHadoopExec(),
+		dag.ShellJob:  NewShellExec(),
+	}
+
+	for _, jexec := range jobExec {
+		if err := jexec.Setup(); err != nil {
+			return nil, err
+		}
+	}
+
+	return &DAGExec{
+		JobExec: jobExec,
+	}, nil
 }
 
 func (this *DAGExec) Run(d *dag.DAG) error {
@@ -91,13 +91,14 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 func (this *DAGExec) RunQueue(queue []*dag.Job) error {
 	for _, job := range queue {
 		log.Debugf("run job: %s", job.Name)
-		jexec, err := GetJobExec(job)
+		jexec, err := this.getJobExec(job)
 		if err != nil {
 			return err
 		}
 		if job.Type == dag.DummyJob {
 			job.Status = dag.Finished
 		} else {
+			job.Status = jexec.GetJobStatus(job)
 			err := jexec.Run(job)
 			if err != nil {
 				job.Status = dag.Failed
@@ -112,3 +113,11 @@ func (this *DAGExec) RunQueue(queue []*dag.Job) error {
 //===================================================================
 // Private
 //===================================================================
+
+func (this *DAGExec) getJobExec(job *dag.Job) (JobExec, error) {
+	if e, ok := this.JobExec[job.Type]; !ok {
+		return nil, fmt.Errorf("unknown job type: %v", job.Type)
+	} else {
+		return e, nil
+	}
+}
