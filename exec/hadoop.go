@@ -29,10 +29,19 @@ import (
 //===================================================================
 
 type HadoopExec struct {
+	HadoopPrefix string
+	Input        string
+	Output       string
+	Mapper       string
+	Reducer      string
 }
 
 func NewHadoopExec() *HadoopExec {
 	return &HadoopExec{}
+}
+
+func (this *HadoopExec) Setup() error {
+	return nil
 }
 
 func (this *HadoopExec) Run(job *dag.Job) error {

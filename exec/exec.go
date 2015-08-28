@@ -30,6 +30,7 @@ import (
 //===================================================================
 
 type JobExec interface {
+	Setup() error
 	Run(job *dag.Job) error
 	GetJobStatus(job *dag.Job) dag.JobStatus
 	CheckJobAttrs(job *dag.Job) bool

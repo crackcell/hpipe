@@ -35,6 +35,10 @@ func NewDummyExec() *DummyExec {
 	return &DummyExec{}
 }
 
+func (this *DummyExec) Setup() error {
+	return nil
+}
+
 func (this *DummyExec) Run(job *dag.Job) error {
 	return nil
 }

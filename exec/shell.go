@@ -34,6 +34,10 @@ func NewShellExec() *ShellExec {
 	return &ShellExec{}
 }
 
+func (this *ShellExec) Setup() error {
+	return nil
+}
+
 func (this *ShellExec) Run(job *dag.Job) error {
 	return nil
 }
