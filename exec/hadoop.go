@@ -24,6 +24,7 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
+	"os"
 	"strings"
 )
 
@@ -70,38 +71,45 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	if err != nil {
 		return err
 	}
-	return fmt.Errorf("script failed: %d", retcode)
+	if retcode != 0 {
+		return fmt.Errorf("script failed: %d", retcode)
+	}
+	return nil
 }
 
-func (this *HadoopExec) GetJobStatus(job *dag.Job) dag.JobStatus {
+func (this *HadoopExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 	output := strings.TrimRight(job.Attrs["output"], "/")
-	if this.isFileExist(output + ".hpipe.success") {
-		return dag.Finished
-	} else if this.isFileExist(output + ".hpipe.failed") {
-		return dag.Failed
-	} else if this.isFileExist(output + ".hpipe.started") {
-		return dag.Started
+	for status, flag := range hdfsJobStatusFlags {
+		if exist, err := this.isFileExist(output + flag); err != nil {
+			return dag.UnknownStatus, err
+		} else if exist {
+			return status, err
+		}
 	}
-	return dag.NotStarted
+	return dag.NotStarted, nil
 }
 
 //===================================================================
 // Private
 //===================================================================
 
-func (this *HadoopExec) isFileExist(path string) bool {
+var hdfsJobStatusFlags = map[dag.JobStatus]string{
+	dag.Started:  ".hpipe.started",
+	dag.Finished: ".hpipe.finished",
+	dag.Failed:   ".hpipe.failed",
+}
+
+func (this *HadoopExec) isFileExist(path string) (bool, error) {
 	_, err := this.HDFSClient.Stat(path)
 	if err != nil {
-		/*
-			if os.IsNotExist(err) {
-				return false
-			}
-		*/
-		log.Debugf("path not exist: %s", path)
-		return false
+		if os.IsNotExist(err) {
+			log.Debugf("path not exist: %s", path)
+			return false, nil
+		}
+		return false, err
 	}
 	log.Debugf("path exist: %s", path)
-	return true
+	return true, nil
 }
 
 func (this *HadoopExec) genCmdArgs(job *dag.Job) []string {

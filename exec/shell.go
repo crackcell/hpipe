@@ -42,9 +42,8 @@ func (this *ShellExec) Run(job *dag.Job) error {
 	return nil
 }
 
-func (this *ShellExec) GetJobStatus(job *dag.Job) dag.JobStatus {
-	// TODO
-	return dag.Finished
+func (this *ShellExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
+	return dag.UnknownStatus, nil
 }
 
 //===================================================================

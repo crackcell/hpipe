@@ -32,7 +32,7 @@ import (
 type JobExec interface {
 	Setup() error
 	Run(job *dag.Job) error
-	GetJobStatus(job *dag.Job) dag.JobStatus
+	GetStatus(job *dag.Job) (dag.JobStatus, error)
 }
 
 //===================================================================
@@ -70,7 +70,7 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 			}
 		}
 
-		if err := this.RunQueue(queue); err != nil {
+		if err := this.runQueue(queue); err != nil {
 			return err
 		}
 
@@ -88,7 +88,11 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 	return nil
 }
 
-func (this *DAGExec) RunQueue(queue []*dag.Job) error {
+//===================================================================
+// Private
+//===================================================================
+
+func (this *DAGExec) runQueue(queue []*dag.Job) error {
 	for _, job := range queue {
 		log.Debugf("run job: %s", job.Name)
 		jexec, err := this.getJobExec(job)
@@ -98,21 +102,30 @@ func (this *DAGExec) RunQueue(queue []*dag.Job) error {
 		if job.Type == dag.DummyJob {
 			job.Status = dag.Finished
 		} else {
-			job.Status = jexec.GetJobStatus(job)
-			err := jexec.Run(job)
+			status, err := jexec.GetStatus(job)
 			if err != nil {
+				return err
+			}
+
+			switch status {
+			case dag.Finished:
+				continue
+			case dag.Started:
+				log.Warnf("job is already started: %s", job.Name)
+				continue
+			case dag.UnknownStatus:
+				log.Fatalf("job is in unknown status: %s", job.Name)
+				return fmt.Errorf("job is in unknown status: %s", job.Name)
+			}
+
+			if err = jexec.Run(job); err != nil {
 				job.Status = dag.Failed
 				return err
 			}
-			job.Status = jexec.GetJobStatus(job)
 		}
 	}
 	return nil
 }
-
-//===================================================================
-// Private
-//===================================================================
 
 func (this *DAGExec) getJobExec(job *dag.Job) (JobExec, error) {
 	if e, ok := this.JobExec[job.Type]; !ok {
