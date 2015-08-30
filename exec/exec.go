@@ -62,13 +62,8 @@ func NewDAGExec() (*DAGExec, error) {
 }
 
 func (this *DAGExec) Run(d *dag.DAG) error {
-	for len(d.InDegrees) != 0 {
-		queue := []*dag.Job{}
-		for name, indegree := range d.InDegrees {
-			if indegree == 0 {
-				queue = append(queue, d.Jobs[name])
-			}
-		}
+	queue := this.genRunQueue(d)
+	for len(queue) != 0 {
 
 		if err := this.runQueue(queue); err != nil {
 			return err
@@ -76,12 +71,11 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 
 		for _, job := range queue {
 			if job.Status == dag.Finished {
-				delete(d.InDegrees, job.Name)
-				for _, post := range job.Post {
-					d.InDegrees[post] = d.InDegrees[post] - 1
-				}
+				this.markJobFinished(job, d)
 			}
 		}
+
+		queue = this.genRunQueue(d)
 	}
 
 	log.Info("All jobs done")
@@ -91,6 +85,20 @@ func (this *DAGExec) Run(d *dag.DAG) error {
 //===================================================================
 // Private
 //===================================================================
+
+func (this *DAGExec) genRunQueue(d *dag.DAG) []*dag.Job {
+	queue := []*dag.Job{}
+	for name, in := range d.InDegrees {
+		job, ok := d.Jobs[name]
+		if !ok {
+			panic(fmt.Errorf("panic: no corresponding job"))
+		}
+		if in == 0 && job.Status != dag.Finished && job.Status != dag.Started {
+			queue = append(queue, job)
+		}
+	}
+	return queue
+}
 
 func (this *DAGExec) runQueue(queue []*dag.Job) error {
 	for _, job := range queue {
@@ -106,8 +114,10 @@ func (this *DAGExec) runQueue(queue []*dag.Job) error {
 			if err != nil {
 				return err
 			}
+			job.Status = status
+			log.Debugf("check job status: %s -> %s", job.Name, status)
 
-			switch status {
+			switch job.Status {
 			case dag.Finished:
 				continue
 			case dag.Started:
@@ -122,6 +132,9 @@ func (this *DAGExec) runQueue(queue []*dag.Job) error {
 				job.Status = dag.Failed
 				return err
 			}
+			status, err = jexec.GetStatus(job)
+			job.Status = status
+			log.Debugf("check job status: %s -> %s", job.Name, status)
 		}
 	}
 	return nil
@@ -132,5 +145,15 @@ func (this *DAGExec) getJobExec(job *dag.Job) (JobExec, error) {
 		return nil, fmt.Errorf("unknown job type: %v", job.Type)
 	} else {
 		return e, nil
+	}
+}
+
+func (this *DAGExec) markJobFinished(job *dag.Job, d *dag.DAG) {
+	job.Status = dag.Finished
+	for _, post := range job.Post {
+		in := d.InDegrees[post]
+		if in != 0 {
+			d.InDegrees[post] = in - 1
+		}
 	}
 }
