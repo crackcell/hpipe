@@ -67,12 +67,13 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	if !checkJobAttr(job, []string{"mapper", "input", "output"}) {
 		return fmt.Errorf("invalid job")
 	}
+
+	// !!!VERY IMPORTANT!!!
+	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
+
 	this.deleteStatusFiles(job)
-
-	// TODO: create parent folder of output to make sure .hpipe.started file
-	//       can be created.
-
+	this.createOutput(job)
 	this.createStatusFile(job, dag.Started)
 	defer this.deleteStatusFile(job, dag.Started)
 
@@ -121,6 +122,14 @@ func (this *HadoopExec) isFileExist(path string) (bool, error) {
 	}
 	log.Debugf("path exist: %s", path)
 	return true, nil
+}
+
+func (this *HadoopExec) createOutput(job *dag.Job) error {
+	tokens := strings.Split(job.Attrs["output"], "/")
+	if len(tokens) <= 1 {
+		return nil
+	}
+	return this.hdfsMkdirp(strings.Join(tokens[:len(tokens)-1], "/"))
 }
 
 func (this *HadoopExec) createStatusFile(job *dag.Job, status dag.JobStatus) {
