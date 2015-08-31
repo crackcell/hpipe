@@ -10,13 +10,13 @@
 /**
  *
  *
- * @file exec_test.go
+ * @file sched_test.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Wed Aug 26 18:58:32 2015
  *
  **/
 
-package exec
+package sched
 
 import (
 	"github.com/crackcell/hpipe/config"
@@ -25,7 +25,7 @@ import (
 )
 
 func TestDAGExecRun(t *testing.T) {
-	config.WorkPath = "../example/wordcount"
+	config.WorkPath = "../examples/wordcount"
 	f := dag.NewFactory()
 	d, err := f.CreateDAGFromFile(config.WorkPath + "/wordcount.dot")
 	if err != nil {
@@ -34,10 +34,10 @@ func TestDAGExecRun(t *testing.T) {
 	}
 	config.NameNode = "hpc0:8020"
 	config.HadoopStreamingJar = "/usr/lib/hadoop-mapreduce/hadoop-streaming.jar"
-	dexec, err := NewDAGExec()
+	s, err := NewSched()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	dexec.Run(d)
+	s.Run(d)
 }

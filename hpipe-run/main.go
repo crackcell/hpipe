@@ -22,8 +22,8 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
-	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/sched"
 	"github.com/crackcell/hpipe/util"
 	"os"
 )
@@ -80,11 +80,11 @@ func main() {
 	util.LogLines(LogoString, nil)
 	util.LogLines(d.String(), nil)
 
-	dexec, err := exec.NewDAGExec()
+	s, err := sched.NewSched()
 	if err != nil {
 		os.Exit(1)
 	}
-	if err := dexec.Run(d); err != nil {
+	if err := s.Run(d); err != nil {
 		os.Exit(1)
 	}
 }
