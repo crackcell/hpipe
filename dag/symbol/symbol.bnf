@@ -1,0 +1,57 @@
+/* Lexical part */
+
+_digit : '0'-'9' ;
+
+_letter : 'a'-'z' | 'A'-'Z' ;
+
+_idchar : _letter | _digit | '_' ;
+
+_time_unit : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' ;
+
+int : '1'-'9' { _digit } ;
+
+date : '$' '{' { _time_unit | ' ' | ':' | '-' } '}' ;
+
+id : '$' { _letter | '_' } { _idchar } ;
+
+string : '"' { _idchar } '"' ;
+
+!whitespace : ' ' | '\t' | '\n' | '\r' ;
+
+/* Syntax part */
+
+<<
+import(
+  "github.com/crackcell/hpipe/dag/symbol/token"
+  "github.com/crackcell/hpipe/dag/symbol/ast"
+)
+>>
+
+StmtList
+  : Stmt              << ast.NewStmtList($0.(*ast.Stmt)), nil >>
+  | StmtList ";" Stmt << ast.AppendStmtList($0.([]*ast.Stmt), $2.(*ast.Stmt)), nil >>
+  ;
+
+Stmt
+  : id "=" Expr << ast.NewOperatorFromParser(ast.NewLeftID(string($0.(*token.Token).Lit)), "=", $2.(*ast.Stmt)) >>
+  ;
+
+Expr
+  : Expr "+" Term << ast.NewOperatorFromParser($0.(*ast.Stmt), "+", $2.(*ast.Stmt)) >>
+  | Expr "-" Term << ast.NewOperatorFromParser($0.(*ast.Stmt), "-", $2.(*ast.Stmt)) >>
+  | Term
+  ;
+
+Term
+  : Term "*" Factor << ast.NewOperatorFromParser($0.(*ast.Stmt), "*", $2.(*ast.Stmt)) >>
+  | Term "/" Factor << ast.NewOperatorFromParser($0.(*ast.Stmt), "/", $2.(*ast.Stmt)) >>
+  | Factor
+  ;
+
+Factor
+  : "(" Expr ")" << $1, nil >>
+  | int          << ast.NewIntFromParser(string($0.(*token.Token).Lit)) >>
+  | date         << ast.NewDateFromParser(string($0.(*token.Token).Lit)) >>
+	| id           << ast.NewRightIDFromParser(string($0.(*token.Token).Lit)) >>
+	| string       << ast.NewStringFromParser(string($0.(*token.Token).Lit)) >>
+  ;

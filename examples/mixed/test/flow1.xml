@@ -1,7 +1,0 @@
-<flow name="testflow">
-	<entry>step1.xml</entry>
-	<env>
-		<name>hadoop_home</name>
-		<value>/home/a/lib/hadoop/default</value>
-	</env>
-</flow>

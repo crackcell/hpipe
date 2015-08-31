@@ -1,0 +1,2 @@
+all :
+	gocc symbol.bnf

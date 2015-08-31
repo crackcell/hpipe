@@ -19,7 +19,7 @@
 package util
 
 import (
-	"../log"
+	"github.com/crackcell/hpipe/log"
 	"os"
 	"strings"
 )
@@ -33,7 +33,11 @@ func LogLines(s string, fn func(v ...interface{})) {
 		if len(line) == 0 {
 			line = " "
 		}
-		fn(line)
+		if fn == nil {
+			log.Debug(line)
+		} else {
+			fn(line)
+		}
 	}
 }
 

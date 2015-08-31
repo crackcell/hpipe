@@ -110,7 +110,7 @@ var levelToStr = map[int]string{
 	LOG_LEVEL_FATAL: "FATAL",
 }
 
-var std = NewDefault(os.Stdout, "", LOG_LEVEL_ALL)
+var StdLogger = NewDefault(os.Stdout, "", LOG_LEVEL_ALL)
 
 func (this *levelLogger) init(writer io.Writer, prefix string, logLevel int) {
 	this.loggers = make(map[int]underlayLogger)
@@ -161,51 +161,51 @@ func (this *levelLogger) printf(level int, verbose bool, fmt string, v ...interf
 }
 
 func Debug(v ...interface{}) {
-	std.Debug(v...)
+	StdLogger.Debug(v...)
 }
 
 func Debugf(fmt string, v ...interface{}) {
-	std.Debugf(fmt, v...)
+	StdLogger.Debugf(fmt, v...)
 }
 
 func Trace(v ...interface{}) {
-	std.Trace(v...)
+	StdLogger.Trace(v...)
 }
 
 func Tracef(fmt string, v ...interface{}) {
-	std.Tracef(fmt, v...)
+	StdLogger.Tracef(fmt, v...)
 }
 
 func Info(v ...interface{}) {
-	std.Info(v...)
+	StdLogger.Info(v...)
 }
 
 func Infof(fmt string, v ...interface{}) {
-	std.Infof(fmt, v...)
+	StdLogger.Infof(fmt, v...)
 }
 
 func Warn(v ...interface{}) {
-	std.Warn(v...)
+	StdLogger.Warn(v...)
 }
 
 func Warnf(fmt string, v ...interface{}) {
-	std.Warnf(fmt, v...)
+	StdLogger.Warnf(fmt, v...)
 }
 
 func Error(v ...interface{}) {
-	std.Error(v...)
+	StdLogger.Error(v...)
 }
 
 func Errorf(fmt string, v ...interface{}) {
-	std.Errorf(fmt, v...)
+	StdLogger.Errorf(fmt, v...)
 }
 
 func Fatal(v ...interface{}) {
-	std.Fatal(v...)
+	StdLogger.Fatal(v...)
 }
 
 func Fatalf(fmt string, v ...interface{}) {
-	std.Fatalf(fmt, v...)
+	StdLogger.Fatalf(fmt, v...)
 }
 
 func (this *levelLogger) Debug(v ...interface{}) {

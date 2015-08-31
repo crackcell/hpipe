@@ -1,0 +1,27 @@
+digraph wordcount {
+    step1 [
+                name="step1"
+                type="hadoop"
+                vars="$date=${YYYYMMDD}"
+                input="/tmp/hpipe/example/wordcount/input/part-*"
+                output="/tmp/hpipe/example/wordcount/output/step1"
+                mapper="cat"
+                reducer="wc -l"
+                ]
+    step2 [
+                name="step2"
+                type="hadoop"
+                vars="$date=$bizdate"
+                input="/tmp/hpipe/example/wordcount/input/part-*"
+                output="/tmp/hpipe/example/wordcount/output/step2"
+                mapper="cat"
+                reducer="wc -l"
+                ]
+    dummy [
+           name="dummy"
+           type="dummy"
+           vars="$bizdate=${YYYYMMDD}+2*$day"
+           ]
+    dummy -> step1
+    dummy -> step2
+}
