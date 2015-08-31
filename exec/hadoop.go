@@ -55,7 +55,7 @@ func (this *HadoopExec) Setup() error {
 	}
 	if client, err := hdfs.New(config.NameNode); err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
-		log.Errorf(msg)
+		log.Fatal(msg)
 		return fmt.Errorf(msg)
 	} else {
 		this.HDFSClient = client

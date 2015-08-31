@@ -22,7 +22,8 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
-	//"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/exec"
+	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/util"
 	"os"
 )
@@ -40,8 +41,11 @@ Usage:
 Options:
     -h, --help     Print this message
     -v, --verbose  Use verbose output
+
     -p, --path     Working path
     -f, --flow     Entry filename of workflow
+    --namenode     Address of Hadoop NameNode
+    --jar          Path of Hadoop streaming jar file
 `
 )
 
@@ -59,13 +63,28 @@ func main() {
 	if len(config.EntryFile) == 0 {
 		showHelp()
 	}
+	if config.Verbose {
+		log.StdLogger = log.NewDefault(os.Stdout, "hpipe", log.LOG_LEVEL_ALL)
+	} else {
+		log.StdLogger = log.NewDefault(os.Stdout, "hpipe",
+			log.LOG_LEVEL_TRACE|log.LOG_LEVEL_INFO|log.LOG_LEVEL_WARN|log.LOG_LEVEL_ERROR|log.LOG_LEVEL_FATAL)
+	}
 
 	factory := dag.NewFactory()
-	flow, err := factory.CreateDAGFromFile(config.EntryFile)
+	d, err := factory.CreateDAGFromFile(config.EntryFile)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	util.LogLines(LogoString, nil)
-	util.LogLines(flow.String(), nil)
+	util.LogLines(d.String(), nil)
+
+	dexec, err := exec.NewDAGExec()
+	if err != nil {
+		os.Exit(1)
+	}
+	if err := dexec.Run(d); err != nil {
+		os.Exit(1)
+	}
 }
