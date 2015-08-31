@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file main.go
+ * @file hpipe-run.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Aug 25 00:16:25 2015
  *
@@ -44,7 +44,9 @@ Options:
 
     -p, --path     Working path
     -f, --flow     Entry filename of workflow
-    --namenode     Address of Hadoop NameNode
+    --max-retry    Max retry times of failed jobs, default: 3
+
+    --namenode     Address of Hadoop NameNode, default: 127.0.0.1:8020
     --jar          Path of Hadoop streaming jar file
 `
 )

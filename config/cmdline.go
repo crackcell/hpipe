@@ -34,6 +34,7 @@ var (
 	EntryFile          string
 	NameNode           string
 	HadoopStreamingJar string
+	MaxRetry           int
 )
 
 func InitFlags() {
@@ -45,8 +46,9 @@ func InitFlags() {
 	flag.StringVar(&WorkPath, "p", "./", "Working path")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
-	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url, namenode:8020 eg.")
+	flag.StringVar(&NameNode, "namenode", "127.0.0.1:8020", "Hadoop name node url, default: 127.0.0.1:8020")
 	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
+	flag.IntVar(&MaxRetry, "max-retry", 3, "max retry times of failed jobs, default: 3")
 }
 
 func Parse() {

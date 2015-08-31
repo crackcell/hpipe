@@ -20,6 +20,7 @@ package sched
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
@@ -30,7 +31,8 @@ import (
 //===================================================================
 
 type Sched struct {
-	exec map[dag.JobType]exec.Exec
+	exec   map[dag.JobType]exec.Exec
+	failed map[string]int
 }
 
 func NewSched() (*Sched, error) {
@@ -47,7 +49,8 @@ func NewSched() (*Sched, error) {
 	}
 
 	return &Sched{
-		exec: exec,
+		exec:   exec,
+		failed: make(map[string]int),
 	}, nil
 }
 
@@ -60,8 +63,16 @@ func (this *Sched) Run(d *dag.DAG) error {
 		}
 
 		for _, job := range queue {
-			if job.Status == dag.Finished {
+			switch job.Status {
+			case dag.Finished:
 				this.markJobFinished(job, d)
+			case dag.Failed:
+				log.Errorf("job %s failed", job.Name)
+				if n, ok := this.failed[job.Name]; !ok {
+					this.failed[job.Name] = 1
+				} else {
+					this.failed[job.Name] = n + 1
+				}
 			}
 		}
 
@@ -83,8 +94,14 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 		if !ok {
 			panic(fmt.Errorf("panic: no corresponding job"))
 		}
-		if in == 0 && job.Status != dag.Finished && job.Status != dag.Started {
+		if in == 0 && job.Status != dag.Finished &&
+			job.Status != dag.Started &&
+			this.failed[job.Name] < config.MaxRetry {
 			queue = append(queue, job)
+		}
+		if this.failed[job.Name] >= config.MaxRetry {
+			log.Errorf("job %s reaches max retry times %d",
+				job.Name, config.MaxRetry)
 		}
 	}
 	return queue
@@ -92,14 +109,14 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 
 func (this *Sched) runQueue(queue []*dag.Job) error {
 	for _, job := range queue {
-		log.Debugf("run job: %s", job.Name)
-		jexec, err := this.getJobExec(job)
-		if err != nil {
-			return err
-		}
+		log.Infof("run job: %s", job.Name)
 		if job.Type == dag.DummyJob {
 			job.Status = dag.Finished
 		} else {
+			jexec, err := this.getJobExec(job)
+			if err != nil {
+				return err
+			}
 			status, err := jexec.GetStatus(job)
 			if err != nil {
 				return err
@@ -120,10 +137,10 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 
 			if err = jexec.Run(job); err != nil {
 				job.Status = dag.Failed
-				return err
 			}
-			status, err = jexec.GetStatus(job)
-			job.Status = status
+			if status, err = jexec.GetStatus(job); err == nil {
+				job.Status = status
+			}
 			log.Debugf("check job status: %s -> %s", job.Name, status)
 		}
 	}

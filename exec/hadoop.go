@@ -72,16 +72,20 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	this.deleteStatusFiles(job)
+	this.deleteRemainFiles(job)
 	this.createOutput(job)
 	this.createStatusFile(job, dag.Started)
 	defer this.deleteStatusFile(job, dag.Started)
 
 	retcode, err := cmdExec(job.Name, "hadoop", this.genCmdArgs(job)...)
 	if err != nil {
+		job.Status = dag.Failed
+		this.createStatusFile(job, dag.Failed)
 		return err
 	}
 	if retcode != 0 {
+		job.Status = dag.Failed
+		this.createStatusFile(job, dag.Failed)
 		return fmt.Errorf("script failed: %d", retcode)
 	}
 	job.Status = dag.Finished
@@ -148,7 +152,7 @@ func (this *HadoopExec) deleteStatusFile(job *dag.Job, status dag.JobStatus) {
 	}
 }
 
-func (this *HadoopExec) deleteStatusFiles(job *dag.Job) {
+func (this *HadoopExec) deleteRemainFiles(job *dag.Job) {
 	output := job.Attrs["output"]
 	for _, flag := range hdfsJobStatusFlags {
 		this.hdfsRm(output + flag)

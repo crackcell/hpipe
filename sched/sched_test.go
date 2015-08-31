@@ -26,14 +26,15 @@ import (
 
 func TestDAGExecRun(t *testing.T) {
 	config.WorkPath = "../examples/wordcount"
+	config.NameNode = "hpc0:8020"
+	config.HadoopStreamingJar = "/usr/lib/hadoop-mapreduce/hadoop-streaming.jar"
+	config.Verbose = true
 	f := dag.NewFactory()
 	d, err := f.CreateDAGFromFile(config.WorkPath + "/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	config.NameNode = "hpc0:8020"
-	config.HadoopStreamingJar = "/usr/lib/hadoop-mapreduce/hadoop-streaming.jar"
 	s, err := NewSched()
 	if err != nil {
 		t.Error(err)
