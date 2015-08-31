@@ -16,9 +16,8 @@ click-through-rate prediction for online advertising.
 
 1. Compile
 
-    $ make
-    $ ./output
+> make
 
 2. Run example
 
-    ./output/bin/hpipe-run -v -p example/wordcount -f examples/wordcount/wordcount.dot --namenode hpc0:8020 --jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar
+> ./output/bin/hpipe-run -v -p example/wordcount -f examples/wordcount/wordcount.dot --namenode hpc0:8020 --jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar
