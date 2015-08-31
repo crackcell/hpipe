@@ -77,7 +77,9 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	this.createStatusFile(job, dag.Started)
 	defer this.deleteStatusFile(job, dag.Started)
 
-	retcode, err := cmdExec(job.Name, "hadoop", this.genCmdArgs(job)...)
+	args := this.genCmdArgs(job)
+	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
+	retcode, err := cmdExec(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		this.createStatusFile(job, dag.Failed)
@@ -167,6 +169,14 @@ func (this *HadoopExec) genCmdArgs(job *dag.Job) []string {
 
 	args = append(args, "-D")
 	args = append(args, fmt.Sprintf("mapred.job.name=%s", job.Name))
+
+	for k, v := range job.Attrs {
+		if _, ok := dag.JobReservedAttrs[k]; ok {
+			continue
+		}
+		args = append(args, "-D")
+		args = append(args, fmt.Sprintf("%s=%s", k, v))
+	}
 
 	args = append(args, "-input")
 	args = append(args, "\""+job.Attrs["input"]+"\"")

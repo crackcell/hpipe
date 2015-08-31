@@ -4,7 +4,7 @@ _digit : '0'-'9' ;
 
 _letter : 'a'-'z' | 'A'-'Z' ;
 
-_idchar : _letter | _digit | '_' ;
+_idchar : _letter | _digit | '_' | '.' ;
 
 _time_unit : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' ;
 

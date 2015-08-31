@@ -25,7 +25,7 @@ import (
 
 func TestDotLoaderLoadFile(t *testing.T) {
 	d := NewDotLoader()
-	g, err := d.LoadFile("../example/wordcount/wordcount.dot")
+	g, err := d.LoadFile("../examples/wordcount/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return

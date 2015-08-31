@@ -26,7 +26,7 @@ import (
 
 func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
 	f := NewFactory()
-	d, err := f.CreateDAGFromFile("../example/wordcount/wordcount.dot")
+	d, err := f.CreateDAGFromFile("../examples/wordcount/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return
@@ -35,7 +35,7 @@ func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
 }
 
 func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
-	data, err := ioutil.ReadFile("../example/wordcount/wordcount.dot")
+	data, err := ioutil.ReadFile("../examples/wordcount/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return

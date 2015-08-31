@@ -7,6 +7,7 @@ digraph wordcount {
                 output="/tmp/hpipe/example/wordcount/output/step1"
                 mapper="cat"
                 reducer="wc -l"
+                mapred.reduce.tasks=1
                 ]
     step2 [
                 name="step2"

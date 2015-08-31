@@ -27,13 +27,13 @@ import (
 )
 
 func TestASTAdd(t *testing.T) {
-	src := "$res=1+2"
+	src := "$res.name=1+2"
 	//fmt.Printf("src: %s\n", src)
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	a, err := p.Parse(l)
 	if err != nil {
-		t.Error(t)
+		t.Error(err)
 		return
 	}
 	//fmt.Printf("src: %s\n", a)

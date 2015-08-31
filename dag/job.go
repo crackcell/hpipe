@@ -109,6 +109,16 @@ func ParseJobStatus(status string) JobStatus {
 // Job
 //===================================================================
 
+var JobReservedAttrs = map[string]int{
+	"name":    1,
+	"type":    1,
+	"vars":    1,
+	"input":   1,
+	"output":  1,
+	"mapper":  1,
+	"reducer": 1,
+}
+
 type Job struct {
 	Name   string
 	Type   JobType

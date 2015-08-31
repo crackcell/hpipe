@@ -99,15 +99,15 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S20
-		Accept: 0,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S21
-		Accept: 11,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S22
-		Accept: 3,
+		Accept: 11,
  		Ignore: "",
  	},
  	ActionRow{ // S23

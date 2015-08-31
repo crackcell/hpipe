@@ -69,14 +69,16 @@ var TransTab = TransitionTable{
 			switch {
 			case r == 34 : // ['"','"']
 				return 13
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 14
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 15
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 15
-			case r == 95 : // ['_','_']
 				return 16
+			case r == 95 : // ['_','_']
+				return 14
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 15
+				return 16
 			
 			
 			
@@ -88,16 +90,18 @@ var TransTab = TransitionTable{
 		// S3
 		func(r rune) int {
 			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 18
-			case r == 95 : // ['_','_']
 				return 19
-			case 97 <= r && r <= 122 : // ['a','z']
-				return 18
-			case r == 123 : // ['{','{']
+			case r == 95 : // ['_','_']
 				return 20
+			case 97 <= r && r <= 122 : // ['a','z']
+				return 19
+			case r == 123 : // ['{','{']
+				return 21
 			
 			
 			
@@ -176,7 +180,7 @@ var TransTab = TransitionTable{
 		func(r rune) int {
 			switch {
 			case 48 <= r && r <= 57 : // ['0','9']
-				return 21
+				return 22
 			
 			
 			
@@ -223,14 +227,16 @@ var TransTab = TransitionTable{
 			switch {
 			case r == 34 : // ['"','"']
 				return 13
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 14
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 15
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 15
-			case r == 95 : // ['_','_']
 				return 16
+			case r == 95 : // ['_','_']
+				return 14
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 15
+				return 16
 			
 			
 			
@@ -244,14 +250,16 @@ var TransTab = TransitionTable{
 			switch {
 			case r == 34 : // ['"','"']
 				return 13
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 14
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 15
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 15
-			case r == 95 : // ['_','_']
 				return 16
+			case r == 95 : // ['_','_']
+				return 14
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 15
+				return 16
 			
 			
 			
@@ -265,14 +273,16 @@ var TransTab = TransitionTable{
 			switch {
 			case r == 34 : // ['"','"']
 				return 13
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 14
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 15
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 15
-			case r == 95 : // ['_','_']
 				return 16
+			case r == 95 : // ['_','_']
+				return 14
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 15
+				return 16
 			
 			
 			
@@ -284,14 +294,16 @@ var TransTab = TransitionTable{
 		// S17
 		func(r rune) int {
 			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 22
-			case r == 95 : // ['_','_']
 				return 23
+			case r == 95 : // ['_','_']
+				return 17
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 22
+				return 23
 			
 			
 			
@@ -303,14 +315,16 @@ var TransTab = TransitionTable{
 		// S18
 		func(r rune) int {
 			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 18
+				return 23
 			case r == 95 : // ['_','_']
-				return 19
+				return 17
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 18
+				return 23
 			
 			
 			
@@ -322,14 +336,16 @@ var TransTab = TransitionTable{
 		// S19
 		func(r rune) int {
 			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 18
-			case r == 95 : // ['_','_']
 				return 19
+			case r == 95 : // ['_','_']
+				return 20
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 18
+				return 19
 			
 			
 			
@@ -341,12 +357,33 @@ var TransTab = TransitionTable{
 		// S20
 		func(r rune) int {
 			switch {
+			case r == 46 : // ['.','.']
+				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
+			case 65 <= r && r <= 90 : // ['A','Z']
+				return 19
+			case r == 95 : // ['_','_']
+				return 20
+			case 97 <= r && r <= 122 : // ['a','z']
+				return 19
+			
+			
+			
+			}
+			return NoState
+			
+		},
+	
+		// S21
+		func(r rune) int {
+			switch {
 			case r == 32 : // [' ',' ']
-				return 20
+				return 21
 			case r == 45 : // ['-','-']
-				return 20
+				return 21
 			case r == 58 : // [':',':']
-				return 20
+				return 21
 			case r == 68 : // ['D','D']
 				return 24
 			case r == 77 : // ['M','M']
@@ -369,29 +406,10 @@ var TransTab = TransitionTable{
 			
 		},
 	
-		// S21
-		func(r rune) int {
-			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
-				return 21
-			
-			
-			
-			}
-			return NoState
-			
-		},
-	
 		// S22
 		func(r rune) int {
 			switch {
 			case 48 <= r && r <= 57 : // ['0','9']
-				return 17
-			case 65 <= r && r <= 90 : // ['A','Z']
-				return 22
-			case r == 95 : // ['_','_']
-				return 23
-			case 97 <= r && r <= 122 : // ['a','z']
 				return 22
 			
 			
@@ -404,14 +422,16 @@ var TransTab = TransitionTable{
 		// S23
 		func(r rune) int {
 			switch {
-			case 48 <= r && r <= 57 : // ['0','9']
+			case r == 46 : // ['.','.']
 				return 17
+			case 48 <= r && r <= 57 : // ['0','9']
+				return 18
 			case 65 <= r && r <= 90 : // ['A','Z']
-				return 22
-			case r == 95 : // ['_','_']
 				return 23
+			case r == 95 : // ['_','_']
+				return 17
 			case 97 <= r && r <= 122 : // ['a','z']
-				return 22
+				return 23
 			
 			
 			
@@ -424,11 +444,11 @@ var TransTab = TransitionTable{
 		func(r rune) int {
 			switch {
 			case r == 32 : // [' ',' ']
-				return 20
+				return 21
 			case r == 45 : // ['-','-']
-				return 20
+				return 21
 			case r == 58 : // [':',':']
-				return 20
+				return 21
 			case r == 68 : // ['D','D']
 				return 24
 			case r == 77 : // ['M','M']
