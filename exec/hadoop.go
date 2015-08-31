@@ -165,6 +165,9 @@ func (this *HadoopExec) genCmdArgs(job *dag.Job) []string {
 	args = append(args, "jar")
 	args = append(args, this.Jar)
 
+	args = append(args, "-D")
+	args = append(args, fmt.Sprintf("mapred.job.name=%s", job.Name))
+
 	args = append(args, "-input")
 	args = append(args, "\""+job.Attrs["input"]+"\"")
 

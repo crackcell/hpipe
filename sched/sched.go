@@ -24,6 +24,7 @@ import (
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
+	"sync"
 )
 
 //===================================================================
@@ -108,46 +109,53 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 }
 
 func (this *Sched) runQueue(queue []*dag.Job) error {
+	var wg sync.WaitGroup
 	for _, job := range queue {
-		log.Infof("run job: %s", job.Name)
-		if job.Type == dag.DummyJob {
-			job.Status = dag.Finished
-		} else {
-			jexec, err := this.getJobExec(job)
-			if err != nil {
-				return err
-			}
-			status, err := jexec.GetStatus(job)
-			if err != nil {
-				return err
-			}
-			job.Status = status
-			log.Debugf("check job status: %s -> %s", job.Name, status)
+		wg.Add(1)
+		go func(job *dag.Job) {
+			defer wg.Done()
 
-			switch job.Status {
-			case dag.Finished:
-				continue
-			case dag.Started:
-				log.Warnf("job is already started: %s", job.Name)
-				continue
-			case dag.UnknownStatus:
-				log.Fatalf("job is in unknown status: %s", job.Name)
-				return fmt.Errorf("job is in unknown status: %s", job.Name)
-			}
-
-			if err = jexec.Run(job); err != nil {
-				job.Status = dag.Failed
-			}
-			if status, err = jexec.GetStatus(job); err == nil {
+			log.Infof("run job: %s", job.Name)
+			if job.Type == dag.DummyJob {
+				job.Status = dag.Finished
+			} else {
+				jexec, err := this.getExec(job)
+				if err != nil {
+					panic(err)
+				}
+				status, err := jexec.GetStatus(job)
+				if err != nil {
+					panic(err)
+				}
 				job.Status = status
+				log.Debugf("check job status: %s -> %s", job.Name, status)
+
+				switch job.Status {
+				case dag.Finished:
+					log.Infof("job is already finished, skip: %s", job.Name)
+					return
+				case dag.Started:
+					log.Warnf("job is already started: %s", job.Name)
+					return
+				}
+
+				if err = jexec.Run(job); err != nil {
+					panic(err)
+				}
+				if status, err = jexec.GetStatus(job); err != nil {
+					panic(err)
+				} else {
+					job.Status = status
+				}
+				log.Debugf("check job status: %s -> %s", job.Name, status)
 			}
-			log.Debugf("check job status: %s -> %s", job.Name, status)
-		}
+		}(job)
 	}
+	wg.Wait()
 	return nil
 }
 
-func (this *Sched) getJobExec(job *dag.Job) (exec.Exec, error) {
+func (this *Sched) getExec(job *dag.Job) (exec.Exec, error) {
 	if e, ok := this.exec[job.Type]; !ok {
 		return nil, fmt.Errorf("unknown job type: %v", job.Type)
 	} else {
