@@ -61,6 +61,9 @@ func (this *Eval) Evaluate(stmtlist []*ast.Stmt) ([]*ast.Stmt, error) {
 			list = append(list, s)
 		}
 	}
+	for k, v := range this.Builtins {
+		list = append(list, ast.NewLeftID(k, v))
+	}
 	return list, nil
 }
 

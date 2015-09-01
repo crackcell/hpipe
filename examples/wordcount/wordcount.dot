@@ -4,17 +4,18 @@ digraph wordcount {
                 type="hadoop"
                 vars="$date=${YYYYMMDD}"
                 input="/tmp/hpipe/example/wordcount/input/part-*"
-                output="/tmp/hpipe/example/wordcount/output/step1"
+                output="/tmp/hpipe/example/wordcount/output/${bizdate}/step1"
                 mapper="cat"
                 reducer="wc -l"
                 mapred.reduce.tasks=1
+                test.custom.val="today is ${date}, yestoday is ${bizdate}"
                 ]
     step2 [
                 name="step2"
                 type="hadoop"
                 vars="$date=$bizdate"
                 input="/tmp/hpipe/example/wordcount/input/part-*"
-                output="/tmp/hpipe/example/wordcount/output/step2"
+                output="/tmp/hpipe/example/wordcount/output/${bizdate}/step2"
                 mapper="cat"
                 reducer="wc -l"
                 ]

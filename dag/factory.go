@@ -19,9 +19,11 @@
 package dag
 
 import (
-	//"fmt"
+	"fmt"
 	"github.com/crackcell/hpipe/dag/symbol"
+	"github.com/crackcell/hpipe/log"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -62,6 +64,24 @@ func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
 				}
 			}
 		}
+
+		for k, v := range job.Attrs {
+			if k == "vars" {
+				continue
+			}
+			for _, token := range varPattern.FindAllStringSubmatch(v, -1) {
+				name := token[1]
+				if val, ok := job.Vars[name]; ok {
+					nval := strings.Replace(job.Attrs[k], "${"+name+"}", val, -1)
+					log.Debugf("resolve: %s => %s", v, nval)
+					job.Attrs[k] = nval
+				} else {
+					msg := fmt.Sprintf("variable %s is not defined", name)
+					log.Error(msg)
+					return nil, fmt.Errorf(msg)
+				}
+			}
+		}
 	}
 	return d, nil
 }
@@ -69,3 +89,5 @@ func (this *DAGFactory) CreateDAGFromBytes(data []byte) (*DAG, error) {
 //===================================================================
 // Private
 //===================================================================
+
+var varPattern = regexp.MustCompile("\\$\\{(.*?)\\}")
