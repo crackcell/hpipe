@@ -75,7 +75,7 @@ func TestASTTimes(t *testing.T) {
 }
 
 func TestASTDateFormat1(t *testing.T) {
-	src := "$res=${YYYYMMDD}"
+	src := "$res=${date:YYYYMMDD}"
 	//fmt.Printf("src: %s\n", src)
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
@@ -91,7 +91,7 @@ func TestASTDateFormat1(t *testing.T) {
 }
 
 func TestASTDateFormat2(t *testing.T) {
-	src := "$res=${YYYYMMDD hh:mm:ss}"
+	src := "$res=${date:YYYYMMDD hh:mm:ss}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)
@@ -122,7 +122,7 @@ func TestASTVarAdd(t *testing.T) {
 }
 
 func TestASTVarAddDate(t *testing.T) {
-	src := "$res=$var0+${YYYYYMMDD hh:mm:ss}"
+	src := "$res=$var0+${date:YYYYYMMDD hh:mm:ss}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)
@@ -155,6 +155,23 @@ func TestASTDuration(t *testing.T) {
 
 func TestASTString(t *testing.T) {
 	src := "$res=\"wordcount1\""
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	//fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+}
+
+func TestASTEnv(t *testing.T) {
+	src := "$res=${env:HOME}"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)

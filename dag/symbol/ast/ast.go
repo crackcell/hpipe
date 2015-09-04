@@ -39,6 +39,7 @@ const (
 	Date
 	Duration    // natively supported by time.Duration: hour, minute, second
 	DurationExt // extended duration: year, month, day
+	Env
 	String
 	Operator
 )
@@ -64,6 +65,8 @@ func (this NodeType) String() string {
 		return "Duration"
 	case DurationExt:
 		return "DurationExt"
+	case Env:
+		return "Env"
 	case String:
 		return "String"
 	case Operator:
@@ -101,6 +104,10 @@ func (this *Stmt) Equals(other *Stmt) bool {
 			return false
 		}
 	case DurationExt:
+		if this.Value.(string) != other.Value.(string) {
+			return false
+		}
+	case Env:
 		if this.Value.(string) != other.Value.(string) {
 			return false
 		}
@@ -186,7 +193,7 @@ func NewIntFromParser(num string) (*Stmt, error) {
 func NewLeftID(id string, children ...*Stmt) *Stmt {
 	return &Stmt{
 		Type:     LeftID,
-		Value:    strings.TrimLeft(id, "$"),
+		Value:    id,
 		Prop:     make(map[string]interface{}),
 		Children: children,
 	}
@@ -195,7 +202,7 @@ func NewLeftID(id string, children ...*Stmt) *Stmt {
 func NewLeftIDFromParser(lit string) (*Stmt, error) {
 	return &Stmt{
 		Type:  LeftID,
-		Value: strings.TrimLeft(lit, "$"),
+		Value: lit,
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
@@ -203,7 +210,7 @@ func NewLeftIDFromParser(lit string) (*Stmt, error) {
 func NewRightID(id string, children ...*Stmt) *Stmt {
 	return &Stmt{
 		Type:     RightID,
-		Value:    strings.TrimLeft(id, "$"),
+		Value:    id,
 		Prop:     make(map[string]interface{}),
 		Children: children,
 	}
@@ -212,7 +219,7 @@ func NewRightID(id string, children ...*Stmt) *Stmt {
 func NewRightIDFromParser(lit string) (*Stmt, error) {
 	return &Stmt{
 		Type:  RightID,
-		Value: strings.TrimLeft(lit, "$"),
+		Value: lit,
 		Prop:  make(map[string]interface{}),
 	}, nil
 }
@@ -232,6 +239,14 @@ func NewDateFromParser(lit string) (*Stmt, error) {
 	return &Stmt{
 		Type:  Date,
 		Value: strings.Trim(lit, "${}"),
+		Prop:  make(map[string]interface{}),
+	}, nil
+}
+
+func NewEnvFromParser(lit string) (*Stmt, error) {
+	return &Stmt{
+		Type:  Env,
+		Value: lit,
 		Prop:  make(map[string]interface{}),
 	}, nil
 }

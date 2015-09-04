@@ -95,7 +95,7 @@ func TestEvalTimes(t *testing.T) {
 }
 
 func TestEvalDate(t *testing.T) {
-	src := "$res=${YYYYMMDD}"
+	src := "$res=${date:YYYYMMDD}"
 	//fmt.Printf("src: %s\n", src)
 	ret := getTestEvalResult(src, t)
 	if ret == nil {
@@ -111,7 +111,7 @@ func TestEvalDate(t *testing.T) {
 }
 
 func TestEvalDateDurationExtAdd(t *testing.T) {
-	src := "$res=${YYYYMMDD}+2*$day"
+	src := "$res=${date:YYYYMMDD}+2*$day"
 	//fmt.Printf("src: %s\n", src)
 	ret := getTestEvalResult(src, t)
 	if ret == nil {
@@ -128,7 +128,7 @@ func TestEvalDateDurationExtAdd(t *testing.T) {
 }
 
 func TestEvalDateDurationExtMinus(t *testing.T) {
-	src := "$res=${YYYYMMDD}-2*$day"
+	src := "$res=${date:YYYYMMDD}-2*$day"
 	//fmt.Printf("src: %s\n", src)
 	ret := getTestEvalResult(src, t)
 	if ret == nil {
@@ -145,7 +145,7 @@ func TestEvalDateDurationExtMinus(t *testing.T) {
 }
 
 func TestEvalEnv(t *testing.T) {
-	src := "$res=$HADOOP_HOME"
+	src := "$res=${env:HADOOP_HOME}"
 	os.Setenv("HADOOP_HOME", "/hadoop_home")
 	//fmt.Printf("src: %s\n", src)
 	ret := getTestEvalResult(src, t)

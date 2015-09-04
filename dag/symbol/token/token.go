@@ -70,8 +70,11 @@ var TokMap = TokenMap{
 		"(",
 		")",
 		"int",
-		"date",
 		"string",
+		"${date:",
+		"time_format",
+		"}",
+		"${env:",
 	},
 
 	idMap: map[string]Type {
@@ -87,8 +90,11 @@ var TokMap = TokenMap{
 		"(": 9,
 		")": 10,
 		"int": 11,
-		"date": 12,
-		"string": 13,
+		"string": 12,
+		"${date:": 13,
+		"time_format": 14,
+		"}": 15,
+		"${env:": 16,
 	},
 }
 

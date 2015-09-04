@@ -53,13 +53,13 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Stmt : id "=" Expr	<< ast.NewOperatorFromParser(ast.NewLeftID(string(X[0].(*token.Token).Lit)), "=", X[2].(*ast.Stmt)) >>`,
+		String: `Stmt : "$" id "=" Expr	<< ast.NewOperatorFromParser(ast.NewLeftID(string(X[1].(*token.Token).Lit)), "=", X[3].(*ast.Stmt)) >>`,
 		Id: "Stmt",
 		NTType: 2,
 		Index: 3,
-		NumSymbols: 3,
+		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewOperatorFromParser(ast.NewLeftID(string(X[0].(*token.Token).Lit)), "=", X[2].(*ast.Stmt))
+			return ast.NewOperatorFromParser(ast.NewLeftID(string(X[1].(*token.Token).Lit)), "=", X[3].(*ast.Stmt))
 		},
 	},
 	ProdTabEntry{
@@ -143,33 +143,73 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : date	<< ast.NewDateFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		String: `Factor : Date	<< X[0], nil >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 12,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewDateFromParser(string(X[0].(*token.Token).Lit))
+			return X[0], nil
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : id	<< ast.NewRightIDFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		String: `Factor : Env	<< X[0], nil >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 13,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewRightIDFromParser(string(X[0].(*token.Token).Lit))
+			return X[0], nil
+		},
+	},
+	ProdTabEntry{
+		String: `Factor : Id	<< X[0], nil >>`,
+		Id: "Factor",
+		NTType: 5,
+		Index: 14,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return X[0], nil
 		},
 	},
 	ProdTabEntry{
 		String: `Factor : string	<< ast.NewStringFromParser(string(X[0].(*token.Token).Lit)) >>`,
 		Id: "Factor",
 		NTType: 5,
-		Index: 14,
+		Index: 15,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewStringFromParser(string(X[0].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Id : "$" id	<< ast.NewRightIDFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		Id: "Id",
+		NTType: 6,
+		Index: 16,
+		NumSymbols: 2,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewRightIDFromParser(string(X[1].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Date : "${date:" time_format "}"	<< ast.NewDateFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		Id: "Date",
+		NTType: 7,
+		Index: 17,
+		NumSymbols: 3,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewDateFromParser(string(X[1].(*token.Token).Lit))
+		},
+	},
+	ProdTabEntry{
+		String: `Env : "${env:" id "}"	<< ast.NewEnvFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		Id: "Env",
+		NTType: 8,
+		Index: 18,
+		NumSymbols: 3,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return ast.NewEnvFromParser(string(X[1].(*token.Token).Lit))
 		},
 	},
 	

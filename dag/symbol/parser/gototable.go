@@ -3,7 +3,7 @@
 */
 package parser
 
-const numNTSymbols = 6
+const numNTSymbols = 9
 type(
 	gotoTable [numStates]gotoRow
 	gotoRow	[numNTSymbols] int
@@ -13,11 +13,14 @@ var gotoTab = gotoTable{
 	gotoRow{ // S0
 		
 		-1, // S'
-		1, // StmtList
-		2, // Stmt
+		2, // StmtList
+		3, // Stmt
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -29,6 +32,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -40,6 +46,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -51,6 +60,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -58,10 +70,13 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // StmtList
-		6, // Stmt
+		-1, // Stmt
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -69,10 +84,13 @@ var gotoTab = gotoTable{
 		
 		-1, // S'
 		-1, // StmtList
-		-1, // Stmt
-		8, // Expr
-		9, // Term
-		10, // Factor
+		7, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -81,9 +99,12 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // StmtList
 		-1, // Stmt
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
+		9, // Expr
+		10, // Term
+		11, // Factor
+		16, // Id
+		14, // Date
+		15, // Env
 		
 
 	},
@@ -95,6 +116,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -106,6 +130,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -117,6 +144,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -128,6 +158,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -136,9 +169,12 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // StmtList
 		-1, // Stmt
-		20, // Expr
-		21, // Term
-		22, // Factor
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -147,9 +183,12 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // StmtList
 		-1, // Stmt
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
+		26, // Expr
+		27, // Term
+		28, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
 		
 
 	},
@@ -161,6 +200,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -172,6 +214,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -181,8 +226,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		27, // Term
-		10, // Factor
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -192,8 +240,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		28, // Term
-		10, // Factor
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -204,7 +255,10 @@ var gotoTab = gotoTable{
 		-1, // Stmt
 		-1, // Expr
 		-1, // Term
-		29, // Factor
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -215,7 +269,10 @@ var gotoTab = gotoTable{
 		-1, // Stmt
 		-1, // Expr
 		-1, // Term
-		30, // Factor
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -227,6 +284,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -238,6 +298,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -247,8 +310,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
+		39, // Term
+		11, // Factor
+		16, // Id
+		14, // Date
+		15, // Env
 		
 
 	},
@@ -258,8 +324,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		-1, // Term
-		-1, // Factor
+		40, // Term
+		11, // Factor
+		16, // Id
+		14, // Date
+		15, // Env
 		
 
 	},
@@ -268,9 +337,12 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // StmtList
 		-1, // Stmt
-		36, // Expr
-		21, // Term
-		22, // Factor
+		-1, // Expr
+		-1, // Term
+		41, // Factor
+		16, // Id
+		14, // Date
+		15, // Env
 		
 
 	},
@@ -281,7 +353,10 @@ var gotoTab = gotoTable{
 		-1, // Stmt
 		-1, // Expr
 		-1, // Term
-		-1, // Factor
+		42, // Factor
+		16, // Id
+		14, // Date
+		15, // Env
 		
 
 	},
@@ -293,6 +368,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -304,6 +382,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -315,6 +396,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -326,6 +410,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -334,9 +421,12 @@ var gotoTab = gotoTable{
 		-1, // S'
 		-1, // StmtList
 		-1, // Stmt
-		-1, // Expr
-		-1, // Term
-		-1, // Factor
+		49, // Expr
+		27, // Term
+		28, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
 		
 
 	},
@@ -348,6 +438,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -357,8 +450,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		37, // Term
-		22, // Factor
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -368,8 +464,11 @@ var gotoTab = gotoTable{
 		-1, // StmtList
 		-1, // Stmt
 		-1, // Expr
-		38, // Term
-		22, // Factor
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -381,6 +480,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -391,7 +493,10 @@ var gotoTab = gotoTable{
 		-1, // Stmt
 		-1, // Expr
 		-1, // Term
-		39, // Factor
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -402,7 +507,10 @@ var gotoTab = gotoTable{
 		-1, // Stmt
 		-1, // Expr
 		-1, // Term
-		40, // Factor
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -414,6 +522,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -425,6 +536,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -436,6 +550,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -447,6 +564,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -458,6 +578,9 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},
@@ -469,6 +592,275 @@ var gotoTab = gotoTable{
 		-1, // Expr
 		-1, // Term
 		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S42
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S43
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S44
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		54, // Term
+		28, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
+		
+
+	},
+	gotoRow{ // S45
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		55, // Term
+		28, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
+		
+
+	},
+	gotoRow{ // S46
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S47
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		56, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
+		
+
+	},
+	gotoRow{ // S48
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		57, // Factor
+		33, // Id
+		31, // Date
+		32, // Env
+		
+
+	},
+	gotoRow{ // S49
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S50
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S51
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S52
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S53
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S54
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S55
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S56
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S57
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S58
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S59
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
+		
+
+	},
+	gotoRow{ // S60
+		
+		-1, // S'
+		-1, // StmtList
+		-1, // Stmt
+		-1, // Expr
+		-1, // Term
+		-1, // Factor
+		-1, // Id
+		-1, // Date
+		-1, // Env
 		
 
 	},

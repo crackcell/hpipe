@@ -91,6 +91,8 @@ func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
 		return stmt, nil
 	case ast.DurationExt:
 		return stmt, nil
+	case ast.Env:
+		return this.evalEnv(stmt)
 	case ast.LeftID:
 		return stmt, nil
 	case ast.RightID:
@@ -209,13 +211,19 @@ func (this *Eval) evalRightID(stmt *ast.Stmt) (*ast.Stmt, error) {
 	name := stmt.Value.(string)
 	stmt.Prop["name"] = name
 	if v, ok := this.Builtins[name]; !ok {
-		env := os.Getenv(name)
-		if len(env) == 0 {
-			return nil, fmt.Errorf("invalid var: %s", name)
-		} else {
-			return ast.NewString(env), nil
-		}
+		return nil, fmt.Errorf("invalid var: %s", name)
 	} else {
 		return v, nil
+	}
+}
+
+func (this *Eval) evalEnv(stmt *ast.Stmt) (*ast.Stmt, error) {
+	name := stmt.Value.(string)
+	stmt.Prop["name"] = name
+	env := os.Getenv(name)
+	if len(env) == 0 {
+		return nil, fmt.Errorf("invalid env: %s", name)
+	} else {
+		return ast.NewString(env), nil
 	}
 }

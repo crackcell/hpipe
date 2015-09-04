@@ -6,13 +6,11 @@ _letter : 'a'-'z' | 'A'-'Z' ;
 
 _idchar : _letter | _digit | '_' | '.' ;
 
-_time_unit : 'Y' | 'M' | 'D' | 'h' | 'm' | 's' ;
-
 int : '1'-'9' { _digit } ;
 
-date : '$' '{' { _time_unit | ' ' | ':' | '-' } '}' ;
+time_format : { 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' };
 
-id : '$' { _letter | '_' } { _idchar } ;
+id : { _letter | '_' } { _idchar } ;
 
 string : '"' { _idchar } '"' ;
 
@@ -33,7 +31,7 @@ StmtList
   ;
 
 Stmt
-  : id "=" Expr << ast.NewOperatorFromParser(ast.NewLeftID(string($0.(*token.Token).Lit)), "=", $2.(*ast.Stmt)) >>
+  : "$" id "=" Expr << ast.NewOperatorFromParser(ast.NewLeftID(string($1.(*token.Token).Lit)), "=", $3.(*ast.Stmt)) >>
   ;
 
 Expr
@@ -51,7 +49,20 @@ Term
 Factor
   : "(" Expr ")" << $1, nil >>
   | int          << ast.NewIntFromParser(string($0.(*token.Token).Lit)) >>
-  | date         << ast.NewDateFromParser(string($0.(*token.Token).Lit)) >>
-	| id           << ast.NewRightIDFromParser(string($0.(*token.Token).Lit)) >>
+	| Date         << $0, nil >>
+  | Env          << $0, nil >>
+ 	| Id					 << $0, nil >>
 	| string       << ast.NewStringFromParser(string($0.(*token.Token).Lit)) >>
   ;
+
+Id
+	: "$" id << ast.NewRightIDFromParser(string($1.(*token.Token).Lit)) >>
+	;
+
+Date
+	: "${date:" time_format "}" << ast.NewDateFromParser(string($1.(*token.Token).Lit)) >>
+	;
+
+Env
+	: "${env:" id "}" << ast.NewEnvFromParser(string($1.(*token.Token).Lit)) >>
+	;
