@@ -193,7 +193,7 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Date : "${date:" time_format "}"	<< ast.NewDateFromParser(string(X[1].(*token.Token).Lit)) >>`,
+		String: `Date : "${date:" date "}"	<< ast.NewDateFromParser(string(X[1].(*token.Token).Lit)) >>`,
 		Id: "Date",
 		NTType: 7,
 		Index: 17,
