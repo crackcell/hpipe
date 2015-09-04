@@ -8,7 +8,7 @@ _idchar : _letter | _digit | '_' | '.' ;
 
 int : '1'-'9' { _digit } ;
 
-time_format : { 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' };
+date : { 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' };
 
 id : { _letter | '_' } { _idchar } ;
 
@@ -60,7 +60,7 @@ Id
 	;
 
 Date
-	: "${date:" time_format "}" << ast.NewDateFromParser(string($1.(*token.Token).Lit)) >>
+	: "${date:" date "}" << ast.NewDateFromParser(string($1.(*token.Token).Lit)) >>
 	;
 
 Env
