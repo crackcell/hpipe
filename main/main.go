@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file hpipe-run.go
+ * @file main.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Aug 25 00:16:25 2015
  *

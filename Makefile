@@ -18,15 +18,15 @@ dev : deps
 
 deps :
 	go get github.com/colinmarc/hdfs
-	go get github.com/awalterschulze/gographviz/
+	go get github.com/awalterschulze/gographviz
 
-output : hpipe-run
+output : main
 	mkdir -p output/bin
-	mv hpipe-run/hpipe-run output/bin/
+	mv main/main output/bin/hpipe
 	cp scripts/* output/bin/
 
-hpipe-run : deps
-	cd hpipe-run; go build
+main : deps
+	cd main; go build
 
 clean :
 	rm -rf output
