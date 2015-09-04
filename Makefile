@@ -9,17 +9,21 @@
 #
 #===========================================================================
 
-.PHONY : all deps output clean help hpipe-run
+.PHONY : all dev deps output clean help hpipe-run
 
 all : output
 
+dev : deps
+	go get github.com/goccmack/gocc
+
 deps :
 	go get github.com/colinmarc/hdfs
+	go get github.com/awalterschulze/gographviz/
 
 output : hpipe-run
 	mkdir -p output/bin
 	mv hpipe-run/hpipe-run output/bin/
-#	cp scripts/* output/bin/
+	cp scripts/* output/bin/
 
 hpipe-run : deps
 	cd hpipe-run; go build
@@ -31,6 +35,7 @@ help :
 	@echo 'Usage: make [TARGET]'
 	@echo 'TARGETS:'
 	@echo '  all       (=make) compile and link.'
+	@echo '  dev       get dependencies for development.'
+	@echo '  deps      get dependencies for compiling.'
 	@echo '  clean     clean objects and the executable file.'
 	@echo '  help      print this message.'
-	@echo
