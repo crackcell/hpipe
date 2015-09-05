@@ -5,6 +5,7 @@
              |__|       |__|
 
 # Hpipe
+[![Build Status](https://travis-ci.org/crackcell/hpipe.svg?branch=master)](https://travis-ci.org/crackcell/hpipe)
 
 Hpipe is a workflow engine supporting hybrid workflows with built-in support for
 Hadoop Streaming and Spark.
