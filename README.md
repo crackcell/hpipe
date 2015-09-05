@@ -12,6 +12,12 @@ Hadoop Streaming and Spark.
 It is useful in many production scenarios such as offline data processing of
 click-through-rate prediction for online advertising.
 
+## Features
+
+- Integrate various types of jobs into a uniformed workflow.
+- Job status tracking mechanism: record job status and auto-resume from break point.
+- Workflow descriptive language based on [Graphviz](http://graphviz.org/) being easy to edit and visualization..
+
 ## Quick Start
 
 1. Compile
