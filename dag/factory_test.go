@@ -19,19 +19,19 @@
 package dag
 
 import (
-	"fmt"
+	//"fmt"
 	"io/ioutil"
 	"testing"
 )
 
 func TestDAGFactoryCreateDAGFromFile(t *testing.T) {
 	f := NewFactory()
-	d, err := f.CreateDAGFromFile("../examples/wordcount/wordcount.dot")
+	_, err := f.CreateDAGFromFile("../examples/wordcount/wordcount.dot")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(d)
+	//fmt.Println(d)
 }
 
 func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
@@ -41,10 +41,10 @@ func TestDAGFactoryCreateDAGFromBytes(t *testing.T) {
 		return
 	}
 	f := NewFactory()
-	d, err := f.CreateDAGFromBytes(data)
+	_, err = f.CreateDAGFromBytes(data)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(d)
+	//fmt.Println(d)
 }

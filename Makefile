@@ -29,7 +29,8 @@ main : deps
 	cd main; go build
 
 test : all
-	cd dag; go test
+	cd dag/symbol; go test -v
+	cd dag; go test -v
 
 clean :
 	rm -rf output
