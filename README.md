@@ -16,7 +16,7 @@ click-through-rate prediction for online advertising.
 
 - Integrate various types of jobs into a uniformed workflow.
 - Job status tracking mechanism: record job status and auto-resume from break point.
-- Workflow descriptive language based on [Graphviz](http://graphviz.org/) being easy to edit and visualization..
+- Workflow descriptive language based on [Graphviz](http://graphviz.org/) being easy to edit and visualization.
 
 ## Quick Start
 
