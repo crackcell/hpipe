@@ -9,7 +9,7 @@
 #
 #===========================================================================
 
-.PHONY : all dev deps output clean help hpipe-run
+.PHONY : all dev deps output clean help main test
 
 all : output
 
@@ -27,6 +27,9 @@ output : main
 
 main : deps
 	cd main; go build
+
+test : all
+	cd dag; go test
 
 clean :
 	rm -rf output

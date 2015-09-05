@@ -1,0 +1,9 @@
+sudo: required
+
+language: go
+
+script:
+    - make test
+
+notifications:
+    email: false

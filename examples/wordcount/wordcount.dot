@@ -2,7 +2,7 @@ digraph wordcount {
     step1 [
                 name="step1"
                 type="hadoop"
-                vars="$date=${YYYYMMDD}"
+                vars="$date=${date:YYYYMMDD}"
                 input="/tmp/hpipe/example/wordcount/input/part-*"
                 output="/tmp/hpipe/example/wordcount/output/${bizdate}/step1"
                 mapper="cat"
@@ -22,7 +22,7 @@ digraph wordcount {
     dummy [
            name="dummy"
            type="dummy"
-           vars="$bizdate=${YYYYMMDD}+2*$day"
+           vars="$bizdate=${date:YYYYMMDD}+2*$day"
            ]
     dummy -> step1
     dummy -> step2
