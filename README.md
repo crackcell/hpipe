@@ -27,4 +27,4 @@ click-through-rate prediction for online advertising.
 
 2. Run example
 
-> ./output/bin/hpipe-run -v -p examples/wordcount -f examples/wordcount/wordcount.dot --namenode hpc0:8020 --jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar
+> ./output/bin/hpipe-run -v -p PATH-TO-HPIPE/examples/wordcount -f wordcount.dot --namenode namenode:8020 --jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar

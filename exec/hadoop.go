@@ -20,11 +20,10 @@ package exec
 
 import (
 	"fmt"
-	"github.com/colinmarc/hdfs"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
+	"github.com/crackcell/hpipe/exec/filesystem"
 	"github.com/crackcell/hpipe/log"
-	"os"
 	"strings"
 )
 
@@ -33,12 +32,9 @@ import (
 //===================================================================
 
 type HadoopExec struct {
-	HDFSClient *hdfs.Client
-	Jar        string
-	Input      string
-	Output     string
-	Mapper     string
-	Reducer    string
+	status *StatusKeeper
+	hdfs   *filesystem.HDFS
+	jar    string
 }
 
 func NewHadoopExec() *HadoopExec {
@@ -51,15 +47,18 @@ func (this *HadoopExec) Setup() error {
 		log.Errorf(msg)
 		return fmt.Errorf(msg)
 	} else {
-		this.Jar = config.HadoopStreamingJar
+		this.jar = config.HadoopStreamingJar
 	}
-	if client, err := hdfs.New(config.NameNode); err != nil {
+
+	if fs, err := filesystem.NewHDFS(config.NameNode); err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
 		log.Fatal(msg)
 		return fmt.Errorf(msg)
 	} else {
-		this.HDFSClient = client
+		this.status = NewStatusKeeper(fs)
+		this.hdfs = fs.(*filesystem.HDFS)
 	}
+
 	return nil
 }
 
@@ -72,100 +71,50 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	this.deleteRemainFiles(job)
+	this.status.ClearStatus(job)
+	this.hdfs.Rm(job.Attrs["output"])
 	this.createOutput(job)
-	this.createStatusFile(job, dag.Started)
-	defer this.deleteStatusFile(job, dag.Started)
+	this.status.SetStatus(job, dag.Started)
+	defer this.status.DeleteStatus(job, dag.Started)
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
 	retcode, err := cmdExec(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed
-		this.createStatusFile(job, dag.Failed)
+		this.status.SetStatus(job, dag.Failed)
 		return err
 	}
 	if retcode != 0 {
 		job.Status = dag.Failed
-		this.createStatusFile(job, dag.Failed)
+		this.status.SetStatus(job, dag.Failed)
 		return fmt.Errorf("script failed: %d", retcode)
 	}
 	job.Status = dag.Finished
-	this.createStatusFile(job, dag.Finished)
+	this.status.SetStatus(job, dag.Finished)
 	return nil
 }
 
 func (this *HadoopExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	output := job.Attrs["output"]
-	for status, flag := range hdfsJobStatusFlags {
-		if exist, err := this.isFileExist(output + flag); err != nil {
-			return dag.UnknownStatus, err
-		} else if exist {
-			return status, err
-		}
-	}
-	return dag.NotStarted, nil
+	return this.status.GetStatus(job)
 }
 
 //===================================================================
 // Private
 //===================================================================
 
-var hdfsJobStatusFlags = map[dag.JobStatus]string{
-	dag.Started:  ".hpipe.started",
-	dag.Finished: ".hpipe.finished",
-	dag.Failed:   ".hpipe.failed",
-}
-
-func (this *HadoopExec) isFileExist(path string) (bool, error) {
-	_, err := this.HDFSClient.Stat(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			log.Debugf("path not exist: %s", path)
-			return false, nil
-		}
-		return false, err
-	}
-	log.Debugf("path exist: %s", path)
-	return true, nil
-}
-
 func (this *HadoopExec) createOutput(job *dag.Job) error {
 	tokens := strings.Split(job.Attrs["output"], "/")
 	if len(tokens) <= 1 {
 		return nil
 	}
-	return this.hdfsMkdirp(strings.Join(tokens[:len(tokens)-1], "/"))
-}
-
-func (this *HadoopExec) createStatusFile(job *dag.Job, status dag.JobStatus) {
-	output := job.Attrs["output"]
-	flag, ok := hdfsJobStatusFlags[status]
-	if ok {
-		this.hdfsTouch(output + flag)
-	}
-}
-
-func (this *HadoopExec) deleteStatusFile(job *dag.Job, status dag.JobStatus) {
-	output := job.Attrs["output"]
-	flag, ok := hdfsJobStatusFlags[status]
-	if ok {
-		this.hdfsRm(output + flag)
-	}
-}
-
-func (this *HadoopExec) deleteRemainFiles(job *dag.Job) {
-	output := job.Attrs["output"]
-	for _, flag := range hdfsJobStatusFlags {
-		this.hdfsRm(output + flag)
-	}
-	this.hdfsRm(output)
+	return this.hdfs.MkdirP(strings.Join(tokens[:len(tokens)-1], "/"))
 }
 
 func (this *HadoopExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
 	args = append(args, "jar")
-	args = append(args, this.Jar)
+	args = append(args, this.jar)
 
 	args = append(args, "-D")
 	args = append(args, fmt.Sprintf("mapred.job.name=%s", job.Name))
@@ -192,19 +141,4 @@ func (this *HadoopExec) genCmdArgs(job *dag.Job) []string {
 		args = append(args, "\""+val+"\"")
 	}
 	return args
-}
-
-func (this *HadoopExec) hdfsMkdirp(path string) error {
-	log.Debugf("mkdir -p %s", path)
-	return this.HDFSClient.MkdirAll(path, 0755)
-}
-
-func (this *HadoopExec) hdfsRm(path string) error {
-	log.Debugf("remove file: %s", path)
-	return this.HDFSClient.Remove(path)
-}
-
-func (this *HadoopExec) hdfsTouch(path string) error {
-	log.Debugf("touch file: %s", path)
-	return this.HDFSClient.CreateEmptyFile(path)
 }
