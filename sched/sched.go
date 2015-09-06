@@ -40,6 +40,7 @@ func NewSched() (*Sched, error) {
 	exec := map[dag.JobType]exec.Exec{
 		dag.DummyJob:  exec.NewDummyExec(),
 		dag.HadoopJob: exec.NewHadoopExec(),
+		dag.HiveJob:   exec.NewHiveExec(),
 		dag.ShellJob:  exec.NewShellExec(),
 	}
 

@@ -73,7 +73,7 @@ func main() {
 	}
 
 	factory := dag.NewFactory()
-	d, err := factory.CreateDAGFromFile(config.EntryFile)
+	d, err := factory.CreateDAGFromFile(config.WorkPath + "/" + config.EntryFile)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
