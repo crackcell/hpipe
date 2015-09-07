@@ -90,10 +90,6 @@ func (this *ShellExec) Run(job *dag.Job) error {
 	return nil
 }
 
-func (this *ShellExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	return this.status.GetStatus(job)
-}
-
 //===================================================================
 // Private
 //===================================================================

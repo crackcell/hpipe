@@ -23,6 +23,7 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/exec"
+	"github.com/crackcell/hpipe/exec/filesystem"
 	"github.com/crackcell/hpipe/log"
 	"sync"
 )
@@ -33,25 +34,34 @@ import (
 
 type Sched struct {
 	exec   map[dag.JobType]exec.Exec
+	status *exec.StatusKeeper
 	failed map[string]int
 }
 
 func NewSched() (*Sched, error) {
-	exec := map[dag.JobType]exec.Exec{
+	e := map[dag.JobType]exec.Exec{
 		dag.DummyJob:  exec.NewDummyExec(),
 		dag.HadoopJob: exec.NewHadoopExec(),
 		dag.HiveJob:   exec.NewHiveExec(),
 		dag.ShellJob:  exec.NewShellExec(),
 	}
 
-	for _, jexec := range exec {
+	for _, jexec := range e {
 		if err := jexec.Setup(); err != nil {
 			return nil, err
 		}
 	}
 
+	fs, err := filesystem.NewHDFS(config.NameNode)
+	if err != nil {
+		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
+		log.Fatal(msg)
+		return nil, fmt.Errorf(msg)
+	}
+
 	return &Sched{
-		exec:   exec,
+		exec:   e,
+		status: exec.NewStatusKeeper(fs),
 		failed: make(map[string]int),
 	}, nil
 }
@@ -124,7 +134,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 				if err != nil {
 					panic(err)
 				}
-				status, err := jexec.GetStatus(job)
+				status, err := this.status.GetStatus(job)
 				if err != nil {
 					panic(err)
 				}
@@ -143,7 +153,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 				if err = jexec.Run(job); err != nil {
 					panic(err)
 				}
-				if status, err = jexec.GetStatus(job); err != nil {
+				if status, err = this.status.GetStatus(job); err != nil {
 					panic(err)
 				} else {
 					job.Status = status

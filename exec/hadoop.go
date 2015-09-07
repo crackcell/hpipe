@@ -95,10 +95,6 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	return nil
 }
 
-func (this *HadoopExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	return this.status.GetStatus(job)
-}
-
 //===================================================================
 // Private
 //===================================================================

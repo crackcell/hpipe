@@ -29,7 +29,6 @@ import (
 type Exec interface {
 	Setup() error
 	Run(job *dag.Job) error
-	GetStatus(job *dag.Job) (dag.JobStatus, error)
 }
 
 //===================================================================

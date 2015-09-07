@@ -32,6 +32,7 @@ const (
 	DummyJob JobType = iota
 	HadoopJob
 	HiveJob
+	OdpsJob
 	ShellJob
 	UnknownJob
 )
@@ -44,6 +45,8 @@ func (typ JobType) String() string {
 		return "hadoop"
 	case HiveJob:
 		return "hive"
+	case OdpsJob:
+		return "odps"
 	case ShellJob:
 		return "shell"
 	default:
@@ -59,6 +62,8 @@ func ParseJobType(typ string) JobType {
 		return HadoopJob
 	case "hive":
 		return HiveJob
+	case "odps":
+		return OdpsJob
 	case "shell":
 		return ShellJob
 	default:

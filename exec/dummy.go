@@ -43,10 +43,6 @@ func (this *DummyExec) Run(job *dag.Job) error {
 	return nil
 }
 
-func (this *DummyExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	return dag.UnknownStatus, nil
-}
-
 //===================================================================
 // Private
 //===================================================================

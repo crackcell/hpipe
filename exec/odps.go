@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file hive.go
+ * @file odps.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Tue Aug 25 18:28:05 2015
  *
@@ -31,16 +31,16 @@ import (
 // Public APIs
 //===================================================================
 
-type HiveExec struct {
+type OdpsExec struct {
 	status *StatusKeeper
 	fs     *filesystem.HDFS
 }
 
-func NewHiveExec() *HiveExec {
-	return &HiveExec{}
+func NewOdpsExec() *OdpsExec {
+	return &OdpsExec{}
 }
 
-func (this *HiveExec) Setup() error {
+func (this *OdpsExec) Setup() error {
 	if fs, err := filesystem.NewHDFS(config.NameNode); err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
 		log.Fatal(msg)
@@ -52,7 +52,7 @@ func (this *HiveExec) Setup() error {
 	return nil
 }
 
-func (this *HiveExec) Run(job *dag.Job) error {
+func (this *OdpsExec) Run(job *dag.Job) error {
 	if !checkJobAttr(job, []string{"script", "output"}) {
 		return fmt.Errorf("invalid job")
 	}
@@ -85,11 +85,15 @@ func (this *HiveExec) Run(job *dag.Job) error {
 	return nil
 }
 
+func (this *OdpsExec) GetStatus(job *dag.Job) (dag.JobStatus, error) {
+	return this.status.GetStatus(job)
+}
+
 //===================================================================
 // Private
 //===================================================================
 
-func (this *HiveExec) createOutput(job *dag.Job) error {
+func (this *OdpsExec) createOutput(job *dag.Job) error {
 	tokens := strings.Split(job.Attrs["output"], "/")
 	if len(tokens) <= 1 {
 		return nil
@@ -97,7 +101,7 @@ func (this *HiveExec) createOutput(job *dag.Job) error {
 	return this.fs.MkdirP(strings.Join(tokens[:len(tokens)-1], "/"))
 }
 
-func (this *HiveExec) genCmdArgs(job *dag.Job) []string {
+func (this *OdpsExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
 	args = append(args, "f")
 	args = append(args, config.WorkPath+"/"+job.Attrs["script"])
