@@ -32,9 +32,8 @@ import (
 //===================================================================
 
 type HadoopExec struct {
-	status *StatusKeeper
-	hdfs   *filesystem.HDFS
-	jar    string
+	hdfs *filesystem.HDFS
+	jar  string
 }
 
 func NewHadoopExec() *HadoopExec {
@@ -55,7 +54,6 @@ func (this *HadoopExec) Setup() error {
 		log.Fatal(msg)
 		return fmt.Errorf(msg)
 	} else {
-		this.status = NewStatusKeeper(fs)
 		this.hdfs = fs.(*filesystem.HDFS)
 	}
 
@@ -71,27 +69,21 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	this.status.ClearStatus(job)
 	this.hdfs.Rm(job.Attrs["output"])
 	this.createOutput(job)
-	this.status.SetStatus(job, dag.Started)
-	defer this.status.DeleteStatus(job, dag.Started)
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
 	retcode, err := cmdExec(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed
-		this.status.SetStatus(job, dag.Failed)
 		return err
 	}
 	if retcode != 0 {
 		job.Status = dag.Failed
-		this.status.SetStatus(job, dag.Failed)
 		return fmt.Errorf("script failed: %d", retcode)
 	}
 	job.Status = dag.Finished
-	this.status.SetStatus(job, dag.Finished)
 	return nil
 }
 

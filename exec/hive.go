@@ -32,8 +32,7 @@ import (
 //===================================================================
 
 type HiveExec struct {
-	status *StatusKeeper
-	fs     *filesystem.HDFS
+	fs *filesystem.HDFS
 }
 
 func NewHiveExec() *HiveExec {
@@ -46,7 +45,6 @@ func (this *HiveExec) Setup() error {
 		log.Fatal(msg)
 		return fmt.Errorf(msg)
 	} else {
-		this.status = NewStatusKeeper(fs)
 		this.fs = fs.(*filesystem.HDFS)
 	}
 	return nil
@@ -61,27 +59,21 @@ func (this *HiveExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	this.status.ClearStatus(job)
 	this.fs.Rm(job.Attrs["output"])
 	this.createOutput(job)
-	this.status.SetStatus(job, dag.Started)
-	defer this.status.DeleteStatus(job, dag.Started)
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
 	retcode, err := cmdExec(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed
-		this.status.SetStatus(job, dag.Failed)
 		return err
 	}
 	if retcode != 0 {
 		job.Status = dag.Failed
-		this.status.SetStatus(job, dag.Failed)
 		return fmt.Errorf("script failed: %d", retcode)
 	}
 	job.Status = dag.Finished
-	this.status.SetStatus(job, dag.Finished)
 	return nil
 }
 

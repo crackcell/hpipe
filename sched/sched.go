@@ -43,6 +43,7 @@ func NewSched() (*Sched, error) {
 		dag.DummyJob:  exec.NewDummyExec(),
 		dag.HadoopJob: exec.NewHadoopExec(),
 		dag.HiveJob:   exec.NewHiveExec(),
+		dag.OdpsJob:   exec.NewOdpsExec(),
 		dag.ShellJob:  exec.NewShellExec(),
 	}
 
@@ -150,14 +151,15 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 					return
 				}
 
+				this.status.ClearStatus(job)
+				this.status.SetStatus(job, dag.Started)
+				defer this.status.DeleteStatus(job, dag.Started)
+
 				if err = jexec.Run(job); err != nil {
-					panic(err)
+					job.Status = dag.Failed
 				}
-				if status, err = this.status.GetStatus(job); err != nil {
-					panic(err)
-				} else {
-					job.Status = status
-				}
+
+				this.status.SetStatus(job, job.Status)
 				log.Debugf("check job status: %s -> %s", job.Name, status)
 			}
 		}(job)

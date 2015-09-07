@@ -25,7 +25,7 @@ output : main
 	mv main/main output/bin/hpipe
 	cp scripts/* output/bin/
 
-main : deps
+main :
 	cd main; go build
 
 test : all

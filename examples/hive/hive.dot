@@ -1,7 +1,7 @@
 digraph odps {
     step1 [
                 name="step1"
-                type="odps"
+                type="hive"
                 vars="$date=${date:YYYYMMDD}"
                 output="/tmp/hpipe/examples/odps/output/${bizdate}/step1"
                 script="odps.sql"
