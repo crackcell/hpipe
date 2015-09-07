@@ -1,0 +1,14 @@
+digraph odps {
+    step1 [
+                name="step1"
+                type="odps"
+                vars="$date=${date:YYYYMMDD}"
+                output="/tmp/hpipe/examples/odps/output/${bizdate}/step1"
+                script="odps.sql"
+                ]
+    dummy [
+           name="dummy"
+           type="dummy"
+           ]
+    dummy -> step1
+}
