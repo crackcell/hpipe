@@ -115,7 +115,8 @@ Options:
     --max-retry        Max retry times of failed jobs, default: 3
 
     --status-keeper    Method to track job status
-                       default: hdfs, available: hdfs, sqlite
+                       default: sqlite
+                       available: hdfs, sqlite
 
     --namenode         Address of Hadoop NameNode, default: 127.0.0.1:8020
     --sqlite           File path for sqlite database
