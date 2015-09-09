@@ -35,7 +35,7 @@ import (
 
 type Sched struct {
 	exec   map[dag.JobType]exec.Exec
-	status *status.StatusKeeper
+	status status.StatusKeeper
 	failed map[string]int
 }
 
@@ -62,16 +62,29 @@ func NewSched() (*Sched, error) {
 		}
 	}
 
-	fs, err := storage.NewHDFS(config.NameNode)
-	if err != nil {
-		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
+	var s status.StatusKeeper
+	var err error
+	switch config.StatusKeeper {
+	case "hdfs":
+		fs, err := storage.NewHDFS(config.NameNode)
+		if err != nil {
+			return nil, err
+		}
+		s = status.NewFileKeeper(fs)
+	case "sqlite":
+		s, err = status.NewSqliteKeeper(config.SqliteFile)
+		if err != nil {
+			return nil, err
+		}
+	default:
+		msg := fmt.Sprintf("invalid status keeper type: %s", config.StatusKeeper)
 		log.Fatal(msg)
 		return nil, fmt.Errorf(msg)
 	}
 
 	return &Sched{
 		exec:   e,
-		status: status.NewStatusKeeper(fs),
+		status: s,
 		failed: make(map[string]int),
 	}, nil
 }
