@@ -1,5 +1,3 @@
-sudo: false
-
 language: go
 
 before_install:
