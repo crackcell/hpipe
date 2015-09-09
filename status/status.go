@@ -16,12 +16,12 @@
  *
  **/
 
-package exec
+package status
 
 import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag"
-	"github.com/crackcell/hpipe/exec/filesystem"
+	"github.com/crackcell/hpipe/storage"
 )
 
 //===================================================================
@@ -29,10 +29,10 @@ import (
 //===================================================================
 
 type StatusKeeper struct {
-	fs filesystem.Filesystem
+	fs storage.Storage
 }
 
-func NewStatusKeeper(fs filesystem.Filesystem) *StatusKeeper {
+func NewStatusKeeper(fs storage.Storage) *StatusKeeper {
 	return &StatusKeeper{
 		fs: fs,
 	}

@@ -20,7 +20,8 @@ package config
 
 import (
 	"flag"
-	//"fmt"
+	"fmt"
+	"os"
 )
 
 //===================================================================
@@ -32,9 +33,18 @@ var (
 	Verbose            bool
 	WorkPath           string
 	EntryFile          string
-	NameNode           string
-	HadoopStreamingJar string
 	MaxRetry           int
+	StatusKeeper       string
+	NameNode           string
+	SqliteFile         string
+	HadoopOn           bool
+	HadoopStreamingJar string
+	OdpsOn             bool
+	OdpsEndpoint       string
+	OdpsProject        string
+	OdpsAccessID       string
+	OdpsAccessKey      string
+	HiveOn             bool
 )
 
 func InitFlags() {
@@ -46,15 +56,87 @@ func InitFlags() {
 	flag.StringVar(&WorkPath, "p", "./", "Working path")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
-	flag.StringVar(&NameNode, "namenode", "127.0.0.1:8020", "Hadoop name node url, default: 127.0.0.1:8020")
-	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
 	flag.IntVar(&MaxRetry, "max-retry", 3, "max retry times of failed jobs, default: 3")
+	flag.StringVar(&StatusKeeper, "status-keeper", "hdfs", "method to track job status, default: hdfs, available: hdfs, sqlite, file")
+	flag.StringVar(&NameNode, "namenode", "127.0.0.1:8020", "Hadoop name node url, default: 127.0.0.1:8020")
+	flag.StringVar(&SqliteFile, "sqlite", "", "Sqlite file")
+	flag.BoolVar(&HadoopOn, "hadoop", false, "enable hadoop streaming job")
+	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
+	flag.BoolVar(&OdpsOn, "odps", false, "enable ODPS job")
+	flag.StringVar(&OdpsEndpoint, "odps-endpoint", "", "ODPS endpoint address")
+	flag.StringVar(&OdpsProject, "odps-project", "", "ODPS project name")
+	flag.StringVar(&OdpsAccessID, "odps-access-id", "", "ODPS access id")
+	flag.StringVar(&OdpsAccessKey, "odps-access-key", "", "ODPS access key")
+	flag.BoolVar(&HiveOn, "hive", false, "Enable Hive job")
 }
 
 func Parse() {
 	flag.Parse()
+	if Help {
+		showHelp()
+	}
+	if len(EntryFile) == 0 || len(StatusKeeper) == 0 {
+		showHelp()
+	}
+	if HadoopOn && len(NameNode) == 0 {
+		fmt.Println("no namenode")
+		os.Exit(1)
+	}
+	if StatusKeeper == "hdfs" && len(NameNode) == 0 {
+		fmt.Println("no namenode")
+		os.Exit(1)
+	} else if StatusKeeper == "sqlite" && len(SqliteFile) == 0 {
+		fmt.Println("no sqlite")
+		os.Exit(1)
+	}
 }
 
 //===================================================================
 // Private
 //===================================================================
+
+const (
+	logoString = ` _______         __
+|   |   |.-----.|__|.-----.-----.
+|       ||  _  ||  ||  _  |  -__|
+|___|___||   __||__||   __|_____|
+         |__|       |__|
+`
+	helpString = `Execute a hpipe workflow
+Usage:
+    hpipe [options]
+Options:
+    -h, --help         Print this message
+    -v, --verbose      Use verbose output
+
+    -p, --path         Working path
+    -f, --flow         Entry filename of workflow
+    --max-retry        Max retry times of failed jobs, default: 3
+
+    --status-keeper    Method to track job status
+                       default: hdfs, available: hdfs, sqlite
+
+    --namenode         Address of Hadoop NameNode, default: 127.0.0.1:8020
+    --sqlite           File path for sqlite database
+
+    --hadoop           Enable Hadoop streaming job
+    --jar              Path of Hadoop streaming jar file
+
+    --odps             Enable ODPS job
+    --odps-endpoint    Address of ODPS endpoing
+    --odps-project     ODPS project name
+    --odps-access-id   ODPS access id
+    --odps-access-key  ODPS access key
+
+    --hive             Enable Hive job
+`
+)
+
+func showHelp() {
+	fmt.Print(helpString)
+	os.Exit(0)
+}
+
+func LogoString() string {
+	return logoString
+}

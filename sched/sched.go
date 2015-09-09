@@ -23,8 +23,9 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/exec"
-	"github.com/crackcell/hpipe/exec/filesystem"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/status"
+	"github.com/crackcell/hpipe/storage"
 	"sync"
 )
 
@@ -34,17 +35,25 @@ import (
 
 type Sched struct {
 	exec   map[dag.JobType]exec.Exec
-	status *exec.StatusKeeper
+	status *status.StatusKeeper
 	failed map[string]int
 }
 
 func NewSched() (*Sched, error) {
 	e := map[dag.JobType]exec.Exec{
-		dag.DummyJob:  exec.NewDummyExec(),
-		dag.HadoopJob: exec.NewHadoopExec(),
-		dag.HiveJob:   exec.NewHiveExec(),
-		dag.OdpsJob:   exec.NewOdpsExec(),
-		dag.ShellJob:  exec.NewShellExec(),
+		dag.DummyJob: exec.NewDummyExec(),
+		dag.ShellJob: exec.NewShellExec(),
+	}
+
+	if config.HadoopOn {
+		e[dag.HadoopJob] = exec.NewHadoopExec()
+	}
+	if config.HiveOn {
+		e[dag.HiveJob] = exec.NewHiveExec()
+	}
+
+	if config.OdpsOn {
+		e[dag.OdpsJob] = exec.NewOdpsExec()
 	}
 
 	for _, jexec := range e {
@@ -53,7 +62,7 @@ func NewSched() (*Sched, error) {
 		}
 	}
 
-	fs, err := filesystem.NewHDFS(config.NameNode)
+	fs, err := storage.NewHDFS(config.NameNode)
 	if err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
 		log.Fatal(msg)
@@ -62,7 +71,7 @@ func NewSched() (*Sched, error) {
 
 	return &Sched{
 		exec:   e,
-		status: exec.NewStatusKeeper(fs),
+		status: status.NewStatusKeeper(fs),
 		failed: make(map[string]int),
 	}, nil
 }

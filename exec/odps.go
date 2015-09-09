@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
-	"github.com/crackcell/hpipe/exec/filesystem"
 	"github.com/crackcell/hpipe/log"
 	"strings"
 )
@@ -32,7 +31,10 @@ import (
 //===================================================================
 
 type OdpsExec struct {
-	fs *filesystem.HDFS
+	endpoint  string
+	project   string
+	accessId  string
+	accessKey string
 }
 
 func NewOdpsExec() *OdpsExec {
@@ -40,12 +42,33 @@ func NewOdpsExec() *OdpsExec {
 }
 
 func (this *OdpsExec) Setup() error {
-	if fs, err := filesystem.NewHDFS(config.NameNode); err != nil {
-		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
-		log.Fatal(msg)
-		return fmt.Errorf(msg)
+	if len(config.OdpsEndpoint) != 0 {
+		this.endpoint = config.OdpsEndpoint
 	} else {
-		this.fs = fs.(*filesystem.HDFS)
+		msg := fmt.Errorf("odps endpoint not set")
+		log.Fatal(msg)
+		return msg
+	}
+	if len(config.OdpsProject) != 0 {
+		this.project = config.OdpsProject
+	} else {
+		msg := fmt.Errorf("odps project not set")
+		log.Fatal(msg)
+		return msg
+	}
+	if len(config.OdpsAccessID) != 0 {
+		this.accessId = config.OdpsAccessID
+	} else {
+		msg := fmt.Errorf("odps accessid not set")
+		log.Fatal(msg)
+		return msg
+	}
+	if len(config.OdpsAccessKey) != 0 {
+		this.accessKey = config.OdpsAccessKey
+	} else {
+		msg := fmt.Errorf("odps accesskey not set")
+		log.Fatal(msg)
+		return msg
 	}
 	return nil
 }
@@ -59,12 +82,9 @@ func (this *OdpsExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	this.fs.Rm(job.Attrs["output"])
-	this.createOutput(job)
-
 	args := this.genCmdArgs(job)
-	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "hadoop", args...)
+	log.Debugf("CMD: odpscmd %s", strings.Join(args, " "))
+	retcode, err := cmdExec(job.Name, "odpscmd", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err
@@ -81,26 +101,33 @@ func (this *OdpsExec) Run(job *dag.Job) error {
 // Private
 //===================================================================
 
-func (this *OdpsExec) createOutput(job *dag.Job) error {
-	tokens := strings.Split(job.Attrs["output"], "/")
-	if len(tokens) <= 1 {
-		return nil
-	}
-	return this.fs.MkdirP(strings.Join(tokens[:len(tokens)-1], "/"))
-}
-
 func (this *OdpsExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
-	args = append(args, "f")
-	args = append(args, config.WorkPath+"/"+job.Attrs["script"])
+
+	cmd := ""
+
+	args = append(args, "--endpoint=")
+	args = append(args, this.endpoint)
+
+	args = append(args, "--project=")
+	args = append(args, this.project)
+
+	args = append(args, "-u")
+	args = append(args, this.accessId)
+
+	args = append(args, "-p")
+	args = append(args, this.accessKey)
 
 	for k, v := range job.Attrs {
 		if _, ok := dag.JobReservedAttrs[k]; ok {
 			continue
 		}
-		args = append(args, "-D")
-		args = append(args, fmt.Sprintf("%s=%s", k, v))
+		cmd += fmt.Sprintf("set %s=%s;", k, v)
 	}
+	cmd += job.Attrs["command"] + ";"
+
+	args = append(args, "-e")
+	args = append(args, cmd)
 
 	return args
 }

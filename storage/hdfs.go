@@ -16,7 +16,7 @@
  *
  **/
 
-package filesystem
+package storage
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ type HDFS struct {
 	client *hdfs.Client
 }
 
-func NewHDFS(namenode string) (Filesystem, error) {
+func NewHDFS(namenode string) (Storage, error) {
 	if client, err := hdfs.New(config.NameNode); err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
 		log.Fatal(msg)

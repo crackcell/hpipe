@@ -19,7 +19,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
@@ -28,43 +28,9 @@ import (
 	"os"
 )
 
-const (
-	LogoString = ` _______         __
-|   |   |.-----.|__|.-----.-----.
-|       ||  _  ||  ||  _  |  -__|
-|___|___||   __||__||   __|_____|
-         |__|       |__|
-`
-	HelpString = `Execute a hpipe workflow
-Usage:
-    hpipe [options]
-Options:
-    -h, --help     Print this message
-    -v, --verbose  Use verbose output
-
-    -p, --path     Working path
-    -f, --flow     Entry filename of workflow
-    --max-retry    Max retry times of failed jobs, default: 3
-
-    --namenode     Address of Hadoop NameNode, default: 127.0.0.1:8020
-    --jar          Path of Hadoop streaming jar file
-`
-)
-
-func showHelp() {
-	fmt.Print(HelpString)
-	os.Exit(0)
-}
-
 func main() {
 	config.InitFlags()
 	config.Parse()
-	if config.Help {
-		showHelp()
-	}
-	if len(config.EntryFile) == 0 {
-		showHelp()
-	}
 	if config.Verbose {
 		log.StdLogger = log.NewDefault(os.Stdout, "hpipe", log.LOG_LEVEL_ALL)
 	} else {
@@ -79,7 +45,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	util.LogLines(LogoString, nil)
+	util.LogLines(config.LogoString(), nil)
 	util.LogLines(d.String(), nil)
 
 	s, err := sched.NewSched()

@@ -22,8 +22,8 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
-	"github.com/crackcell/hpipe/exec/filesystem"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/storage"
 	"strings"
 )
 
@@ -32,7 +32,7 @@ import (
 //===================================================================
 
 type HadoopExec struct {
-	hdfs *filesystem.HDFS
+	hdfs *storage.HDFS
 	jar  string
 }
 
@@ -42,19 +42,19 @@ func NewHadoopExec() *HadoopExec {
 
 func (this *HadoopExec) Setup() error {
 	if len(config.HadoopStreamingJar) == 0 {
-		msg := fmt.Sprintf("invalid hadoop streaming jar: %s", config.HadoopStreamingJar)
+		msg := fmt.Sprintf("hadoop streaming jar not set")
 		log.Errorf(msg)
 		return fmt.Errorf(msg)
 	} else {
 		this.jar = config.HadoopStreamingJar
 	}
 
-	if fs, err := filesystem.NewHDFS(config.NameNode); err != nil {
+	if fs, err := storage.NewHDFS(config.NameNode); err != nil {
 		msg := fmt.Sprintf("connect to hdfs namenode failed: %s", config.NameNode)
 		log.Fatal(msg)
 		return fmt.Errorf(msg)
 	} else {
-		this.hdfs = fs.(*filesystem.HDFS)
+		this.hdfs = fs.(*storage.HDFS)
 	}
 
 	return nil

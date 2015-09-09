@@ -10,13 +10,13 @@
 /**
  *
  *
- * @file filesystem.go
+ * @file storage.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Sun Sep  6 23:35:33 2015
  *
  **/
 
-package filesystem
+package storage
 
 import (
 //"fmt"
@@ -26,7 +26,7 @@ import (
 // Public APIs
 //===================================================================
 
-type Filesystem interface {
+type Storage interface {
 	MkdirP(path string) error
 	Rm(path string) error
 	Touch(path string) error

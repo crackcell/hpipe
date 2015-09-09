@@ -19,6 +19,7 @@ dev : deps
 deps :
 	go get github.com/colinmarc/hdfs
 	go get github.com/awalterschulze/gographviz
+	go get github.com/mattn/go-sqlite3
 
 output : main
 	mkdir -p output/bin
