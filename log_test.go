@@ -25,7 +25,7 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	l := log.New(os.Stdout, "test_logger ", LOG_LEVEL_ALL)
+	l := log.New(os.Stdout, "test_logger ", log.LOG_LEVEL_ALL)
 	l.Debug("debug")
 	l.Debugf("%s", "debug")
 	l.Trace("trace")
