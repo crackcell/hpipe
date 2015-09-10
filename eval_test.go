@@ -16,7 +16,7 @@
  *
  **/
 
-package symbol
+package main
 
 import (
 	"fmt"

@@ -16,10 +16,11 @@
  *
  **/
 
-package symbol
+package main
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/dag/symbol"
 	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"testing"
 	"time"
@@ -27,7 +28,7 @@ import (
 
 func TestSymbolResolveAll(t *testing.T) {
 	src := "$res=$gmtdate-1*$day"
-	ret, err := Resolve(src)
+	ret, err := symbol.Resolve(src)
 	if err != nil {
 		t.Error(err)
 		return
