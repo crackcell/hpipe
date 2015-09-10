@@ -127,6 +127,8 @@ var JobReservedAttrs = map[string]int{
 	"output":  1,
 	"mapper":  1,
 	"reducer": 1,
+	"script":  1,
+	"command": 1,
 }
 
 type Job struct {

@@ -74,8 +74,10 @@ func (this *OdpsExec) Setup() error {
 }
 
 func (this *OdpsExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"script", "output"}) {
-		return fmt.Errorf("invalid job")
+	if !checkJobAttr(job, []string{"command", "output"}) {
+		msg := "invalid job"
+		log.Error(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// !!!VERY IMPORTANT!!!
@@ -106,10 +108,10 @@ func (this *OdpsExec) genCmdArgs(job *dag.Job) []string {
 
 	cmd := ""
 
-	args = append(args, "--endpoint=")
+	args = append(args, "--endpoint")
 	args = append(args, this.endpoint)
 
-	args = append(args, "--project=")
+	args = append(args, "--project")
 	args = append(args, this.project)
 
 	args = append(args, "-u")
@@ -124,7 +126,7 @@ func (this *OdpsExec) genCmdArgs(job *dag.Job) []string {
 		}
 		cmd += fmt.Sprintf("set %s=%s;", k, v)
 	}
-	cmd += job.Attrs["command"] + ";"
+	cmd += strings.Trim(job.Attrs["command"], ";") + ";"
 
 	args = append(args, "-e")
 	args = append(args, cmd)

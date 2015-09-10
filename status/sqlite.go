@@ -77,12 +77,19 @@ func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 	for rows.Next() {
 		var s StatusTable
 		rows.Scan(&s.Output, &s.Status)
-		fmt.Println("GetStatus:", s)
+		if s := dag.ParseJobStatus(s.Status); s == dag.UnknownStatus {
+			return dag.NotStarted, nil
+		} else {
+			return s, nil
+		}
 	}
 	return dag.NotStarted, nil
 }
 
 func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
+	if err := this.ClearStatus(job); err != nil {
+		return err
+	}
 	sql := fmt.Sprintf(
 		"insert into status(output, status) values('%s', '%s')",
 		job.Attrs["output"], status,

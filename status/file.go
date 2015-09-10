@@ -51,6 +51,9 @@ func (this *FileKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 }
 
 func (this *FileKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
+	if err := this.ClearStatus(job); err == nil {
+		return err
+	}
 	output := job.Attrs["output"]
 	if flag, ok := JobStatusFlags[status]; ok {
 		return this.fs.Touch(output + flag)

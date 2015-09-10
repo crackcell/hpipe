@@ -157,12 +157,12 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 				if err != nil {
 					panic(err)
 				}
-				status, err := this.status.GetStatus(job)
-				if err != nil {
+				if s, err := this.status.GetStatus(job); err != nil {
 					panic(err)
+				} else {
+					job.Status = s
 				}
-				job.Status = status
-				log.Debugf("check job status: %s -> %s", job.Name, status)
+				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 
 				switch job.Status {
 				case dag.Finished:
@@ -173,16 +173,13 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 					return
 				}
 
-				this.status.ClearStatus(job)
 				this.status.SetStatus(job, dag.Started)
-				defer this.status.DeleteStatus(job, dag.Started)
-
 				if err = jexec.Run(job); err != nil {
 					job.Status = dag.Failed
 				}
-
 				this.status.SetStatus(job, job.Status)
-				log.Debugf("check job status: %s -> %s", job.Name, status)
+
+				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 			}
 		}(job)
 	}
@@ -192,7 +189,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 
 func (this *Sched) getExec(job *dag.Job) (exec.Exec, error) {
 	if e, ok := this.exec[job.Type]; !ok {
-		return nil, fmt.Errorf("unknown job type: %v", job.Type)
+		return nil, fmt.Errorf("no vailid executor for job type: %v", job.Type)
 	} else {
 		return e, nil
 	}

@@ -4,7 +4,7 @@ digraph odps {
                 type="odps"
                 vars="$date=${date:YYYYMMDD}"
                 output="/tmp/hpipe/examples/odps/output/${bizdate}/step1"
-                script="odps.sql"
+                command="show tables;list users;"
                 ]
     dummy [
            name="dummy"

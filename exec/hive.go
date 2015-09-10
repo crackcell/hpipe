@@ -43,7 +43,9 @@ func (this *HiveExec) Setup() error {
 
 func (this *HiveExec) Run(job *dag.Job) error {
 	if !checkJobAttr(job, []string{"script", "output"}) {
-		return fmt.Errorf("invalid job")
+		msg := "invalid job"
+		log.Error(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// !!!VERY IMPORTANT!!!
