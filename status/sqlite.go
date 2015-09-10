@@ -51,6 +51,7 @@ func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
 
 	if !exist {
 		sql := "drop table if exists status;create table status(output string, status string);"
+		log.Debugf("sql: %s", sql)
 		if _, err := db.Exec(sql); err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -67,7 +68,7 @@ func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 		"select * from status where output='%s'",
 		job.Attrs["output"],
 	)
-	log.Debugf("sqlite: %s", sql)
+	log.Debugf("sql: %s", sql)
 	rows, err := this.db.Query(sql)
 	if err != nil {
 		log.Fatal(err)
@@ -94,7 +95,7 @@ func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
 		"insert into status(output, status) values('%s', '%s')",
 		job.Attrs["output"], status,
 	)
-	log.Debugf("sqlite: %s", sql)
+	log.Debugf("sql: %s", sql)
 	if _, err := this.db.Exec(sql); err != nil {
 		log.Fatal(err)
 		return err
@@ -111,7 +112,7 @@ func (this *SqliteKeeper) ClearStatus(job *dag.Job) error {
 		"delete from status where output='%s'",
 		job.Attrs["output"],
 	)
-	log.Debugf("sqlite: %s", sql)
+	log.Debugf("sql: %s", sql)
 	if _, err := this.db.Exec(sql); err != nil {
 		log.Fatal(err)
 		return err
