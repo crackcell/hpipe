@@ -90,6 +90,11 @@ func NewSched() (*Sched, error) {
 }
 
 func (this *Sched) Run(d *dag.DAG) error {
+	if err := this.checkDAG(d); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
 	queue := this.genRunQueue(d)
 	for len(queue) != 0 {
 
@@ -203,4 +208,13 @@ func (this *Sched) markJobFinished(job *dag.Job, d *dag.DAG) {
 			d.InDegrees[post] = in - 1
 		}
 	}
+}
+
+func (this *Sched) checkDAG(d *dag.DAG) error {
+	for _, job := range d.Jobs {
+		if _, ok := this.exec[job.Type]; !ok {
+			return fmt.Errorf("no vailid executor for job type: %v", job.Type)
+		}
+	}
+	return nil
 }

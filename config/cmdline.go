@@ -57,8 +57,8 @@ func InitFlags() {
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
 	flag.IntVar(&MaxRetry, "max-retry", 3, "max retry times of failed jobs, default: 3")
-	flag.StringVar(&StatusKeeper, "status-keeper", "hdfs", "method to track job status, default: hdfs, available: hdfs, sqlite, file")
-	flag.StringVar(&NameNode, "namenode", "127.0.0.1:8020", "Hadoop name node url, default: 127.0.0.1:8020")
+	flag.StringVar(&StatusKeeper, "status-keeper", "sqlite", "method to track job status, default: sqlite, available: hdfs, sqlite, file")
+	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url")
 	flag.StringVar(&SqliteFile, "sqlite", "", "Sqlite file")
 	flag.BoolVar(&HadoopOn, "hadoop", false, "enable hadoop streaming job")
 	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
@@ -73,21 +73,22 @@ func InitFlags() {
 func Parse() {
 	flag.Parse()
 	if Help {
-		showHelp()
+		showHelp(0)
 	}
-	if len(EntryFile) == 0 || len(StatusKeeper) == 0 {
-		showHelp()
+	if len(EntryFile) == 0 {
+		fmt.Println("invalid arguments: no flow")
+		showHelp(1)
 	}
 	if HadoopOn && len(NameNode) == 0 {
-		fmt.Println("no namenode")
-		os.Exit(1)
+		fmt.Println("invalid arguments: no namenode")
+		showHelp(1)
 	}
 	if StatusKeeper == "hdfs" && len(NameNode) == 0 {
-		fmt.Println("no namenode")
-		os.Exit(1)
+		fmt.Println("invalid arguments: no namenode")
+		showHelp(1)
 	} else if StatusKeeper == "sqlite" && len(SqliteFile) == 0 {
-		fmt.Println("no sqlite")
-		os.Exit(1)
+		fmt.Println("invalid arguments: no sqlite")
+		showHelp(1)
 	}
 }
 
@@ -132,9 +133,9 @@ Options:
 `
 )
 
-func showHelp() {
+func showHelp(ret int) {
 	fmt.Print(helpString)
-	os.Exit(0)
+	os.Exit(ret)
 }
 
 func LogoString() string {
