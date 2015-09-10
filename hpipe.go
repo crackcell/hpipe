@@ -38,8 +38,7 @@ func main() {
 			log.LOG_LEVEL_TRACE|log.LOG_LEVEL_INFO|log.LOG_LEVEL_WARN|log.LOG_LEVEL_ERROR|log.LOG_LEVEL_FATAL)
 	}
 
-	factory := dag.NewFactory()
-	d, err := factory.CreateDAGFromFile(config.EntryFile)
+	d, err := dag.LoadFromFile(config.EntryFile)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
