@@ -9,7 +9,7 @@
 [![Coverage Status](https://coveralls.io/repos/crackcell/hpipe/badge.svg?branch=master&service=github)](https://coveralls.io/github/crackcell/hpipe?branch=master)
 
 Hpipe is a workflow engine supporting hybrid workflows with built-in support for
-Hadoop Streaming and Spark.
+Hadoop Streaming and Hive.
 
 It is useful in many production scenarios such as offline data processing of
 click-through-rate prediction for online advertising.
