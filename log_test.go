@@ -16,15 +16,16 @@
  *
  **/
 
-package log
+package main
 
 import (
+	"github.com/crackcell/hpipe/log"
 	"os"
 	"testing"
 )
 
 func TestAll(t *testing.T) {
-	l := New(os.Stdout, "test_logger ", LOG_LEVEL_ALL)
+	l := log.New(os.Stdout, "test_logger ", LOG_LEVEL_ALL)
 	l.Debug("debug")
 	l.Debugf("%s", "debug")
 	l.Trace("trace")
@@ -37,16 +38,16 @@ func TestAll(t *testing.T) {
 	l.Errorf("%s", "error")
 	l.Fatal("fatal")
 	l.Fatalf("%s", "fatal")
-	Debug("debug")
-	Debugf("%s", "debug")
-	Trace("trace")
-	Tracef("%s", "trace")
-	Info("info")
-	Infof("%s", "info")
-	Warn("warn")
-	Warnf("%s", "warn")
-	Error("error")
-	Errorf("%s", "error")
-	Fatal("fatal")
-	Fatalf("%s", "fatal")
+	log.Debug("debug")
+	log.Debugf("%s", "debug")
+	log.Trace("trace")
+	log.Tracef("%s", "trace")
+	log.Info("info")
+	log.Infof("%s", "info")
+	log.Warn("warn")
+	log.Warnf("%s", "warn")
+	log.Error("error")
+	log.Errorf("%s", "error")
+	log.Fatal("fatal")
+	log.Fatalf("%s", "fatal")
 }
