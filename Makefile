@@ -23,11 +23,11 @@ deps :
 
 output : main
 	mkdir -p output/bin
-	mv main/main output/bin/hpipe
+	cp hpipe output/bin/hpipe
 	cp scripts/* output/bin/
 
 main :
-	cd main; go build
+	go build
 
 test : all
 	cd dag/symbol; go test -v
