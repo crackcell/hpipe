@@ -42,7 +42,8 @@ func (this *HiveExec) Setup() error {
 }
 
 func (this *HiveExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"script", "output"}) {
+	if !checkJobAttr(job, []string{"output"}) ||
+		(!checkJobAttr(job, []string{"script"}) && !checkJobAttr(job, []string{"hql"})) {
 		msg := "invalid job"
 		log.Error(msg)
 		return fmt.Errorf(msg)
@@ -73,8 +74,16 @@ func (this *HiveExec) Run(job *dag.Job) error {
 
 func (this *HiveExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
-	args = append(args, "f")
-	args = append(args, config.WorkPath+"/"+job.Attrs["script"])
+
+	if v, ok := job.Attrs["hql"]; ok {
+		args = append(args, "e")
+		args = append(args, v)
+	} else if v, ok := job.Attrs["script"]; ok {
+		args = append(args, "f")
+		args = append(args, config.WorkPath+"/"+v)
+	} else {
+		panic(fmt.Errorf("not hql or script for hive job: %s", job.Name))
+	}
 
 	for k, v := range job.Attrs {
 		if _, ok := dag.JobReservedAttrs[k]; ok {
