@@ -59,13 +59,16 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 		return nil, err
 	}
 	for _, job := range d.Jobs {
+		vars := ""
 		if v, ok := job.Attrs["vars"]; ok {
-			if resolved, err := symbol.Resolve(strings.Trim(v, "\"'")); err != nil {
-				return nil, err
-			} else {
-				for _, stmt := range resolved {
-					job.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
-				}
+			vars = v
+		}
+
+		if resolved, err := symbol.Resolve(strings.Trim(vars, "\"'")); err != nil {
+			return nil, err
+		} else {
+			for _, stmt := range resolved {
+				job.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
 			}
 		}
 

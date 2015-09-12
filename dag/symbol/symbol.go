@@ -30,13 +30,16 @@ import (
 //===================================================================
 
 func Resolve(src string) ([]*ast.Stmt, error) {
+	e := eval.NewEval()
+	if len(src) == 0 {
+		return e.Evaluate([]*ast.Stmt{})
+	}
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	a, err := p.Parse(l)
 	if err != nil {
 		return nil, err
 	}
-	e := eval.NewEval()
 	return e.Evaluate(a.([]*ast.Stmt))
 }
 
