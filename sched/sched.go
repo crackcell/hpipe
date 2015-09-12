@@ -180,6 +180,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 
 				this.status.SetStatus(job, dag.Started)
 				if err = jexec.Run(job); err != nil {
+					log.Error(err)
 					job.Status = dag.Failed
 				}
 				this.status.SetStatus(job, job.Status)

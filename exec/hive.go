@@ -54,8 +54,8 @@ func (this *HiveExec) Run(job *dag.Job) error {
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
 	args := this.genCmdArgs(job)
-	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "hadoop", args...)
+	log.Debugf("CMD: hive %s", strings.Join(args, " "))
+	retcode, err := cmdExec(job.Name, "hive", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err
@@ -76,10 +76,10 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
 
 	if v, ok := job.Attrs["hql"]; ok {
-		args = append(args, "e")
-		args = append(args, v)
+		args = append(args, "-e")
+		args = append(args, "\""+v+"\"")
 	} else if v, ok := job.Attrs["script"]; ok {
-		args = append(args, "f")
+		args = append(args, "-f")
 		args = append(args, config.WorkPath+"/"+v)
 	} else {
 		panic(fmt.Errorf("not hql or script for hive job: %s", job.Name))

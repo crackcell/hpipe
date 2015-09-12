@@ -64,7 +64,7 @@ func New(writer io.Writer, prefix string, logLevel int) LevelLogger {
 	ret := new(levelLogger)
 	ret.prefix = prefix
 	ret.callerpath = 3
-	ret.init(writer, prefix, logLevel)
+	ret.init(writer, ret.prefix, logLevel)
 	return ret
 }
 
@@ -121,7 +121,7 @@ func (this *levelLogger) init(writer io.Writer, prefix string, logLevel int) {
 		if level&logLevel != 0 {
 			levelName, _ := levelToStr[level]
 			this.loggers[level] =
-				log.New(writer, levelName+" "+prefix, log.LstdFlags)
+				log.New(writer, levelName+" "+prefix+" ", log.LstdFlags)
 		} else {
 			this.loggers[level] = null
 		}

@@ -2,9 +2,9 @@ digraph odps {
     step1 [
                 name="step1"
                 type="hive"
-                vars="$date=${date:YYYYMMDD}"
+                vars="$bizdate=${date:YYYYMMDD}"
                 output="/tmp/hpipe/examples/odps/output/${bizdate}/step1"
-                script="odps.sql"
+                hql="select * from tb_game where date='${bizdate}';"
                 ]
     dummy [
            name="dummy"

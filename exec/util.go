@@ -62,7 +62,7 @@ func cmdExec(jobname, name string, arg ...string) (int, error) {
 		return 0, err
 	}
 	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return 0, err
 	}
 	errscanner := bufio.NewScanner(stderr)
