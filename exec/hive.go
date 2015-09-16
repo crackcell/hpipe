@@ -53,7 +53,11 @@ func (this *HiveExec) Run(job *dag.Job) error {
 	// Many other operations relay on this TrimRight.
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
-	args := this.genCmdArgs(job)
+	args, err := this.genCmdArgs(job)
+	if err != nil {
+		log.Error(args)
+		return err
+	}
 	log.Debugf("CMD: hive %s", strings.Join(args, " "))
 	retcode, err := cmdExec(job.Name, "hive", args...)
 	if err != nil {
@@ -72,26 +76,63 @@ func (this *HiveExec) Run(job *dag.Job) error {
 // Private
 //===================================================================
 
-func (this *HiveExec) genCmdArgs(job *dag.Job) []string {
+func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 	args := []string{}
 
+	hql := ""
+
+	// Process resource option, Add different types of files to hive
+	if v, ok := job.Attrs["resource"]; ok {
+		for _, res := range strings.Split(v, ";") {
+			kv := strings.Split(res, ":")
+			if len(kv) != 2 {
+				return []string{}, fmt.Errorf("invalid resource: %s", res)
+			}
+			switch strings.Trim(kv[0], " ") {
+			case "jar":
+				hql += fmt.Sprintf("add jar %s;",
+					config.WorkPath+"/"+strings.Trim(kv[1], " "))
+			default:
+				return []string{}, fmt.Errorf("invalid resource type: %s", kv[0])
+			}
+		}
+	}
+
+	// Create UDFs
+	if v, ok := job.Attrs["udf"]; ok {
+		for _, fun := range strings.Split(v, ";") {
+			kv := strings.Split(fun, ":")
+			if len(kv) != 2 {
+				return []string{}, fmt.Errorf("invalid udf: %s", fun)
+			}
+			hql += fmt.Sprintf("create temporary function %s as '%s'",
+				strings.Trim(kv[0], " "), strings.Trim(kv[1], " "))
+		}
+	}
+
+	// Process hive options
+	if v, ok := job.Attrs["option"]; ok {
+		for _, option := range strings.Split(v, ";") {
+			kv := strings.Split(option, "=")
+			if len(kv) != 2 {
+				return []string{}, fmt.Errorf("invalid option: %s", option)
+			}
+			hql += fmt.Sprintf("set %s=%s;",
+				strings.Trim(kv[0], " "), strings.Trim(kv[1], " "))
+		}
+	}
+
 	if v, ok := job.Attrs["hql"]; ok {
-		args = append(args, "-e")
-		args = append(args, "\""+v+"\"")
+		hql += strings.Trim(v, ";") + ";"
 	} else if v, ok := job.Attrs["script"]; ok {
 		args = append(args, "-f")
 		args = append(args, config.WorkPath+"/"+v)
 	} else {
-		panic(fmt.Errorf("not hql or script for hive job: %s", job.Name))
+		return []string{}, fmt.Errorf("not hql or script for hive job: %s", job.Name)
 	}
 
-	for k, v := range job.Attrs {
-		if _, ok := dag.JobReservedAttrs[k]; ok {
-			continue
-		}
-		args = append(args, "-D")
-		args = append(args, fmt.Sprintf("%s=%s", k, v))
-	}
+	args = append(args, "-e")
+	args = append(args, "\""+hql+"\"")
 
-	return args
+	return args, nil
 }
