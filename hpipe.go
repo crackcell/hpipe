@@ -25,7 +25,9 @@ import (
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/sched"
 	"github.com/crackcell/hpipe/util"
+	"github.com/crackcell/hpipe/webui"
 	"os"
+	"sync"
 )
 
 func main() {
@@ -51,7 +53,25 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-	if err := s.Run(d); err != nil {
-		os.Exit(1)
+
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func(d *dag.DAG) {
+		defer wg.Done()
+		if err := s.Run(d); err != nil {
+			//os.Exit(1)
+			return
+		}
+	}(d)
+
+	if config.WebUI {
+		wg.Add(1)
+		go func(addr string) {
+			defer wg.Done()
+			webui.Run(addr)
+		}(config.WebUIAddr)
 	}
+
+	wg.Wait()
 }

@@ -45,14 +45,14 @@ func NewSched() (*Sched, error) {
 		dag.ShellJob: exec.NewShellExec(),
 	}
 
-	if config.HadoopOn {
+	if config.Hadoop {
 		e[dag.HadoopJob] = exec.NewHadoopExec()
 	}
-	if config.HiveOn {
+	if config.Hive {
 		e[dag.HiveJob] = exec.NewHiveExec()
 	}
 
-	if config.OdpsOn {
+	if config.Odps {
 		e[dag.OdpsJob] = exec.NewOdpsExec()
 	}
 

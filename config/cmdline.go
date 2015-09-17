@@ -37,14 +37,16 @@ var (
 	StatusKeeper       string
 	NameNode           string
 	SqliteFile         string
-	HadoopOn           bool
+	Hadoop             bool
 	HadoopStreamingJar string
-	OdpsOn             bool
+	Odps               bool
 	OdpsEndpoint       string
 	OdpsProject        string
 	OdpsAccessID       string
 	OdpsAccessKey      string
-	HiveOn             bool
+	Hive               bool
+	WebUI              bool
+	WebUIAddr          string
 )
 
 func InitFlags() {
@@ -60,14 +62,16 @@ func InitFlags() {
 	flag.StringVar(&StatusKeeper, "status-keeper", "sqlite", "method to track job status, default: sqlite, available: hdfs, sqlite, file")
 	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url")
 	flag.StringVar(&SqliteFile, "sqlite", "", "Sqlite file")
-	flag.BoolVar(&HadoopOn, "hadoop", false, "enable hadoop streaming job")
+	flag.BoolVar(&Hadoop, "hadoop", false, "enable hadoop streaming job")
 	flag.StringVar(&HadoopStreamingJar, "jar", "", "Hadoop streaming jar")
-	flag.BoolVar(&OdpsOn, "odps", false, "enable ODPS job")
+	flag.BoolVar(&Odps, "odps", false, "enable ODPS job")
 	flag.StringVar(&OdpsEndpoint, "odps-endpoint", "", "ODPS endpoint address")
 	flag.StringVar(&OdpsProject, "odps-project", "", "ODPS project name")
 	flag.StringVar(&OdpsAccessID, "odps-access-id", "", "ODPS access id")
 	flag.StringVar(&OdpsAccessKey, "odps-access-key", "", "ODPS access key")
-	flag.BoolVar(&HiveOn, "hive", false, "Enable Hive job")
+	flag.BoolVar(&Hive, "hive", false, "Enable Hive job")
+	flag.BoolVar(&WebUI, "webui", false, "Use Web UI")
+	flag.StringVar(&WebUIAddr, "webui-addr", "127.0.0.1:8000", "Use Web UI")
 }
 
 func Parse() {
@@ -79,7 +83,7 @@ func Parse() {
 		fmt.Println("invalid arguments: no flow")
 		showHelp(1)
 	}
-	if HadoopOn && len(NameNode) == 0 {
+	if Hadoop && len(NameNode) == 0 {
 		fmt.Println("invalid arguments: no namenode")
 		showHelp(1)
 	}
@@ -131,6 +135,9 @@ Options:
     --odps-access-key  ODPS access key
 
     --hive             Enable Hive job
+
+    --webui            Enable Web UI
+    --webui-addr       Binding address for Web UI, default: 127.0.0.1:8000
 `
 )
 
