@@ -25,6 +25,7 @@ import (
 	"github.com/crackcell/hpipe/log"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
+	"sync"
 )
 
 //===================================================================
@@ -37,7 +38,8 @@ type StatusTable struct {
 }
 
 type SqliteKeeper struct {
-	db *sql.DB
+	db   *sql.DB
+	lock sync.Mutex
 }
 
 func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
@@ -64,6 +66,9 @@ func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
 }
 
 func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	sql := fmt.Sprintf(
 		"select * from status where output='%s'",
 		job.Attrs["output"],
@@ -88,6 +93,9 @@ func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 }
 
 func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	if err := this.ClearStatus(job); err != nil {
 		return err
 	}
@@ -108,6 +116,9 @@ func (this *SqliteKeeper) DeleteStatus(job *dag.Job, status dag.JobStatus) error
 }
 
 func (this *SqliteKeeper) ClearStatus(job *dag.Job) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	sql := fmt.Sprintf(
 		"delete from status where output='%s'",
 		job.Attrs["output"],
