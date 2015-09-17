@@ -105,7 +105,7 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 			if len(kv) != 2 {
 				return []string{}, fmt.Errorf("invalid udf: %s", fun)
 			}
-			hql += fmt.Sprintf("create temporary function %s as '%s'",
+			hql += fmt.Sprintf("create temporary function %s as '%s';",
 				strings.Trim(kv[0], " "), strings.Trim(kv[1], " "))
 		}
 	}

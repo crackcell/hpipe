@@ -152,6 +152,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 	for _, job := range queue {
 		wg.Add(1)
 		go func(job *dag.Job) {
+			// !!! All shared objects need to be thread-safe !!!
 			defer wg.Done()
 
 			log.Infof("run job: %s", job.Name)

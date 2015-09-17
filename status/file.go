@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/storage"
+	"sync"
 )
 
 //===================================================================
@@ -29,7 +30,8 @@ import (
 //===================================================================
 
 type FileKeeper struct {
-	fs storage.Storage
+	fs   storage.Storage
+	lock sync.Mutex
 }
 
 func NewFileKeeper(fs storage.Storage) *FileKeeper {
@@ -39,6 +41,9 @@ func NewFileKeeper(fs storage.Storage) *FileKeeper {
 }
 
 func (this *FileKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	output := job.Attrs["output"]
 	for status, flag := range JobStatusFlags {
 		if exist, err := this.fs.IsExist(output + flag); err != nil {
@@ -51,6 +56,9 @@ func (this *FileKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 }
 
 func (this *FileKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	if err := this.ClearStatus(job); err == nil {
 		return err
 	}
@@ -63,6 +71,9 @@ func (this *FileKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
 }
 
 func (this *FileKeeper) DeleteStatus(job *dag.Job, status dag.JobStatus) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	output := job.Attrs["output"]
 	if flag, ok := JobStatusFlags[status]; ok {
 		return this.fs.Rm(output + flag)
@@ -72,6 +83,9 @@ func (this *FileKeeper) DeleteStatus(job *dag.Job, status dag.JobStatus) error {
 }
 
 func (this *FileKeeper) ClearStatus(job *dag.Job) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
 	output := job.Attrs["output"]
 	for _, flag := range JobStatusFlags {
 		if err := this.fs.Rm(output + flag); err != nil {
