@@ -23,6 +23,7 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util"
 	"strings"
 )
 
@@ -86,7 +87,7 @@ func (this *OdpsExec) Run(job *dag.Job) error {
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: odpscmd %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "odpscmd", args...)
+	retcode, err := util.ExecCmd(job.Name, "odpscmd", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err

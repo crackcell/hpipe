@@ -24,6 +24,7 @@ import (
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/storage"
+	"github.com/crackcell/hpipe/util"
 	"strings"
 )
 
@@ -76,7 +77,7 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "hadoop", args...)
+	retcode, err := util.ExecCmd(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err

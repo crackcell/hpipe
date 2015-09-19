@@ -23,6 +23,7 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util"
 	"github.com/crackcell/hpipe/util/file"
 	"strings"
 )
@@ -60,7 +61,7 @@ func (this *HiveExec) Run(job *dag.Job) error {
 		return err
 	}
 	log.Debugf("CMD: hive %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "hive", args...)
+	retcode, err := util.ExecCmd(job.Name, "hive", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err

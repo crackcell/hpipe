@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util"
 	"strings"
 )
 
@@ -53,7 +54,7 @@ func (this *ShellExec) Run(job *dag.Job) error {
 
 	args := this.genCmdArgs(job)
 	log.Debugf("CMD: bash %s", strings.Join(args, " "))
-	retcode, err := cmdExec(job.Name, "bash", args...)
+	retcode, err := util.ExecCmd(job.Name, "bash", args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err
