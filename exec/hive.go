@@ -131,7 +131,7 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 			return nil, err
 		}
 		for _, line := range lines {
-			hql += strings.Trim(line, " ")
+			hql += strings.Trim(line, " ") + " "
 		}
 	} else {
 		return nil, fmt.Errorf("not hql or script for hive job: %s", job.Name)
