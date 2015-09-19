@@ -76,18 +76,12 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 			if k == "vars" {
 				continue
 			}
-			for _, token := range varPattern.FindAllStringSubmatch(v, -1) {
-				name := token[1]
-				if val, ok := job.Vars[name]; ok {
-					nval := strings.Replace(job.Attrs[k], "${"+name+"}", val, -1)
-					log.Debugf("resolve: %s => %s", v, nval)
-					job.Attrs[k] = nval
-				} else {
-					msg := fmt.Sprintf("variable %s is not defined", name)
-					log.Error(msg)
-					return nil, fmt.Errorf(msg)
-				}
+			nval, err := ApplyVarToString(v, job.Vars)
+			if err != nil {
+				log.Fatal(err)
+				return nil, err
 			}
+			job.Attrs[k] = nval
 		}
 	}
 	return d, nil
@@ -112,6 +106,20 @@ func (this *DAG) String() string {
 	}
 	str += fmt.Sprintf("}\n")
 	return str
+}
+
+func ApplyVarToString(str string, vars map[string]string) (string, error) {
+	for _, token := range varPattern.FindAllStringSubmatch(str, -1) {
+		name := token[1]
+		if val, ok := vars[name]; ok {
+			nval := strings.Replace(str, "${"+name+"}", val, 1)
+			log.Debugf("resolve: %s => %s", str, nval)
+			str = nval
+		} else {
+			return "", fmt.Errorf("variable %s is not defined", name)
+		}
+	}
+	return str, nil
 }
 
 //===================================================================

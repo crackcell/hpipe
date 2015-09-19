@@ -8,7 +8,7 @@ digraph wordcount {
                 mapper="cat"
                 reducer="wc -l"
                 mapred.reduce.tasks=1
-                test.custom.val="today is ${date}, yestoday is ${bizdate}"
+                test.custom.val="today is ${date}, yestoday is ${bizdate}, and yestoday is ${bizdate}"
                 ]
     step2 [
                 name="step2"

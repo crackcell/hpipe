@@ -23,6 +23,7 @@ import (
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util/file"
 	"strings"
 )
 
@@ -86,14 +87,14 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 		for _, res := range strings.Split(v, ";") {
 			kv := strings.Split(res, ":")
 			if len(kv) != 2 {
-				return []string{}, fmt.Errorf("invalid resource: %s", res)
+				return nil, fmt.Errorf("invalid resource: %s", res)
 			}
 			switch strings.Trim(kv[0], " ") {
 			case "jar":
 				hql += fmt.Sprintf("add jar %s;",
 					config.WorkPath+"/"+strings.Trim(kv[1], " "))
 			default:
-				return []string{}, fmt.Errorf("invalid resource type: %s", kv[0])
+				return nil, fmt.Errorf("invalid resource type: %s", kv[0])
 			}
 		}
 	}
@@ -103,7 +104,7 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 		for _, fun := range strings.Split(v, ";") {
 			kv := strings.Split(fun, ":")
 			if len(kv) != 2 {
-				return []string{}, fmt.Errorf("invalid udf: %s", fun)
+				return nil, fmt.Errorf("invalid udf: %s", fun)
 			}
 			hql += fmt.Sprintf("create temporary function %s as '%s';",
 				strings.Trim(kv[0], " "), strings.Trim(kv[1], " "))
@@ -115,7 +116,7 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 		for _, option := range strings.Split(v, ";") {
 			kv := strings.Split(option, "=")
 			if len(kv) != 2 {
-				return []string{}, fmt.Errorf("invalid option: %s", option)
+				return nil, fmt.Errorf("invalid option: %s", option)
 			}
 			hql += fmt.Sprintf("set %s=%s;",
 				strings.Trim(kv[0], " "), strings.Trim(kv[1], " "))
@@ -125,14 +126,24 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 	if v, ok := job.Attrs["hql"]; ok {
 		hql += strings.Trim(v, ";") + ";"
 	} else if v, ok := job.Attrs["script"]; ok {
-		args = append(args, "-f")
-		args = append(args, config.WorkPath+"/"+v)
+		lines, err := file.ReadFileToLines(config.WorkPath + "/" + v)
+		if err != nil {
+			return nil, err
+		}
+		for _, line := range lines {
+			hql += strings.Trim(line, " ")
+		}
 	} else {
-		return []string{}, fmt.Errorf("not hql or script for hive job: %s", job.Name)
+		return nil, fmt.Errorf("not hql or script for hive job: %s", job.Name)
+	}
+
+	nhql, err := dag.ApplyVarToString(hql, job.Vars)
+	if err != nil {
+		return nil, err
 	}
 
 	args = append(args, "-e")
-	args = append(args, "\""+hql+"\"")
+	args = append(args, "\""+nhql+"\"")
 
 	return args, nil
 }
