@@ -19,7 +19,6 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
@@ -46,7 +45,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	util.LogLines(config.LogoString(), log.Info)
+	util.LogLines(config.LogoString(), nil)
 	util.LogLines(d.String(), nil)
 
 	s, err := sched.NewSched()
