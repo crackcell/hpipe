@@ -136,6 +136,9 @@ func (this *HiveExec) genCmdArgs(job *dag.Job) ([]string, error) {
 	} else {
 		return nil, fmt.Errorf("not hql or script for hive job: %s", job.Name)
 	}
+	if strings.HasSuffix(hql, ";") {
+		hql += ";"
+	}
 
 	nhql, err := dag.ApplyVarToString(hql, job.Vars)
 	if err != nil {
