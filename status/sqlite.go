@@ -66,8 +66,8 @@ func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
 }
 
 func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	//this.lock.Lock()
-	//defer this.lock.Unlock()
+	this.lock.Lock()
+	defer this.lock.Unlock()
 
 	sql := fmt.Sprintf(
 		"select * from status where output='%s'",
@@ -93,12 +93,11 @@ func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 }
 
 func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
-	//this.lock.Lock()
-	//defer this.lock.Unlock()
-
 	if err := this.ClearStatus(job); err != nil {
 		return err
 	}
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	sql := fmt.Sprintf(
 		"insert into status(output, status) values('%s', '%s')",
 		job.Attrs["output"], status,
@@ -116,8 +115,8 @@ func (this *SqliteKeeper) DeleteStatus(job *dag.Job, status dag.JobStatus) error
 }
 
 func (this *SqliteKeeper) ClearStatus(job *dag.Job) error {
-	//this.lock.Lock()
-	//defer this.lock.Unlock()
+	this.lock.Lock()
+	defer this.lock.Unlock()
 
 	sql := fmt.Sprintf(
 		"delete from status where output='%s'",
