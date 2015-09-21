@@ -20,9 +20,11 @@ package dag
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag/symbol"
 	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util/time"
 	"io/ioutil"
 	"regexp"
 	"strings"
@@ -60,6 +62,18 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	gmt := stdtime.Now()
+	if len(config.GMTDate) != 0 {
+		if gmt, err = time.Parse(config.GMTDate, "YYYYMMDD"); err != nil {
+			log.Fatalf("invalid gmtdate: %s", config.GMTDate)
+			return nil, err
+		}
+	}
+
+	builtins["gmtdate"] = ast.NewDate(gmt, "YYYYMMDD")
+	builtins["bizdate"] = ast.NewDate(gmt.AddDate(0, 0, -1), "YYYYMMDD")
+
 	for _, job := range d.Jobs {
 		vars := ""
 		if v, ok := job.Attrs["vars"]; ok {
@@ -132,8 +146,8 @@ var varPattern = regexp.MustCompile("\\$\\{(.*?)\\}")
 
 var builtins = map[string]*ast.Stmt{
 	// Date
-	"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
-	"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
+	//"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
+	//"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
 	// Duration
 	"year":   ast.NewDurationExt(1, 0, 0),
 	"month":  ast.NewDurationExt(0, 1, 0),

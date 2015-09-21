@@ -47,6 +47,7 @@ var (
 	Hive               bool
 	WebUI              bool
 	WebUIAddr          string
+	GMTDate            string
 )
 
 func InitFlags() {
@@ -72,6 +73,7 @@ func InitFlags() {
 	flag.BoolVar(&Hive, "hive", false, "Enable Hive job")
 	flag.BoolVar(&WebUI, "webui", false, "Use Web UI")
 	flag.StringVar(&WebUIAddr, "webui-addr", "127.0.0.1:8000", "Use Web UI")
+	flag.StringVar(&GMTDate, "gmtdate", "", "Set variable $gmtdate in YYYYMMDD format")
 }
 
 func Parse() {
@@ -138,6 +140,8 @@ Options:
 
     --webui            Enable Web UI
     --webui-addr       Binding address for Web UI, default: 127.0.0.1:8000
+
+    --gmtdate          Set variable $gmtdate in YYYYMMDD format
 `
 )
 
