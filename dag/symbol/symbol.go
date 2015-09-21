@@ -29,10 +29,10 @@ import (
 // Public APIs
 //===================================================================
 
-func Resolve(src string) ([]*ast.Stmt, error) {
+func Resolve(src string, builtins map[string]*ast.Stmt) ([]*ast.Stmt, error) {
 	e := eval.NewEval()
 	if len(src) == 0 {
-		return e.Evaluate([]*ast.Stmt{})
+		return e.Evaluate([]*ast.Stmt{}, builtins)
 	}
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
@@ -40,7 +40,7 @@ func Resolve(src string) ([]*ast.Stmt, error) {
 	if err != nil {
 		return nil, err
 	}
-	return e.Evaluate(a.([]*ast.Stmt))
+	return e.Evaluate(a.([]*ast.Stmt), builtins)
 }
 
 //===================================================================
