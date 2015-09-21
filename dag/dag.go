@@ -21,10 +21,12 @@ package dag
 import (
 	"fmt"
 	"github.com/crackcell/hpipe/dag/symbol"
+	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/log"
 	"io/ioutil"
 	"regexp"
 	"strings"
+	stdtime "time"
 )
 
 //===================================================================
@@ -64,7 +66,7 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 			vars = v
 		}
 
-		if resolved, err := symbol.Resolve(strings.Trim(vars, "\"'")); err != nil {
+		if resolved, err := symbol.Resolve(strings.Trim(vars, "\"'"), builtins); err != nil {
 			return nil, err
 		} else {
 			for _, stmt := range resolved {
@@ -127,3 +129,16 @@ func ApplyVarToString(str string, vars map[string]string) (string, error) {
 //===================================================================
 
 var varPattern = regexp.MustCompile("\\$\\{(.*?)\\}")
+
+var builtins = map[string]*ast.Stmt{
+	// Date
+	"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
+	"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
+	// Duration
+	"year":   ast.NewDurationExt(1, 0, 0),
+	"month":  ast.NewDurationExt(0, 1, 0),
+	"day":    ast.NewDurationExt(0, 0, 1),
+	"hour":   ast.NewDuration(stdtime.Hour),
+	"minute": ast.NewDuration(stdtime.Minute),
+	"second": ast.NewDuration(stdtime.Second),
+}

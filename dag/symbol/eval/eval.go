@@ -36,23 +36,11 @@ type Eval struct {
 }
 
 func NewEval() *Eval {
-	return &Eval{
-		Builtins: map[string]*ast.Stmt{
-			// Date
-			"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
-			"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
-			// Duration
-			"year":   ast.NewDurationExt(1, 0, 0),
-			"month":  ast.NewDurationExt(0, 1, 0),
-			"day":    ast.NewDurationExt(0, 0, 1),
-			"hour":   ast.NewDuration(stdtime.Hour),
-			"minute": ast.NewDuration(stdtime.Minute),
-			"second": ast.NewDuration(stdtime.Second),
-		},
-	}
+	return &Eval{}
 }
 
-func (this *Eval) Evaluate(stmtlist []*ast.Stmt) ([]*ast.Stmt, error) {
+func (this *Eval) Evaluate(stmtlist []*ast.Stmt, builtins map[string]*ast.Stmt) ([]*ast.Stmt, error) {
+	this.Builtins = builtins
 	list := []*ast.Stmt{}
 	for _, stmt := range stmtlist {
 		if s, err := this.evalStmt(stmt); err != nil {
