@@ -1,0 +1,6 @@
+Package: hpipe
+Version: 1.0.0
+Maintainer: tanmenglong@gmail.com
+Architecture: amd64
+Depends: libsqlite0-dev
+Description: A workflow engine.

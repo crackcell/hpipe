@@ -27,6 +27,12 @@ output : main
 	cp hpipe output/bin/hpipe
 	cp scripts/* output/bin/
 
+deb : output
+	mkdir -p dist/deb/usr/bin
+	cp output/bin/* dist/deb/usr/bin/
+	mkdir -p output/packages
+	dpkg -b ${PWD}/dist/deb output/packages/hpipe_`grep Version dist/deb/DEBIAN/control | cut -f 2 -d " "`_amd64.deb
+
 main :
 	go build
 

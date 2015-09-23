@@ -6,7 +6,6 @@
 # Packages
 *.egg
 *.egg-info
-dist
 build
 eggs
 parts
@@ -44,3 +43,5 @@ conf/hpipe.env
 output
 
 /hpipe
+*.deb
+/dist/deb/usr/
