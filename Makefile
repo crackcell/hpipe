@@ -43,9 +43,6 @@ test : all
 clean :
 	rm -rf output
 
-install :
-	cp output/bin/* ${DESTDIR}/usr/bin/
-
 help :
 	@echo 'Usage: make [TARGET]'
 	@echo 'TARGETS:'
