@@ -9,7 +9,7 @@
 #
 #===========================================================================
 
-.PHONY : all dev deps output clean help main test
+.PHONY : all dev deps output clean help main test deb rpm
 
 all : output
 
@@ -32,6 +32,9 @@ deb : output
 	cp output/bin/* dist/deb/usr/bin/
 	mkdir -p output/packages
 	dpkg -b ${PWD}/dist/deb output/packages/hpipe_`grep Version dist/deb/DEBIAN/control | cut -f 2 -d " "`_amd64.deb
+
+rpm : output
+	cd dist/rpm; ./hpipe-build.sh
 
 main :
 	go build
