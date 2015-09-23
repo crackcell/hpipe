@@ -28,7 +28,7 @@ output : main
 	cp scripts/* output/bin/
 
 main :
-	go build --ldflags '-extldflags "-static"'
+	go build
 
 test : all
 	cd dag/symbol; go test -v
