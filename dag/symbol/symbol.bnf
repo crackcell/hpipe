@@ -8,6 +8,8 @@ _idchar : _letter | _digit | '_' | '.' ;
 
 int : '1'-'9' { _digit } ;
 
+float : { _digit } '.' { _digit } ;
+
 date : { 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' };
 
 id : { _letter | '_' } { _idchar } ;
@@ -49,6 +51,7 @@ Term
 Factor
   : "(" Expr ")" << $1, nil >>
   | int          << ast.NewIntFromParser(string($0.(*token.Token).Lit)) >>
+  | float        << ast.NewFloatFromParser(string($0.(*token.Token).Lit)) >>
 	| Date         << $0, nil >>
   | Env          << $0, nil >>
  	| Id					 << $0, nil >>

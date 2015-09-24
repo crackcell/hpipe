@@ -23,6 +23,7 @@ import (
 	"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/util/time"
 	"os"
+	"strconv"
 	stdtime "time"
 )
 
@@ -40,7 +41,11 @@ func NewEval() *Eval {
 }
 
 func (this *Eval) Evaluate(stmtlist []*ast.Stmt, builtins map[string]*ast.Stmt) ([]*ast.Stmt, error) {
-	this.Builtins = builtins
+	if builtins != nil {
+		this.Builtins = builtins
+	} else {
+		this.Builtins = make(map[string]*ast.Stmt)
+	}
 	list := []*ast.Stmt{}
 	for _, stmt := range stmtlist {
 		if s, err := this.evalStmt(stmt); err != nil {
@@ -73,6 +78,8 @@ func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
 		return this.evalOperator(op1, op2, stmt.Value.(string))
 	case ast.Int:
 		return stmt, nil
+	case ast.Float:
+		return stmt, nil
 	case ast.Date:
 		return this.evalDate(stmt)
 	case ast.Duration:
@@ -88,7 +95,7 @@ func (this *Eval) evalStmt(stmt *ast.Stmt) (*ast.Stmt, error) {
 	case ast.String:
 		return stmt, nil
 	default:
-		return nil, fmt.Errorf("unknown stmtession type: %d", stmt.Type)
+		return nil, fmt.Errorf("unknown stmt type: %d", stmt.Type)
 	}
 }
 
@@ -111,6 +118,34 @@ func (this *Eval) evalOperator(op1 *ast.Stmt, op2 *ast.Stmt, opstr string) (*ast
 			return nil, fmt.Errorf("invalid operator between Integers: %s", opstr)
 		}
 		return ast.NewInt(res), nil
+	}
+
+	if (op1.Type == ast.Float || op2.Type == ast.Int) && (op1.Type == ast.Int || op2.Type == ast.Float) {
+		var res float64
+		var a float64
+		var b float64
+		var err error
+		a, err = strconv.ParseFloat(op1.Value.(string), 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid float: %s", op1.Value)
+		}
+		b, err = strconv.ParseFloat(op2.Value.(string), 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid float: %s", op2.Value)
+		}
+		switch opstr {
+		case "+":
+			res = a + b
+		case "-":
+			res = a - b
+		case "*":
+			res = a * b
+		case "/":
+			res = a / b
+		default:
+			return nil, fmt.Errorf("invalid operator between Integers: %s", opstr)
+		}
+		return ast.NewFloat(res), nil
 	}
 
 	if op1.Type == ast.LeftID {
