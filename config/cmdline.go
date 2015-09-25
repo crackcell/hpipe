@@ -45,8 +45,6 @@ var (
 	OdpsAccessID       string
 	OdpsAccessKey      string
 	Hive               bool
-	WebUI              bool
-	WebUIAddr          string
 	GMTDate            string
 )
 
@@ -71,8 +69,6 @@ func InitFlags() {
 	flag.StringVar(&OdpsAccessID, "odps-access-id", "", "ODPS access id")
 	flag.StringVar(&OdpsAccessKey, "odps-access-key", "", "ODPS access key")
 	flag.BoolVar(&Hive, "hive", false, "Enable Hive job")
-	flag.BoolVar(&WebUI, "webui", false, "Use Web UI")
-	flag.StringVar(&WebUIAddr, "webui-addr", "127.0.0.1:8000", "Use Web UI")
 	flag.StringVar(&GMTDate, "gmtdate", "", "Set variable $gmtdate in YYYYMMDD format")
 }
 
@@ -137,9 +133,6 @@ Options:
     --odps-access-key  ODPS access key
 
     --hive             Enable Hive job
-
-    --webui            Enable Web UI
-    --webui-addr       Binding address for Web UI, default: 127.0.0.1:8000
 
     --gmtdate          Set variable $gmtdate in YYYYMMDD format
 `
