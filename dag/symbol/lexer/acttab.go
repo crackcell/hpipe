@@ -19,7 +19,7 @@ func (this ActionRow) String() string {
 
 var ActTab = ActionTable{
  	ActionRow{ // S0
-		Accept: 14,
+		Accept: 15,
  		Ignore: "",
  	},
  	ActionRow{ // S1
@@ -27,7 +27,7 @@ var ActTab = ActionTable{
  		Ignore: "!whitespace",
  	},
  	ActionRow{ // S2
-		Accept: 14,
+		Accept: 15,
  		Ignore: "",
  	},
  	ActionRow{ // S3
@@ -59,7 +59,7 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S10
-		Accept: 3,
+		Accept: 12,
  		Ignore: "",
  	},
  	ActionRow{ // S11
@@ -75,7 +75,7 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S14
-		Accept: 14,
+		Accept: 15,
  		Ignore: "",
  	},
  	ActionRow{ // S15
@@ -91,7 +91,7 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S18
-		Accept: 14,
+		Accept: 15,
  		Ignore: "",
  	},
  	ActionRow{ // S19
@@ -99,11 +99,11 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S20
-		Accept: 15,
+		Accept: 16,
  		Ignore: "",
  	},
  	ActionRow{ // S21
-		Accept: 12,
+		Accept: 13,
  		Ignore: "",
  	},
  	ActionRow{ // S22
@@ -127,15 +127,15 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S27
-		Accept: 0,
+		Accept: 12,
  		Ignore: "",
  	},
  	ActionRow{ // S28
-		Accept: 0,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S29
-		Accept: 0,
+		Accept: 3,
  		Ignore: "",
  	},
  	ActionRow{ // S30
@@ -155,11 +155,23 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S34
-		Accept: 16,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S35
-		Accept: 13,
+		Accept: 0,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S36
+		Accept: 0,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S37
+		Accept: 17,
+ 		Ignore: "",
+ 	},
+ 	ActionRow{ // S38
+		Accept: 14,
  		Ignore: "",
  	},
  		

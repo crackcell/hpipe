@@ -36,6 +36,7 @@ const (
 	LeftID NodeType = iota
 	RightID
 	Int
+	Float
 	Date
 	Duration    // natively supported by time.Duration: hour, minute, second
 	DurationExt // extended duration: year, month, day
@@ -59,6 +60,8 @@ func (this NodeType) String() string {
 		return "RightID"
 	case Int:
 		return "Int"
+	case Float:
+		return "Float"
 	case Date:
 		return "Date"
 	case Duration:
@@ -92,7 +95,11 @@ func (this *Stmt) Equals(other *Stmt) bool {
 			return false
 		}
 	case Int:
-		if this.Prop["value"].(int) != other.Prop["value"].(int) {
+		if this.Value != other.Value {
+			return false
+		}
+	case Float:
+		if this.Value != other.Value {
 			return false
 		}
 	case Date:
@@ -182,6 +189,30 @@ func NewIntFromParser(num string) (*Stmt, error) {
 	} else {
 		return &Stmt{
 			Type:  Int,
+			Value: num,
+			Prop: map[string]interface{}{
+				"value": n,
+			},
+		}, nil
+	}
+}
+
+func NewFloat(n float64) *Stmt {
+	return &Stmt{
+		Type:  Float,
+		Value: fmt.Sprintf("%f", n),
+		Prop: map[string]interface{}{
+			"value": n,
+		},
+	}
+}
+
+func NewFloatFromParser(num string) (*Stmt, error) {
+	if n, err := strconv.ParseFloat(num, 64); err != nil {
+		return nil, err
+	} else {
+		return &Stmt{
+			Type:  Float,
 			Value: num,
 			Prop: map[string]interface{}{
 				"value": n,

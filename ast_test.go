@@ -186,3 +186,20 @@ func TestASTEnv(t *testing.T) {
 	}
 	//fmt.Printf("res: %v\n", a)
 }
+
+func TestASTFloat(t *testing.T) {
+	src := "$res=1.3"
+	p := parser.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	//fmt.Printf("src: %s\n", src)
+	a, err := p.Parse(l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if a.([]*ast.Stmt)[0].Type != ast.Operator {
+		t.Error(fmt.Errorf("type error"))
+		return
+	}
+	//fmt.Printf("res: %v\n", a)
+}

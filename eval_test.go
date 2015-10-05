@@ -26,10 +26,23 @@ import (
 	"github.com/crackcell/hpipe/dag/symbol/parser"
 	"os"
 	"testing"
-	"time"
+	stdtime "time"
 )
 
 func getTestEvalResult(src string, t *testing.T) []*ast.Stmt {
+	var builtins = map[string]*ast.Stmt{
+		// Date
+		"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
+		"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
+		// Duration
+		"year":   ast.NewDurationExt(1, 0, 0),
+		"month":  ast.NewDurationExt(0, 1, 0),
+		"day":    ast.NewDurationExt(0, 0, 1),
+		"hour":   ast.NewDuration(stdtime.Hour),
+		"minute": ast.NewDuration(stdtime.Minute),
+		"second": ast.NewDuration(stdtime.Second),
+	}
+
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	a, err := p.Parse(l)
@@ -38,7 +51,7 @@ func getTestEvalResult(src string, t *testing.T) []*ast.Stmt {
 		return nil
 	}
 	e := eval.NewEval()
-	res, err := e.Evaluate(a.([]*ast.Stmt))
+	res, err := e.Evaluate(a.([]*ast.Stmt), builtins)
 	if err != nil {
 		t.Error(err)
 		return nil
@@ -102,7 +115,7 @@ func TestEvalDate(t *testing.T) {
 		return
 	}
 	res := ret[0]
-	check := ast.NewLeftID("res", ast.NewDate(time.Now(), "YYYYMMDD"))
+	check := ast.NewLeftID("res", ast.NewDate(stdtime.Now(), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
@@ -119,7 +132,7 @@ func TestEvalDateDurationExtAdd(t *testing.T) {
 	}
 	res := ret[0]
 	check := ast.NewLeftID("res",
-		ast.NewDate(time.Now().AddDate(0, 0, 2), "YYYYMMDD"))
+		ast.NewDate(stdtime.Now().AddDate(0, 0, 2), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
@@ -136,7 +149,7 @@ func TestEvalDateDurationExtMinus(t *testing.T) {
 	}
 	res := ret[0]
 	check := ast.NewLeftID("res",
-		ast.NewDate(time.Now().AddDate(0, 0, -2), "YYYYMMDD"))
+		ast.NewDate(stdtime.Now().AddDate(0, 0, -2), "YYYYMMDD"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
 		return
@@ -156,6 +169,22 @@ func TestEvalEnv(t *testing.T) {
 	check := ast.NewLeftID("res", ast.NewString("/hadoop_home"))
 	if !res.Equals(check) {
 		t.Error(fmt.Errorf("%v=%v", res.Value, check.Value))
+		return
+	}
+	//fmt.Printf("res: %v\n", res)
+}
+
+func TestEvalAddFloat(t *testing.T) {
+	src := "$res=1.1+2.2"
+	//fmt.Printf("src: %s\n", src)
+	ret := getTestEvalResult(src, t)
+	if ret == nil {
+		return
+	}
+	res := ret[0]
+	check := ast.NewLeftID("res", ast.NewFloat(3.3))
+	if !res.Equals(check) {
+		t.Error(fmt.Errorf("%s => %v", src, res.Value))
 		return
 	}
 	//fmt.Printf("res: %v\n", res)

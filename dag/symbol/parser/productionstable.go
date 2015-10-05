@@ -143,17 +143,17 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : Date	<< X[0], nil >>`,
+		String: `Factor : float	<< ast.NewFloatFromParser(string(X[0].(*token.Token).Lit)) >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 12,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return X[0], nil
+			return ast.NewFloatFromParser(string(X[0].(*token.Token).Lit))
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : Env	<< X[0], nil >>`,
+		String: `Factor : Date	<< X[0], nil >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 13,
@@ -163,7 +163,7 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : Id	<< X[0], nil >>`,
+		String: `Factor : Env	<< X[0], nil >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 14,
@@ -173,10 +173,20 @@ var productionsTable = ProdTab {
 		},
 	},
 	ProdTabEntry{
-		String: `Factor : string	<< ast.NewStringFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		String: `Factor : Id	<< X[0], nil >>`,
 		Id: "Factor",
 		NTType: 5,
 		Index: 15,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib) (Attrib, error) {
+			return X[0], nil
+		},
+	},
+	ProdTabEntry{
+		String: `Factor : string	<< ast.NewStringFromParser(string(X[0].(*token.Token).Lit)) >>`,
+		Id: "Factor",
+		NTType: 5,
+		Index: 16,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewStringFromParser(string(X[0].(*token.Token).Lit))
@@ -186,7 +196,7 @@ var productionsTable = ProdTab {
 		String: `Id : "$" id	<< ast.NewRightIDFromParser(string(X[1].(*token.Token).Lit)) >>`,
 		Id: "Id",
 		NTType: 6,
-		Index: 16,
+		Index: 17,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewRightIDFromParser(string(X[1].(*token.Token).Lit))
@@ -196,7 +206,7 @@ var productionsTable = ProdTab {
 		String: `Date : "${date:" date "}"	<< ast.NewDateFromParser(string(X[1].(*token.Token).Lit)) >>`,
 		Id: "Date",
 		NTType: 7,
-		Index: 17,
+		Index: 18,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewDateFromParser(string(X[1].(*token.Token).Lit))
@@ -206,7 +216,7 @@ var productionsTable = ProdTab {
 		String: `Env : "${env:" id "}"	<< ast.NewEnvFromParser(string(X[1].(*token.Token).Lit)) >>`,
 		Id: "Env",
 		NTType: 8,
-		Index: 18,
+		Index: 19,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
 			return ast.NewEnvFromParser(string(X[1].(*token.Token).Lit))
