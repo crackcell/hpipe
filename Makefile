@@ -39,8 +39,7 @@ main :
 	go build
 
 test : all
-	cd dag/symbol; go test -v
-	cd dag; go test -v
+	go test -v
 
 clean :
 	rm -rf output
