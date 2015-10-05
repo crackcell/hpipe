@@ -41,6 +41,11 @@ type DAG struct {
 	InDegrees map[string]int
 }
 
+type Serializer interface {
+	Serialize(dag *DAG) ([]byte, error)
+	Deserialize(data []byte) (*DAG, error)
+}
+
 func NewDAG(name string) *DAG {
 	return &DAG{
 		Name:      name,
@@ -58,7 +63,7 @@ func LoadFromFile(path string) (*DAG, error) {
 }
 
 func LoadFromBytes(data []byte) (*DAG, error) {
-	d, err := NewDotLoader().LoadBytes(data)
+	d, err := NewDotSerializer().Deserialize(data)
 	if err != nil {
 		return nil, err
 	}

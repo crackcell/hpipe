@@ -19,10 +19,8 @@
 package dag
 
 import (
-	//"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
-	"io/ioutil"
 	"strings"
 )
 
@@ -30,21 +28,17 @@ import (
 // Public APIs
 //===================================================================
 
-type DotLoader struct{}
+type DotSerializer struct{}
 
-func NewDotLoader() *DotLoader {
-	return &DotLoader{}
+func NewDotSerializer() *DotSerializer {
+	return &DotSerializer{}
 }
 
-func (this *DotLoader) LoadFile(path string) (*DAG, error) {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	return this.LoadBytes(data)
+func (this *DotSerializer) Serialize(dag *DAG) ([]byte, error) {
+	return nil, nil
 }
 
-func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
+func (this *DotSerializer) Deserialize(data []byte) (*DAG, error) {
 	ast, err := dotparser.ParseBytes(data)
 	if err != nil {
 		return nil, err
@@ -91,20 +85,20 @@ func (this *DotLoader) LoadBytes(data []byte) (*DAG, error) {
 // Private
 //===================================================================
 
-func dotToDAGJob(node *dot.Node) *Job {
-	p := NewJob()
-	p.Name = node.Name
-	p.Attrs = dotToDAGAttrs(node.Attrs)
-	p.Type = getJobTypeFromAttrs(p.Attrs)
-	return p
-}
-
 func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
 	if dotJob, ok := graph.Nodes.Lookup[name]; !ok {
 		panic("no corresponding node")
 	} else {
 		return dotToDAGJob(dotJob)
 	}
+}
+
+func dotToDAGJob(node *dot.Node) *Job {
+	p := NewJob()
+	p.Name = node.Name
+	p.Attrs = dotToDAGAttrs(node.Attrs)
+	p.Type = getJobTypeFromAttrs(p.Attrs)
+	return p
 }
 
 func dotToDAGAttrs(attrs dot.Attrs) Attrs {
