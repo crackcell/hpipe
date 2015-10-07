@@ -20,6 +20,7 @@ package dag
 
 import (
 	"fmt"
+	"strings"
 )
 
 //===================================================================
@@ -55,7 +56,7 @@ func (typ JobType) String() string {
 }
 
 func ParseJobType(typ string) JobType {
-	switch typ {
+	switch strings.ToLower(typ) {
 	case "dummy":
 		return DummyJob
 	case "hadoop":
@@ -101,7 +102,7 @@ func (status JobStatus) String() string {
 }
 
 func ParseJobStatus(status string) JobStatus {
-	switch status {
+	switch strings.ToLower(status) {
 	case "not_started":
 		return NotStarted
 	case "started":
@@ -150,18 +151,27 @@ func NewJob() *Job {
 	}
 }
 
-func (this *Job) Assign(job *Job) {
-	this.Name = job.Name
-	this.Type = job.Type
-	this.Status = job.Status
-	this.Attrs = job.Attrs
-	this.Prev = job.Prev
-	this.Post = job.Post
-}
-
 func (this *Job) String() string {
 	return fmt.Sprintf("Job{name=%s,attrs=%v,prev=%v,post=%v}",
 		this.Name, this.Attrs, this.Prev, this.Post)
+}
+
+func (this *Job) AddPrev(name string) {
+	for _, n := range this.Prev {
+		if n == name {
+			return
+		}
+	}
+	this.Prev = append(this.Prev, name)
+}
+
+func (this *Job) AddPost(name string) {
+	for _, n := range this.Post {
+		if n == name {
+			return
+		}
+	}
+	this.Post = append(this.Post, name)
 }
 
 //===================================================================

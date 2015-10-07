@@ -108,6 +108,38 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 	return d, nil
 }
 
+func ApplyVarToString(str string, vars map[string]string) (string, error) {
+	for _, token := range varPattern.FindAllStringSubmatch(str, -1) {
+		name := token[1]
+		if val, ok := vars[name]; ok {
+			nval := strings.Replace(str, "${"+name+"}", val, 1)
+			log.Debugf("resolve: %s => %s", str, nval)
+			str = nval
+		} else {
+			return "", fmt.Errorf("variable %s is not defined", name)
+		}
+	}
+	return str, nil
+}
+
+func (this *DAG) AddJob(job *Job) {
+	if _, ok := this.Jobs[job.Name]; ok {
+		return
+	}
+	for _, n := range job.Post {
+		if _, ok := this.Jobs[n]; !ok {
+			panic(fmt.Errorf("no post job: %s", n))
+		}
+		this.InDegrees[n] = this.InDegrees[n] + 1
+	}
+	for _, n := range job.Prev {
+		if _, ok := this.Jobs[n]; !ok {
+			panic(fmt.Errorf("no prev job: %s", n))
+		}
+	}
+	this.InDegrees[job.Name] = len(job.Prev)
+}
+
 func (this *DAG) String() string {
 	str := fmt.Sprintf("dag{\n\tname=%s,\n", this.Name)
 	for name, job := range this.Jobs {
@@ -127,20 +159,6 @@ func (this *DAG) String() string {
 	}
 	str += fmt.Sprintf("}\n")
 	return str
-}
-
-func ApplyVarToString(str string, vars map[string]string) (string, error) {
-	for _, token := range varPattern.FindAllStringSubmatch(str, -1) {
-		name := token[1]
-		if val, ok := vars[name]; ok {
-			nval := strings.Replace(str, "${"+name+"}", val, 1)
-			log.Debugf("resolve: %s => %s", str, nval)
-			str = nval
-		} else {
-			return "", fmt.Errorf("variable %s is not defined", name)
-		}
-	}
-	return str, nil
 }
 
 //===================================================================

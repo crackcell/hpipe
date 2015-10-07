@@ -35,6 +35,7 @@ func NewDotSerializer() *DotSerializer {
 }
 
 func (this *DotSerializer) Serialize(dag *DAG) ([]byte, error) {
+	// TODO
 	return nil, nil
 }
 
