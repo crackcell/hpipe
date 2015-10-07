@@ -9,7 +9,7 @@
 #
 #===========================================================================
 
-.PHONY : all dev deps output clean help main test deb rpm
+.PHONY : all dev deps output clean help test deb rpm
 
 all : output
 
@@ -21,7 +21,7 @@ deps :
 	go get github.com/awalterschulze/gographviz
 	go get github.com/mattn/go-sqlite3
 
-output : main
+output : hpipe
 	mkdir -p output/bin
 	cp hpipe output/bin/hpipe
 	cp scripts/* output/bin/
@@ -35,7 +35,7 @@ deb : output
 rpm : output
 	cd dist/rpm; ./hpipe-build.sh
 
-main :
+hpipe :
 	go build
 
 test : all
@@ -43,6 +43,7 @@ test : all
 
 clean :
 	rm -rf output
+	rm hpipe
 
 help :
 	@echo 'Usage: make [TARGET]'
