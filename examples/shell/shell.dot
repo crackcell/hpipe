@@ -1,0 +1,20 @@
+digraph shell {
+    dummy -> cmd -> script
+    dummy [
+           name="dummy"
+           type="dummy"
+           ]
+    cmd [
+           name="cmd"
+           type="shell"
+           vars="$bizdate=${date:YYYYMMDD}"
+           output="/tmp/hpipe/examples/shell/output/${bizdate}/cmd"
+           cmd="echo ${bizdate}"
+           ]
+    script [
+           name="script"
+           type="shell"
+           output="/tmp/hpipe/examples/hive/output/${bizdate}/script"
+           script="script.sh"
+           ]
+}

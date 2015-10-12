@@ -1,11 +1,11 @@
-digraph odps {
+digraph hive {
     step1 [
            name="step1"
            type="hive"
            vars="$bizdate=${date:YYYYMMDD}"
            output="/tmp/hpipe/examples/hive/output/${bizdate}/step1"
            option="hive.exec.dynamic.partition.mode=nonstrict"
-           script="select * from tb_game where date='${bizdate}'"
+           script="step1.hql"
            ]
     step2 [
            name="step1"
