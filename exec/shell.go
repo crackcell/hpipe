@@ -24,6 +24,7 @@ import (
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/util"
+	"regexp"
 	"strings"
 )
 
@@ -72,6 +73,8 @@ func (this *ShellExec) Run(job *dag.Job) error {
 // Private
 //===================================================================
 
+var paramPattern = regexp.MustCompile("'[\\w\\s\\._-]*'|[\\w\\._-]+")
+
 func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
 
@@ -79,10 +82,12 @@ func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
 		args = append(args, "-c")
 		args = append(args, v)
 	} else if v, ok := job.Attrs["script"]; ok {
-		params := strings.Split(v, " ")
-		args = append(args, config.WorkPath+"/"+params[0])
-		for i := 1; i < len(params); i++ {
-			args = append(args, params[i])
+		params := paramPattern.FindAllStringSubmatch(v, -1)
+		if len(params) > 0 {
+			args = append(args, config.WorkPath+"/"+params[0][0])
+			for i := 1; i < len(params); i++ {
+				args = append(args, strings.Trim(params[i][0], "'"))
+			}
 		}
 	}
 

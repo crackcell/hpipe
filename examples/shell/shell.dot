@@ -14,6 +14,6 @@ digraph shell {
            name="script"
            type="shell"
            output="/tmp/hpipe/examples/shell/output/${bizdate}/script"
-           script="script.sh ${bizdate}"
+           script="script.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh"
            ]
 }
