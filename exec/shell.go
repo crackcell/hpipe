@@ -20,6 +20,7 @@ package exec
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/util"
@@ -42,7 +43,7 @@ func (this *ShellExec) Setup() error {
 }
 
 func (this *ShellExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"script", "output"}) {
+	if !checkJobAttr(job, []string{"output"}) {
 		msg := "invalid job"
 		log.Error(msg)
 		return fmt.Errorf(msg)
@@ -74,14 +75,15 @@ func (this *ShellExec) Run(job *dag.Job) error {
 func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
 
-	args = append(args, job.Attrs["script"])
-
-	for k, v := range job.Attrs {
-		if _, ok := dag.JobReservedAttrs[k]; ok {
-			continue
+	if v, ok := job.Attrs["cmd"]; ok {
+		args = append(args, "-c")
+		args = append(args, v)
+	} else if v, ok := job.Attrs["script"]; ok {
+		params := strings.Split(v, " ")
+		args = append(args, config.WorkPath+"/"+params[0])
+		for i := 1; i < len(params); i++ {
+			args = append(args, params[i])
 		}
-		args = append(args, "-D")
-		args = append(args, fmt.Sprintf("%s=%s", k, v))
 	}
 
 	return args

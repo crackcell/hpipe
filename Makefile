@@ -43,7 +43,7 @@ test : all
 
 clean :
 	rm -rf output
-	rm hpipe
+	rm -rf hpipe
 
 help :
 	@echo 'Usage: make [TARGET]'
