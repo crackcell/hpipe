@@ -24,7 +24,6 @@ import (
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/util"
-	"regexp"
 	"strings"
 )
 
@@ -45,7 +44,7 @@ func (this *ShellExec) Setup() error {
 
 func (this *ShellExec) Run(job *dag.Job) error {
 	if !checkJobAttr(job, []string{"output"}) {
-		msg := "invalid job"
+		msg := "invalid job: missing output"
 		log.Error(msg)
 		return fmt.Errorf(msg)
 	}
@@ -73,7 +72,7 @@ func (this *ShellExec) Run(job *dag.Job) error {
 // Private
 //===================================================================
 
-var paramPattern = regexp.MustCompile("'[\\w\\s\\._-]*'|[\\w\\._-]+")
+//var paramPattern = regexp.MustCompile("'[\\w\\s\\._-\\/]*'|[\\w\\._-\\/]+")
 
 func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
@@ -82,11 +81,11 @@ func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
 		args = append(args, "-c")
 		args = append(args, v)
 	} else if v, ok := job.Attrs["script"]; ok {
-		params := paramPattern.FindAllStringSubmatch(v, -1)
+		params := strings.Split(v, " ")
 		if len(params) > 0 {
-			args = append(args, config.WorkPath+"/"+params[0][0])
+			args = append(args, config.WorkPath+"/"+params[0])
 			for i := 1; i < len(params); i++ {
-				args = append(args, strings.Trim(params[i][0], "'"))
+				args = append(args, params[i])
 			}
 		}
 	}
