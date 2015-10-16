@@ -34,9 +34,10 @@ import (
 //===================================================================
 
 type Sched struct {
-	exec   map[dag.JobType]exec.Exec
-	status status.StatusKeeper
-	failed map[string]int
+	exec    map[dag.JobType]exec.Exec
+	status  status.StatusKeeper
+	failing map[string]int
+	failed  map[string]int
 }
 
 func NewSched() (*Sched, error) {
@@ -83,9 +84,10 @@ func NewSched() (*Sched, error) {
 	}
 
 	return &Sched{
-		exec:   e,
-		status: s,
-		failed: make(map[string]int),
+		exec:    e,
+		status:  s,
+		failing: make(map[string]int),
+		failed:  make(map[string]int),
 	}, nil
 }
 
@@ -108,10 +110,10 @@ func (this *Sched) Run(d *dag.DAG) error {
 				this.markJobFinished(job, d)
 			case dag.Failed:
 				log.Errorf("job %s failed", job.Name)
-				if n, ok := this.failed[job.Name]; !ok {
-					this.failed[job.Name] = 1
+				if n, ok := this.failing[job.Name]; !ok {
+					this.failing[job.Name] = 1
 				} else {
-					this.failed[job.Name] = n + 1
+					this.failing[job.Name] = n + 1
 				}
 			}
 		}
@@ -119,8 +121,15 @@ func (this *Sched) Run(d *dag.DAG) error {
 		queue = this.genRunQueue(d)
 	}
 
-	log.Info("All jobs done")
-	return nil
+	if len(this.failed) == 0 {
+		log.Info("All jobs done")
+		return nil
+	} else {
+		log.Errorf("some job failed")
+		return fmt.Errorf("some job failed")
+	}
+
+	// TODO: Print summary
 }
 
 //===================================================================
@@ -136,12 +145,13 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 		}
 		if in == 0 && job.Status != dag.Finished &&
 			job.Status != dag.Started &&
-			this.failed[job.Name] < config.MaxRetry {
+			this.failing[job.Name] < config.MaxRetry {
 			queue = append(queue, job)
 		}
-		if this.failed[job.Name] >= config.MaxRetry {
-			log.Errorf("job %s reaches max retry times %d",
+		if this.failing[job.Name] >= config.MaxRetry {
+			log.Errorf("job %s reaches max retry times: %d",
 				job.Name, config.MaxRetry)
+			this.failed[job.Name] = config.MaxRetry
 		}
 	}
 	return queue
