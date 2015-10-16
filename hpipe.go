@@ -25,17 +25,27 @@ import (
 	"github.com/crackcell/hpipe/sched"
 	"github.com/crackcell/hpipe/util"
 	"os"
-	"sync"
 )
 
 func main() {
 	config.InitFlags()
 	config.Parse()
+
+	loglevel := 0
 	if config.Verbose {
-		log.StdLogger = log.NewDefault(os.Stdout, "hpipe", log.LOG_LEVEL_ALL)
+		loglevel = log.LOG_LEVEL_ALL
 	} else {
-		log.StdLogger = log.NewDefault(os.Stdout, "hpipe",
-			log.LOG_LEVEL_TRACE|log.LOG_LEVEL_INFO|log.LOG_LEVEL_WARN|log.LOG_LEVEL_ERROR|log.LOG_LEVEL_FATAL)
+		loglevel = log.LOG_LEVEL_TRACE | log.LOG_LEVEL_INFO |
+			log.LOG_LEVEL_WARN | log.LOG_LEVEL_ERROR |
+			log.LOG_LEVEL_FATAL
+	}
+
+	if config.LessLog {
+		log.StdLogger = log.NewDefaultCleanLogger(
+			os.Stdout, "hpipe", loglevel)
+	} else {
+		log.StdLogger = log.NewDefault(
+			os.Stdout, "hpipe", loglevel)
 	}
 
 	d, err := dag.LoadFromFile(config.EntryFile)
@@ -52,16 +62,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go func(d *dag.DAG) {
-		defer wg.Done()
-		if err := s.Run(d); err != nil {
-			//os.Exit(1)
-			return
-		}
-	}(d)
-
-	wg.Wait()
+	if err := s.Run(d); err != nil {
+		os.Exit(1)
+	}
 }

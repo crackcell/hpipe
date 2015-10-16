@@ -46,6 +46,7 @@ var (
 	OdpsAccessKey      string
 	Hive               bool
 	GMTDate            string
+	LessLog            bool
 )
 
 func InitFlags() {
@@ -70,6 +71,7 @@ func InitFlags() {
 	flag.StringVar(&OdpsAccessKey, "odps-access-key", "", "ODPS access key")
 	flag.BoolVar(&Hive, "hive", false, "Enable Hive job")
 	flag.StringVar(&GMTDate, "gmtdate", "", "Set variable $gmtdate in YYYYMMDD format")
+	flag.BoolVar(&LessLog, "less-log", false, "Less log output")
 }
 
 func Parse() {
@@ -135,6 +137,8 @@ Options:
     --hive             Enable Hive job
 
     --gmtdate          Set variable $gmtdate in YYYYMMDD format
+
+    --less-log         Less log output
 `
 )
 
