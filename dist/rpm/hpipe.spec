@@ -7,13 +7,13 @@ Group: Development/Libraries
 License: GPL
 URL: https://github.com/crackcell/hpipe
 Packager: Menglong TAN <tanmenglong@gmail.com>
-Source: https://github.com/crackcell/hpipe/archive/master.zip
+Source: https://github.com/crackcell/hpipe
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires: golang sqlite-devel
 #Requires: sqlite
 
-%define bin_dir %{_prefix}/share/hpipe/bin
+%define bin_dir %{_prefix}/bin
 
 %description
 Hpipe is a workflow engine supporting hybrid workflows with built-in support for Hadoop Streaming and Hive.
