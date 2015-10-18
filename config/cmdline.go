@@ -33,6 +33,7 @@ var (
 	Verbose            bool
 	WorkPath           string
 	EntryFile          string
+	RunAt              string
 	MaxRetry           int
 	StatusKeeper       string
 	NameNode           string
@@ -58,6 +59,7 @@ func InitFlags() {
 	flag.StringVar(&WorkPath, "p", "./", "Working path")
 	flag.StringVar(&EntryFile, "flow", "", "Entry of the flow")
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
+	flag.StringVar(&RunAt, "run-at", "", "Run from a specific job")
 	flag.IntVar(&MaxRetry, "max-retry", 3, "max retry times of failed jobs, default: 3")
 	flag.StringVar(&StatusKeeper, "status-keeper", "sqlite", "method to track job status, default: sqlite, available: hdfs, sqlite, file")
 	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url")
@@ -117,6 +119,7 @@ Options:
     -p, --path         Working path
     -f, --flow         Entry filename of workflow
     --max-retry        Max retry times of failed jobs, default: 3
+    --run-at           Run from a specific job
 
     --status-keeper    Method to track job status
                        default: sqlite
