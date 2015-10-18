@@ -13,7 +13,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 #BuildRequires: golang sqlite-devel
 #Requires: sqlite
 
-%define bin_dir %{_prefix}/bin
+Prefix: /usr
+
+%define bin_dir %{_prefix}/local/bin
 
 %description
 Hpipe is a workflow engine supporting hybrid workflows with built-in support for Hadoop Streaming and Hive.
@@ -22,6 +24,7 @@ Hpipe is a workflow engine supporting hybrid workflows with built-in support for
 
 %build
 pushd $OLDPWD/../..
+make deps
 make
 popd
 
