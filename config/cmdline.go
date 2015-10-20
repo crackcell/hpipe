@@ -46,7 +46,7 @@ var (
 	OdpsAccessID       string
 	OdpsAccessKey      string
 	Hive               bool
-	GMTDate            string
+	Bizdate            string
 	LessLog            bool
 )
 
@@ -72,7 +72,7 @@ func InitFlags() {
 	flag.StringVar(&OdpsAccessID, "odps-access-id", "", "ODPS access id")
 	flag.StringVar(&OdpsAccessKey, "odps-access-key", "", "ODPS access key")
 	flag.BoolVar(&Hive, "hive", false, "Enable Hive job")
-	flag.StringVar(&GMTDate, "gmtdate", "", "Set variable $gmtdate in YYYYMMDD format")
+	flag.StringVar(&Bizdate, "bizdate", "", "Set variable $bizdate in YYYYMMDD format")
 	flag.BoolVar(&LessLog, "less-log", false, "Less log output")
 }
 
@@ -139,7 +139,7 @@ Options:
 
     --hive             Enable Hive job
 
-    --gmtdate          Set variable $gmtdate in YYYYMMDD format
+    --bizdate          Set variable $bizdate in YYYYMMDD format
 
     --less-log         Less log output
 `

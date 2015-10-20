@@ -68,16 +68,16 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 		return nil, err
 	}
 
-	gmt := stdtime.Now()
-	if len(config.GMTDate) != 0 {
-		if gmt, err = time.Parse(config.GMTDate, "YYYYMMDD"); err != nil {
-			log.Fatalf("invalid gmtdate: %s", config.GMTDate)
+	bizdate := stdtime.Now()
+	if len(config.Bizdate) != 0 {
+		if bizdate, err = time.Parse(config.Bizdate, "YYYYMMDD"); err != nil {
+			log.Fatalf("invalid bizdate: %s", config.Bizdate)
 			return nil, err
 		}
 	}
 
-	builtins["gmtdate"] = ast.NewDate(gmt, "YYYYMMDD")
-	builtins["bizdate"] = ast.NewDate(gmt.AddDate(0, 0, -1), "YYYYMMDD")
+	builtins["gmtdate"] = ast.NewDate(bizdate.AddDate(0, 0, 1), "YYYYMMDD")
+	builtins["bizdate"] = ast.NewDate(bizdate, "YYYYMMDD")
 
 	for _, job := range d.Jobs {
 		vars := ""
