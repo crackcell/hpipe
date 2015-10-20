@@ -76,7 +76,7 @@ func (this *HadoopExec) Run(job *dag.Job) error {
 	this.createOutput(job)
 
 	args := this.genCmdArgs(job)
-	log.Debugf("CMD: hadoop %s", strings.Join(args, " "))
+	log.Debugf("CMD: hadoop %v", args)
 	retcode, err := util.ExecCmd(job.Name, "hadoop", args...)
 	if err != nil {
 		job.Status = dag.Failed

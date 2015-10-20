@@ -54,7 +54,7 @@ func (this *ShellExec) Run(job *dag.Job) error {
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
 	args := this.genCmdArgs(job)
-	log.Debugf("CMD: bash %s", strings.Join(args, " "))
+	log.Debugf("CMD: bash %v", args)
 	retcode, err := util.ExecCmd(job.Name, "bash", args...)
 	if err != nil {
 		job.Status = dag.Failed

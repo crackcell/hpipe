@@ -60,7 +60,7 @@ func (this *HiveExec) Run(job *dag.Job) error {
 		log.Error(args)
 		return err
 	}
-	log.Debugf("CMD: hive %s", strings.Join(args, " "))
+	log.Debugf("CMD: hive %v", args)
 	retcode, err := util.ExecCmd(job.Name, "hive", args...)
 	if err != nil {
 		job.Status = dag.Failed
