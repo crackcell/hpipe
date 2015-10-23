@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file status.go
+ * @file tracker.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Sun Sep  6 23:26:06 2015
  *
@@ -19,6 +19,8 @@
 package status
 
 import (
+	"fmt"
+	"github.com/crackcell/gotabulate"
 	"github.com/crackcell/hpipe/dag"
 )
 
@@ -29,6 +31,7 @@ import (
 type StatusTracker struct {
 	saver  Saver
 	status map[string]dag.JobStatus
+	order  []string
 }
 
 func NewStatusTracker(saver Saver) *StatusTracker {
@@ -38,14 +41,41 @@ func NewStatusTracker(saver Saver) *StatusTracker {
 	}
 }
 
+func (this *StatusTracker) String() string {
+	table := [][]string{[]string{"Job", "Status"}}
+	for _, name := range this.order {
+		if v, ok := this.status[name]; ok {
+			table = append(table, []string{name, v.String()})
+		} else {
+			panic(fmt.Errorf("no job in map: %s", name))
+		}
+	}
+	tabulator := gotabulate.NewTabulator()
+	tabulator.SetFirstRowHeader(true)
+	tabulator.SetFormat("psql")
+	return tabulator.Tabulate(table)
+}
+
 func (this *StatusTracker) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	return this.saver.GetFlag(job)
+	if s, err := this.saver.GetFlag(job); err != nil {
+		return dag.UnknownStatus, err
+	} else {
+		if _, ok := this.status[job.Name]; !ok {
+			this.order = append(this.order, job.Name)
+		}
+		this.status[job.Name] = s
+		return s, nil
+	}
 }
 
 func (this *StatusTracker) SetStatus(job *dag.Job, status dag.JobStatus) error {
-	err := this.saver.SetFlag(job, status)
-	if err == nil {
+	if err := this.saver.SetFlag(job, status); err != nil {
+		return err
+	} else {
+		if _, ok := this.status[job.Name]; !ok {
+			this.order = append(this.order, job.Name)
+		}
 		this.status[job.Name] = status
+		return nil
 	}
-	return err
 }

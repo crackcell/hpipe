@@ -25,6 +25,8 @@ import (
 	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/status"
+	"github.com/crackcell/hpipe/util"
+	"strings"
 	"sync"
 )
 
@@ -100,6 +102,8 @@ func (this *Sched) Run(d *dag.DAG) error {
 		queue = this.genRunQueue(d)
 	}
 
+	util.LogLines(strings.Trim(this.tracker.String(), "\n"), log.Info)
+
 	if len(this.failed) == 0 {
 		log.Info("All jobs done")
 		return nil
@@ -107,8 +111,6 @@ func (this *Sched) Run(d *dag.DAG) error {
 		log.Errorf("some job failed")
 		return fmt.Errorf("some job failed")
 	}
-
-	// TODO: Print summary
 }
 
 //===================================================================
