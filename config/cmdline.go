@@ -35,7 +35,7 @@ var (
 	EntryFile          string
 	RunAt              string
 	MaxRetry           int
-	StatusKeeper       string
+	StatusSaver        string
 	NameNode           string
 	SqliteFile         string
 	Hadoop             bool
@@ -61,7 +61,7 @@ func InitFlags() {
 	flag.StringVar(&EntryFile, "f", "", "Entry of the flow")
 	flag.StringVar(&RunAt, "run-at", "", "Run from a specific job")
 	flag.IntVar(&MaxRetry, "max-retry", 3, "max retry times of failed jobs, default: 3")
-	flag.StringVar(&StatusKeeper, "status-keeper", "sqlite", "method to track job status, default: sqlite, available: hdfs, sqlite, file")
+	flag.StringVar(&StatusSaver, "status-saver", "sqlite", "method to track job status, default: sqlite, available: hdfs, sqlite, file")
 	flag.StringVar(&NameNode, "namenode", "", "Hadoop name node url")
 	flag.StringVar(&SqliteFile, "sqlite", "", "Sqlite file")
 	flag.BoolVar(&Hadoop, "hadoop", false, "enable hadoop streaming job")
@@ -89,10 +89,10 @@ func Parse() {
 		fmt.Println("invalid arguments: no namenode")
 		showHelp(1)
 	}
-	if StatusKeeper == "hdfs" && len(NameNode) == 0 {
+	if StatusSaver == "hdfs" && len(NameNode) == 0 {
 		fmt.Println("invalid arguments: no namenode")
 		showHelp(1)
-	} else if StatusKeeper == "sqlite" && len(SqliteFile) == 0 {
+	} else if StatusSaver == "sqlite" && len(SqliteFile) == 0 {
 		fmt.Println("invalid arguments: no sqlite")
 		showHelp(1)
 	}
@@ -121,7 +121,7 @@ Options:
     --max-retry        Max retry times of failed jobs, default: 3
     --run-at           Run from a specific job
 
-    --status-keeper    Method to track job status
+    --status-saver     Method to track job status
                        default: sqlite
                        available: hdfs, sqlite
 

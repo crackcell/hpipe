@@ -25,7 +25,6 @@ import (
 	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/status"
-	"github.com/crackcell/hpipe/storage"
 	"sync"
 )
 
@@ -35,12 +34,12 @@ import (
 
 type Sched struct {
 	exec    map[dag.JobType]exec.Exec
-	status  status.StatusKeeper
+	tracker *status.StatusTracker
 	failing map[string]int
 	failed  map[string]int
 }
 
-func NewSched() (*Sched, error) {
+func NewSched(tracker *status.StatusTracker) (*Sched, error) {
 	e := map[dag.JobType]exec.Exec{
 		dag.DummyJob: exec.NewDummyExec(),
 		dag.ShellJob: exec.NewShellExec(),
@@ -63,29 +62,9 @@ func NewSched() (*Sched, error) {
 		}
 	}
 
-	var s status.StatusKeeper
-	var err error
-	switch config.StatusKeeper {
-	case "hdfs":
-		fs, err := storage.NewHDFS(config.NameNode)
-		if err != nil {
-			return nil, err
-		}
-		s = status.NewFileKeeper(fs)
-	case "sqlite":
-		s, err = status.NewSqliteKeeper(config.SqliteFile)
-		if err != nil {
-			return nil, err
-		}
-	default:
-		msg := fmt.Sprintf("invalid status keeper type: %s", config.StatusKeeper)
-		log.Fatal(msg)
-		return nil, fmt.Errorf(msg)
-	}
-
 	return &Sched{
 		exec:    e,
-		status:  s,
+		tracker: tracker,
 		failing: make(map[string]int),
 		failed:  make(map[string]int),
 	}, nil
@@ -173,7 +152,7 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 				if err != nil {
 					panic(err)
 				}
-				if s, err := this.status.GetStatus(job); err != nil {
+				if s, err := this.tracker.GetStatus(job); err != nil {
 					panic(err)
 				} else {
 					job.Status = s
@@ -189,12 +168,12 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 					return
 				}
 
-				this.status.SetStatus(job, dag.Started)
+				this.tracker.SetStatus(job, dag.Started)
 				if err = jexec.Run(job); err != nil {
 					log.Error(err)
 					job.Status = dag.Failed
 				}
-				this.status.SetStatus(job, job.Status)
+				this.tracker.SetStatus(job, job.Status)
 
 				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 			}

@@ -19,13 +19,38 @@
 package main
 
 import (
+	"fmt"
 	"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/sched"
+	"github.com/crackcell/hpipe/status"
 	"github.com/crackcell/hpipe/util"
 	"os"
 )
+
+func newStatusFlag() (status.Saver, error) {
+	switch config.StatusSaver {
+	case "hdfs":
+		return status.NewHDFSSaver(config.NameNode)
+	case "sqlite":
+		return status.NewSqliteSaver(config.SqliteFile)
+	default:
+		msg := fmt.Sprintf("invalid status keeper type: %s",
+			config.StatusSaver)
+		log.Fatal(msg)
+		return nil, fmt.Errorf(msg)
+	}
+}
+
+func newSched() (*sched.Sched, error) {
+	saver, err := newStatusFlag()
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+	return sched.NewSched(status.NewStatusTracker(saver))
+}
 
 func main() {
 	config.InitFlags()
@@ -57,8 +82,9 @@ func main() {
 	util.LogLines(config.LogoString(), nil)
 	util.LogLines(d.String(), nil)
 
-	s, err := sched.NewSched()
+	s, err := newSched()
 	if err != nil {
+		log.Fatal(err)
 		os.Exit(1)
 	}
 

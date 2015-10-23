@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file hdfs.go
+ * @file sqlitesaver.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Sun Sep  6 23:26:06 2015
  *
@@ -37,12 +37,12 @@ type StatusTable struct {
 	Status string
 }
 
-type SqliteKeeper struct {
+type SqliteSaver struct {
 	db   *sql.DB
 	lock sync.Mutex
 }
 
-func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
+func NewSqliteSaver(path string) (*SqliteSaver, error) {
 	exist := isExist(path)
 
 	db, err := sql.Open("sqlite3", path)
@@ -60,12 +60,12 @@ func NewSqliteKeeper(path string) (*SqliteKeeper, error) {
 		}
 	}
 
-	return &SqliteKeeper{
+	return &SqliteSaver{
 		db: db,
 	}, nil
 }
 
-func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
+func (this *SqliteSaver) GetFlag(job *dag.Job) (dag.JobStatus, error) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 
@@ -92,8 +92,8 @@ func (this *SqliteKeeper) GetStatus(job *dag.Job) (dag.JobStatus, error) {
 	return dag.NotStarted, nil
 }
 
-func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
-	if err := this.ClearStatus(job); err != nil {
+func (this *SqliteSaver) SetFlag(job *dag.Job, status dag.JobStatus) error {
+	if err := this.ClearFlag(job); err != nil {
 		return err
 	}
 	this.lock.Lock()
@@ -110,11 +110,11 @@ func (this *SqliteKeeper) SetStatus(job *dag.Job, status dag.JobStatus) error {
 	return nil
 }
 
-func (this *SqliteKeeper) DeleteStatus(job *dag.Job, status dag.JobStatus) error {
-	return this.ClearStatus(job)
+func (this *SqliteSaver) DeleteFlag(job *dag.Job, status dag.JobStatus) error {
+	return this.ClearFlag(job)
 }
 
-func (this *SqliteKeeper) ClearStatus(job *dag.Job) error {
+func (this *SqliteSaver) ClearFlag(job *dag.Job) error {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 

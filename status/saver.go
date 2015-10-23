@@ -10,7 +10,7 @@
 /**
  *
  *
- * @file status.go
+ * @file flag.go
  * @author Menglong TAN <tanmenglong@gmail.com>
  * @date Sun Sep  6 23:26:06 2015
  *
@@ -26,26 +26,15 @@ import (
 // Public APIs
 //===================================================================
 
-type StatusTracker struct {
-	saver  Saver
-	status map[string]dag.JobStatus
+type Saver interface {
+	GetFlag(job *dag.Job) (dag.JobStatus, error)
+	SetFlag(job *dag.Job, status dag.JobStatus) error
+	DeleteFlag(job *dag.Job, status dag.JobStatus) error
+	ClearFlag(job *dag.Job) error
 }
 
-func NewStatusTracker(saver Saver) *StatusTracker {
-	return &StatusTracker{
-		saver:  saver,
-		status: make(map[string]dag.JobStatus),
-	}
-}
-
-func (this *StatusTracker) GetStatus(job *dag.Job) (dag.JobStatus, error) {
-	return this.saver.GetFlag(job)
-}
-
-func (this *StatusTracker) SetStatus(job *dag.Job, status dag.JobStatus) error {
-	err := this.saver.SetFlag(job, status)
-	if err == nil {
-		this.status[job.Name] = status
-	}
-	return err
+var FlagSuffix = map[dag.JobStatus]string{
+	dag.Started:  ".hpipe.started",
+	dag.Finished: ".hpipe.finished",
+	dag.Failed:   ".hpipe.failed",
 }

@@ -20,6 +20,7 @@ deps :
 	go get github.com/colinmarc/hdfs
 	go get github.com/awalterschulze/gographviz
 	go get github.com/mattn/go-sqlite3
+	go get github.com/crackcell/gotabulate
 
 output : hpipe
 	mkdir -p output/bin
