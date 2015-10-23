@@ -8,7 +8,8 @@ digraph shell {
            name="cmd"
            type="shell"
            output="/tmp/hpipe/examples/shell/output/${bizdate}/cmd"
-           cmd="echo ${bizdate}"
+           vars="$test_val=0.11"
+           cmd="echo ${bizdate} ${test_val}"
            ]
     script [
            name="script"
