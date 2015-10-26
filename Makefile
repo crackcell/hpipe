@@ -25,7 +25,6 @@ deps :
 output : hpipe
 	mkdir -p output/bin
 	cp hpipe output/bin/hpipe
-	cp scripts/* output/bin/
 
 deb : output
 	mkdir -p dist/deb/usr/bin

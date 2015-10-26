@@ -19,6 +19,7 @@
 package status
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/crackcell/gotabulate"
 	"github.com/crackcell/hpipe/dag"
@@ -54,6 +55,22 @@ func (this *StatusTracker) String() string {
 	tabulator.SetFirstRowHeader(true)
 	tabulator.SetFormat("psql")
 	return tabulator.Tabulate(table)
+}
+
+func (this *StatusTracker) ToJson() string {
+	table := map[string]string{}
+	for _, name := range this.order {
+		if v, ok := this.status[name]; ok {
+			table[name] = v.String()
+		} else {
+			panic(fmt.Errorf("no job in map: %s", name))
+		}
+	}
+	if b, err := json.Marshal(table); err != nil {
+		return ""
+	} else {
+		return string(b)
+	}
 }
 
 func (this *StatusTracker) GetStatus(job *dag.Job) (dag.JobStatus, error) {
