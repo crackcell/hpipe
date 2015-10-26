@@ -147,6 +147,13 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 			defer wg.Done()
 
 			log.Infof("run job: %s", job.Name)
+			if err := d.ResolveJob(job); err != nil {
+				log.Error(err)
+				job.Status = dag.Failed
+				this.tracker.SetStatus(job, dag.Started)
+				return
+			}
+
 			if job.Type == dag.DummyJob {
 				job.Status = dag.Finished
 			} else {
@@ -172,10 +179,6 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 
 				this.tracker.SetStatus(job, dag.Started)
 				d.Builtins.SetJobReport(this.tracker.ToJson())
-				if err := d.ResolveJob(job); err != nil {
-					log.Error(err)
-					job.Status = dag.Failed
-				}
 				if err = jexec.Run(job); err != nil {
 					log.Error(err)
 					job.Status = dag.Failed

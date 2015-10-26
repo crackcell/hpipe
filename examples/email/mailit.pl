@@ -16,5 +16,7 @@ use JSON;
 #------------------- main -------------------
 
 print "args: ", $ARGV[0], " ", $ARGV[1], "\n";
-my $obj = from_json($ARGV[1]);
-print "parsed json: ", $obj, "\n";
+my $obj = from_json($ARGV[1])
+foreach my $key (keys %{$obj}) {
+	print $key, ": ", $obj->{$key}, "\n";
+}
