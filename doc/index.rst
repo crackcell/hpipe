@@ -1,25 +1,23 @@
 Hpipe文档
 ========
 
-目录：
-
+快速开始
+-------
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-内置变量
+
+配置文件
 -------
 
-日期时间
-^^^^^^^
+.. toctree::
+   :maxdepth: 1
 
-gmtdate
-"""""""
+   builtin-varibales
 
-bizdate
-"""""""
 
-Indices and tables
-==================
+索引
+===
 
 * :ref:`genindex`
 * :ref:`modindex`
