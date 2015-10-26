@@ -45,3 +45,5 @@ output
 /hpipe
 *.deb
 /dist/deb/usr/
+docs/_build/
+

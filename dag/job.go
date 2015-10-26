@@ -34,7 +34,7 @@ const (
 	HadoopJob
 	HiveJob
 	OdpsJob
-	ShellJob
+	ScriptJob
 	UnknownJob
 )
 
@@ -48,8 +48,8 @@ func (typ JobType) String() string {
 		return "hive"
 	case OdpsJob:
 		return "odps"
-	case ShellJob:
-		return "shell"
+	case ScriptJob:
+		return "script"
 	default:
 		return "unknown"
 	}
@@ -65,8 +65,8 @@ func ParseJobType(typ string) JobType {
 		return HiveJob
 	case "odps":
 		return OdpsJob
-	case "shell":
-		return ShellJob
+	case "script":
+		return ScriptJob
 	default:
 		return UnknownJob
 	}

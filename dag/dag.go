@@ -20,15 +20,15 @@ package dag
 
 import (
 	"fmt"
-	"github.com/crackcell/hpipe/config"
+	//"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag/symbol"
-	"github.com/crackcell/hpipe/dag/symbol/ast"
+	//"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/log"
-	"github.com/crackcell/hpipe/util/time"
+	//"github.com/crackcell/hpipe/util/time"
 	"io/ioutil"
 	"regexp"
 	"strings"
-	stdtime "time"
+	//stdtime "time"
 )
 
 //===================================================================
@@ -37,6 +37,7 @@ import (
 
 type DAG struct {
 	Name      string
+	Builtins  *Builtins
 	Jobs      map[string]*Job
 	InDegrees map[string]int
 }
@@ -49,6 +50,7 @@ type Serializer interface {
 func NewDAG(name string) *DAG {
 	return &DAG{
 		Name:      name,
+		Builtins:  NewBuiltins(),
 		Jobs:      make(map[string]*Job),
 		InDegrees: make(map[string]int),
 	}
@@ -68,44 +70,36 @@ func LoadFromBytes(data []byte) (*DAG, error) {
 		return nil, err
 	}
 
-	bizdate := stdtime.Now()
-	if len(config.Bizdate) != 0 {
-		if bizdate, err = time.Parse(config.Bizdate, "YYYYMMDD"); err != nil {
-			log.Fatalf("invalid bizdate: %s", config.Bizdate)
-			return nil, err
-		}
-	}
-
-	builtins["gmtdate"] = ast.NewDate(bizdate.AddDate(0, 0, 1), "YYYYMMDD")
-	builtins["bizdate"] = ast.NewDate(bizdate, "YYYYMMDD")
-
-	for _, job := range d.Jobs {
-		vars := ""
-		if v, ok := job.Attrs["vars"]; ok {
-			vars = v
-		}
-
-		if resolved, err := symbol.Resolve(strings.Trim(vars, "\"'"), builtins); err != nil {
-			return nil, err
-		} else {
-			for _, stmt := range resolved {
-				job.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
-			}
-		}
-
-		for k, v := range job.Attrs {
-			if k == "vars" {
-				continue
-			}
-			nval, err := ApplyVarToString(v, job.Vars)
-			if err != nil {
-				log.Fatal(err)
-				return nil, err
-			}
-			job.Attrs[k] = nval
-		}
-	}
 	return d, nil
+}
+
+func (this *DAG) ResolveJob(job *Job) error {
+	vars := ""
+	if v, ok := job.Attrs["vars"]; ok {
+		vars = v
+	}
+
+	if resolved, err := symbol.Resolve(strings.Trim(vars, "\"'"), this.Builtins.builtins); err != nil {
+		return err
+	} else {
+		for _, stmt := range resolved {
+			job.Vars[stmt.Value.(string)] = stmt.Children[0].Value.(string)
+		}
+	}
+
+	for k, v := range job.Attrs {
+		if k == "vars" {
+			continue
+		}
+		nval, err := ApplyVarToString(v, job.Vars)
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+		job.Attrs[k] = nval
+	}
+
+	return nil
 }
 
 func ApplyVarToString(str string, vars map[string]string) (string, error) {
@@ -166,16 +160,3 @@ func (this *DAG) String() string {
 //===================================================================
 
 var varPattern = regexp.MustCompile("\\$\\{(.*?)\\}")
-
-var builtins = map[string]*ast.Stmt{
-	// Date
-	//"gmtdate": ast.NewDate(stdtime.Now(), "YYYYMMDD"),
-	//"bizdate": ast.NewDate(stdtime.Now().AddDate(0, 0, -1), "YYYYMMDD"),
-	// Duration
-	"year":   ast.NewDurationExt(1, 0, 0),
-	"month":  ast.NewDurationExt(0, 1, 0),
-	"day":    ast.NewDurationExt(0, 0, 1),
-	"hour":   ast.NewDuration(stdtime.Hour),
-	"minute": ast.NewDuration(stdtime.Minute),
-	"second": ast.NewDuration(stdtime.Second),
-}

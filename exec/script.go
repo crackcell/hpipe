@@ -31,20 +31,20 @@ import (
 // Public APIs
 //===================================================================
 
-type ShellExec struct {
+type ScriptExec struct {
 }
 
-func NewShellExec() *ShellExec {
-	return &ShellExec{}
+func NewScriptExec() *ScriptExec {
+	return &ScriptExec{}
 }
 
-func (this *ShellExec) Setup() error {
+func (this *ScriptExec) Setup() error {
 	return nil
 }
 
-func (this *ShellExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"output"}) {
-		msg := "invalid job: missing output"
+func (this *ScriptExec) Run(job *dag.Job) error {
+	if !checkJobAttr(job, []string{"output", "script", "interpreter"}) {
+		msg := "invalid job: missing output, script or interpreter"
 		log.Error(msg)
 		return fmt.Errorf(msg)
 	}
@@ -54,8 +54,9 @@ func (this *ShellExec) Run(job *dag.Job) error {
 	job.Attrs["output"] = strings.TrimRight(job.Attrs["output"], "/")
 
 	args := this.genCmdArgs(job)
-	log.Debugf("CMD: bash %v", args)
-	retcode, err := util.ExecCmd(job.Name, "bash", args...)
+	intepreter := getProp("interpreter", job.Attrs)
+	log.Debugf("CMD: %s %v", intepreter, args)
+	retcode, err := util.ExecCmd(job.Name, intepreter, args...)
 	if err != nil {
 		job.Status = dag.Failed
 		return err
@@ -74,21 +75,15 @@ func (this *ShellExec) Run(job *dag.Job) error {
 
 //var paramPattern = regexp.MustCompile("'[\\w\\s\\._-\\/]*'|[\\w\\._-\\/]+")
 
-func (this *ShellExec) genCmdArgs(job *dag.Job) []string {
+func (this *ScriptExec) genCmdArgs(job *dag.Job) []string {
 	args := []string{}
-
-	if v, ok := job.Attrs["cmd"]; ok {
-		args = append(args, "-c")
-		args = append(args, v)
-	} else if v, ok := job.Attrs["script"]; ok {
-		params := strings.Split(v, " ")
-		if len(params) > 0 {
-			args = append(args, config.WorkPath+"/"+params[0])
-			for i := 1; i < len(params); i++ {
-				args = append(args, params[i])
-			}
+	v := getProp("script", job.Attrs)
+	params := strings.Split(v, " ")
+	if len(params) > 0 {
+		args = append(args, config.WorkPath+"/"+params[0])
+		for i := 1; i < len(params); i++ {
+			args = append(args, params[i])
 		}
 	}
-
 	return args
 }

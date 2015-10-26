@@ -19,6 +19,7 @@
 package exec
 
 import (
+	"fmt"
 	"github.com/crackcell/hpipe/dag"
 )
 
@@ -42,4 +43,12 @@ func checkJobAttr(job *dag.Job, keys []string) bool {
 		}
 	}
 	return true
+}
+
+func getProp(key string, m dag.Attrs) string {
+	v, ok := m[key]
+	if !ok {
+		panic(fmt.Errorf("key not found: %s", key))
+	}
+	return v
 }

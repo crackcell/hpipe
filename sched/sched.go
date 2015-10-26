@@ -43,8 +43,8 @@ type Sched struct {
 
 func NewSched(tracker *status.StatusTracker) (*Sched, error) {
 	e := map[dag.JobType]exec.Exec{
-		dag.DummyJob: exec.NewDummyExec(),
-		dag.ShellJob: exec.NewShellExec(),
+		dag.DummyJob:  exec.NewDummyExec(),
+		dag.ScriptJob: exec.NewScriptExec(),
 	}
 
 	if config.Hadoop {
@@ -81,7 +81,7 @@ func (this *Sched) Run(d *dag.DAG) error {
 	queue := this.genRunQueue(d)
 	for len(queue) != 0 {
 
-		if err := this.runQueue(queue); err != nil {
+		if err := this.runQueue(queue, d); err != nil {
 			return err
 		}
 
@@ -138,7 +138,7 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 	return queue
 }
 
-func (this *Sched) runQueue(queue []*dag.Job) error {
+func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 	var wg sync.WaitGroup
 	for _, job := range queue {
 		wg.Add(1)
@@ -171,6 +171,11 @@ func (this *Sched) runQueue(queue []*dag.Job) error {
 				}
 
 				this.tracker.SetStatus(job, dag.Started)
+				d.Builtins.SetJobReport(this.tracker.ToJson())
+				if err := d.ResolveJob(job); err != nil {
+					log.Error(err)
+					job.Status = dag.Failed
+				}
 				if err = jexec.Run(job); err != nil {
 					log.Error(err)
 					job.Status = dag.Failed

@@ -5,5 +5,5 @@
 ##! @date:   Mon Oct 12 14:47:28 2015
 
 echo "args:" $@
+echo "arg1:" $1
 echo "arg2:" $2
-echo "arg3:" $3

@@ -21,6 +21,7 @@ package dag
 import (
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
+	"github.com/crackcell/hpipe/log"
 	"strings"
 )
 
@@ -99,6 +100,9 @@ func dotToDAGJob(node *dot.Node) *Job {
 	p.Name = node.Name
 	p.Attrs = dotToDAGAttrs(node.Attrs)
 	p.Type = getJobTypeFromAttrs(p.Attrs)
+	if p.Type == UnknownJob {
+		log.Errorf("unknown job type: %s for %s", p.Attrs["type"], p.Name)
+	}
 	return p
 }
 

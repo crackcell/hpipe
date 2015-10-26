@@ -1,20 +1,14 @@
 digraph shell {
-    dummy -> cmd -> script
+    dummy -> script
     dummy [
            name="dummy"
            type="dummy"
            ]
-    cmd [
-           name="cmd"
-           type="shell"
-           output="/tmp/hpipe/examples/shell/output/${bizdate}/cmd"
-           vars="$test_val=0.11"
-           cmd="echo ${bizdate} ${test_val}"
-           ]
     script [
            name="script"
-           type="shell"
+           type="script"
+           interpreter="bash"
            output="/tmp/hpipe/examples/shell/output/${bizdate}/script"
-           script="script.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh"
+           script="script.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh ${job_report}"
            ]
 }
