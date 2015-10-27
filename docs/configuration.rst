@@ -4,7 +4,10 @@
 配置文件
 ========
 
-示例::
+示例
+====
+
+配置文件::
 
    digraph wordcount {
        dummy -> step1
