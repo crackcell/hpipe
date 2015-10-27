@@ -92,7 +92,7 @@ func (this *SqliteSaver) GetFlag(job *dag.Job) (dag.JobStatus, error) {
 	return dag.NotStarted, nil
 }
 
-func (this *SqliteSaver) SetFlag(job *dag.Job, status dag.JobStatus) error {
+func (this *SqliteSaver) SetFlag(job *dag.Job) error {
 	if err := this.ClearFlag(job); err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func (this *SqliteSaver) SetFlag(job *dag.Job, status dag.JobStatus) error {
 	defer this.lock.Unlock()
 	sql := fmt.Sprintf(
 		"insert into status(output, status) values('%s', '%s')",
-		job.Attrs["output"], status,
+		job.Attrs["output"], job.Status,
 	)
 	log.Debugf("sql: %s", sql)
 	if _, err := this.db.Exec(sql); err != nil {

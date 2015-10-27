@@ -37,8 +37,6 @@ import (
 type Sched struct {
 	exec    map[dag.JobType]exec.Exec
 	tracker *status.StatusTracker
-	failing map[string]int
-	failed  map[string]int
 }
 
 func NewSched(tracker *status.StatusTracker) (*Sched, error) {
@@ -67,8 +65,6 @@ func NewSched(tracker *status.StatusTracker) (*Sched, error) {
 	return &Sched{
 		exec:    e,
 		tracker: tracker,
-		failing: make(map[string]int),
-		failed:  make(map[string]int),
 	}, nil
 }
 
@@ -82,21 +78,13 @@ func (this *Sched) Run(d *dag.DAG) error {
 	for len(queue) != 0 {
 
 		if err := this.runQueue(queue, d); err != nil {
+			log.Fatalf("runQueue failed: %v", err)
 			return err
 		}
 
 		for _, job := range queue {
-			switch job.Status {
-			case dag.Finished:
-				this.markJobFinished(job, d)
-			case dag.Failed:
-				log.Errorf("job %s failed", job.Name)
-				if n, ok := this.failing[job.Name]; !ok {
-					this.failing[job.Name] = 1
-				} else {
-					this.failing[job.Name] = n + 1
-				}
-			}
+			this.updateFailCount(job)
+			this.updateDependences(job, d)
 		}
 
 		queue = this.genRunQueue(d)
@@ -104,7 +92,7 @@ func (this *Sched) Run(d *dag.DAG) error {
 
 	util.LogLines(strings.Trim(this.tracker.String(), "\n"), log.Info)
 
-	if len(this.failed) == 0 {
+	if len(this.tracker.Fails) == 0 {
 		log.Info("All jobs done")
 		return nil
 	} else {
@@ -126,13 +114,12 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 		}
 		if in == 0 && job.Status != dag.Finished &&
 			job.Status != dag.Started &&
-			this.failing[job.Name] < config.MaxRetry {
+			this.tracker.Fails[job.Name] < config.MaxRetry {
 			queue = append(queue, job)
 		}
-		if this.failing[job.Name] >= config.MaxRetry {
+		if this.tracker.Fails[job.Name] >= config.MaxRetry {
 			log.Errorf("job %s reaches max retry times: %d",
 				job.Name, config.MaxRetry)
-			this.failed[job.Name] = config.MaxRetry
 		}
 	}
 	return queue
@@ -147,10 +134,14 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 			defer wg.Done()
 
 			log.Infof("run job: %s", job.Name)
+
 			if err := d.ResolveJob(job); err != nil {
 				log.Error(err)
+
 				job.Status = dag.Failed
-				this.tracker.SetStatus(job, dag.Started)
+				this.tracker.SetStatus(job)
+				d.Builtins.SetJobReport(this.tracker.ToJson())
+
 				return
 			}
 
@@ -177,13 +168,17 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 					return
 				}
 
-				this.tracker.SetStatus(job, dag.Started)
+				job.Status = dag.Started
+				this.tracker.SetStatus(job)
 				d.Builtins.SetJobReport(this.tracker.ToJson())
+
 				if err = jexec.Run(job); err != nil {
 					log.Error(err)
 					job.Status = dag.Failed
 				}
-				this.tracker.SetStatus(job, job.Status)
+
+				this.tracker.SetStatus(job)
+				d.Builtins.SetJobReport(this.tracker.ToJson())
 
 				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 			}
@@ -201,11 +196,31 @@ func (this *Sched) getExec(job *dag.Job) (exec.Exec, error) {
 	}
 }
 
-func (this *Sched) markJobFinished(job *dag.Job, d *dag.DAG) {
-	job.Status = dag.Finished
+func (this *Sched) updateFailCount(job *dag.Job) {
+	switch job.Status {
+	case dag.Failed:
+		log.Errorf("job %s failed", job.Name)
+		if n, ok := this.tracker.Fails[job.Name]; !ok {
+			this.tracker.Fails[job.Name] = 1
+		} else {
+			this.tracker.Fails[job.Name] = n + 1
+		}
+	case dag.Finished:
+		if _, ok := this.tracker.Fails[job.Name]; ok {
+			delete(this.tracker.Fails, job.Name)
+		}
+	}
+}
+
+func (this *Sched) updateDependences(job *dag.Job, d *dag.DAG) {
 	for _, post := range job.Post {
 		in := d.InDegrees[post]
-		if in != 0 {
+		if in == 0 {
+			continue
+		}
+		if job.Status == dag.Finished || (job.Status == dag.Failed &&
+			d.Jobs[post].NonStrict &&
+			this.tracker.Fails[job.Name] >= config.MaxRetry) {
 			d.InDegrees[post] = in - 1
 		}
 	}

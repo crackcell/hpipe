@@ -7,3 +7,4 @@
 echo "arg all" $@
 echo "arg2" $2
 echo "arg3" $3
+exit 1

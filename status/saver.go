@@ -28,7 +28,7 @@ import (
 
 type Saver interface {
 	GetFlag(job *dag.Job) (dag.JobStatus, error)
-	SetFlag(job *dag.Job, status dag.JobStatus) error
+	SetFlag(job *dag.Job) error
 	DeleteFlag(job *dag.Job, status dag.JobStatus) error
 	ClearFlag(job *dag.Job) error
 }

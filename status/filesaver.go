@@ -63,7 +63,7 @@ func (this *FileSaver) GetFlag(job *dag.Job) (dag.JobStatus, error) {
 	return dag.NotStarted, nil
 }
 
-func (this *FileSaver) SetFlag(job *dag.Job, status dag.JobStatus) error {
+func (this *FileSaver) SetFlag(job *dag.Job) error {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 
@@ -71,10 +71,10 @@ func (this *FileSaver) SetFlag(job *dag.Job, status dag.JobStatus) error {
 		return err
 	}
 	output := job.Attrs["output"]
-	if flag, ok := FlagSuffix[status]; ok {
+	if flag, ok := FlagSuffix[job.Status]; ok {
 		return this.fs.Touch(output + flag)
 	} else {
-		return fmt.Errorf("invalid status: %s", status)
+		return fmt.Errorf("invalid status: %s", job.Status)
 	}
 }
 

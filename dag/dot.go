@@ -19,6 +19,7 @@
 package dag
 
 import (
+	"fmt"
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"github.com/crackcell/hpipe/log"
@@ -88,22 +89,46 @@ func (this *DotSerializer) Deserialize(data []byte) (*DAG, error) {
 //===================================================================
 
 func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
-	if dotJob, ok := graph.Nodes.Lookup[name]; !ok {
-		panic("no corresponding node")
-	} else {
-		return dotToDAGJob(dotJob)
+	dotJob, ok := graph.Nodes.Lookup[name]
+	if !ok {
+		panic(fmt.Errorf("no corresponding node"))
 	}
+
+	job, err := dotToDAGJob(dotJob)
+	if err != nil {
+		panic(err)
+	}
+	return job
 }
 
-func dotToDAGJob(node *dot.Node) *Job {
+func dotToDAGJob(node *dot.Node) (*Job, error) {
 	p := NewJob()
 	p.Name = node.Name
 	p.Attrs = dotToDAGAttrs(node.Attrs)
+	if v, ok := p.Attrs["nonstrict"]; ok {
+		var err error
+		if p.NonStrict, err = parseBoolString(v); err != nil {
+			return nil, err
+		}
+	}
 	p.Type = getJobTypeFromAttrs(p.Attrs)
 	if p.Type == UnknownJob {
-		log.Errorf("unknown job type: %s for %s", p.Attrs["type"], p.Name)
+		err := fmt.Errorf("unknown job type: %s for %s", p.Attrs["type"], p.Name)
+		log.Error(err)
+		return nil, err
 	}
-	return p
+	return p, nil
+}
+
+func parseBoolString(str string) (bool, error) {
+	switch strings.ToLower(str) {
+	case "true":
+		return true, nil
+	case "false":
+		return false, nil
+	default:
+		return false, fmt.Errorf("invalid bool value: %s", str)
+	}
 }
 
 func dotToDAGAttrs(attrs dot.Attrs) Attrs {

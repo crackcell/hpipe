@@ -1,9 +1,9 @@
 digraph email {
-    dummy -> script -> mailit.sh -> mailit.pl
+    dummy -> script -> mailitsh -> mailitpl
     dummy [
-           name="dummy"
-           type="dummy"
-           ]
+          name="dummy"
+          type="dummy"
+          ]
     script [
            name="script"
            type="script"
@@ -11,16 +11,18 @@ digraph email {
            output="/tmp/hpipe/examples/email/output/${bizdate}/script"
            script="script.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh ${job_report}"
            ]
-    mailit.sh [
+    mailitsh [
            name="mailit.sh"
            type="script"
+           nonstrict="true"
            interpreter="bash"
            output="/tmp/hpipe/examples/email/output/${bizdate}/mailit.sh"
            script="mailit.sh ${bizdate} ${job_report}"
            ]
-    mailit.pl [
+    mailitpl [
            name="mailit.pl"
            type="script"
+           nonstrict="true"
            interpreter="perl"
            output="/tmp/hpipe/examples/email/output/${bizdate}/mailit.pl"
            script="mailit.pl ${bizdate} ${job_report}"
