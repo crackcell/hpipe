@@ -8,7 +8,7 @@ Hpipe是一个工作流引擎。
 =====
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    quickstart
    configuration
