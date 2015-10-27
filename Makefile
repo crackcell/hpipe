@@ -9,7 +9,7 @@
 #
 #===========================================================================
 
-.PHONY : all dev deps output clean help test deb rpm
+.PHONY : all dev deps output clean help test deb rpm doc
 
 all : output
 
@@ -40,6 +40,9 @@ hpipe :
 
 test : all
 	go test -v
+
+doc :
+	cd docs; make html
 
 clean :
 	rm -rf output

@@ -31,11 +31,11 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S3
-		Accept: 0,
+		Accept: 1,
  		Ignore: "",
  	},
  	ActionRow{ // S4
-		Accept: 1,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S5
@@ -103,11 +103,11 @@ var ActTab = ActionTable{
  		Ignore: "",
  	},
  	ActionRow{ // S21
-		Accept: 13,
+		Accept: 0,
  		Ignore: "",
  	},
  	ActionRow{ // S22
-		Accept: 0,
+		Accept: 13,
  		Ignore: "",
  	},
  	ActionRow{ // S23

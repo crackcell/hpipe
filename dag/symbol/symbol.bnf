@@ -14,7 +14,7 @@ date : { 'Y' | 'M' | 'D' | 'h' | 'm' | 's' | ' ' | ':' | '-' };
 
 id : { _letter | '_' } { _idchar } ;
 
-string : '"' { _idchar } '"' ;
+string : '\'' { _idchar } '\'' ;
 
 !whitespace : ' ' | '\t' | '\n' | '\r' ;
 
