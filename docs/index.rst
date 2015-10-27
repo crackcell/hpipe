@@ -7,9 +7,11 @@ Hpipe是一个工作流引擎。
 目录
 =====
 
-* :ref:`快速开始 <quickstart>`
-* :ref:`配置文件 <configuration>`
+.. toctree::
+   :maxdepth: 4
 
+   quickstart
+   configuration
 
 索引
 ====
