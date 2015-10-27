@@ -1,4 +1,6 @@
 digraph wordcount {
+    dummy -> step1
+    dummy -> step2
     step1 [
                 name="step1"
                 type="hadoop"
@@ -24,6 +26,4 @@ digraph wordcount {
            type="dummy"
            vars="$bizdate=${date:YYYYMMDD}+2*$day"
            ]
-    dummy -> step1
-    dummy -> step2
 }

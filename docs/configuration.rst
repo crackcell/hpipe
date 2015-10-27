@@ -4,6 +4,38 @@
 配置文件
 ========
 
+示例::
+
+   digraph wordcount {
+       dummy -> step1
+       dummy -> step2
+       step1 [
+             name="step1"
+             type="hadoop"
+             vars="$date=${date:YYYYMMDD}"
+             input="/tmp/hpipe/examples/wordcount/input/part-*"
+             output="/tmp/hpipe/examples/wordcount/output/${bizdate}/step1"
+             mapper="cat"
+             reducer="wc -l"
+             mapred.reduce.tasks=1
+             test.custom.val="today is ${date}, yestoday is ${bizdate}, and yestoday is ${bizdate}"
+             ]
+       step2 [
+             name="step2"
+             type="hadoop"
+             vars="$date=$bizdate"
+             input="/tmp/hpipe/examples/wordcount/input/part-*"
+             output="/tmp/hpipe/examples/wordcount/output/${bizdate}/step2"
+             mapper="cat"
+             reducer="wc -l"
+             ]
+       dummy [
+             name="dummy"
+             type="dummy"
+             vars="$bizdate=${date:YYYYMMDD}+2*$day"
+             ]
+   }
+
 工作流配置
 ==========
 
