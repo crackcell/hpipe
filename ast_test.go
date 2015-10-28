@@ -154,7 +154,7 @@ func TestASTDuration(t *testing.T) {
 }
 
 func TestASTString(t *testing.T) {
-	src := "$res=\"wordcount1\""
+	src := "$res='wordcount1'"
 	p := parser.NewParser()
 	l := lexer.NewLexer([]byte(src))
 	//fmt.Printf("src: %s\n", src)
