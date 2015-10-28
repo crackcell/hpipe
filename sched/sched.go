@@ -135,6 +135,8 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 
 			log.Infof("run job: %s", job.Name)
 
+			d.Builtins.SetBizdate(config.Bizdate)
+
 			if err := d.ResolveJob(job); err != nil {
 				log.Error(err)
 
