@@ -20,26 +20,6 @@ click-through-rate prediction for online advertising.
 - Job status tracking mechanism: record job status and auto-resume from break point.
 - Workflow descriptive language based on [Graphviz](http://graphviz.org/) being easy to edit and visualize.
 
-## Quick Start
+##  Documentation
 
-1. Compile
-
-> make
-
-2. Run example
-
-> ./output/bin/hpipe-run -v -p $PWD/examples/wordcount -f ./examples/wordcount/wordcount.dot --namenode namenode:8020 --hadoop --jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar --sqlite ./status.db
-
-## Create packages
-
-### deb
-
-> make deb
-
-### rpm
-
-> make rpm
-
-## More Documentation
-
-[Readthedoc](http://hpipe.readthedocs.org/zh_CN/latest/)
+* [zh_CN](http://hpipe.readthedocs.org/zh_CN/latest/)
