@@ -133,23 +133,21 @@ var JobReservedAttrs = map[string]int{
 }
 
 type Job struct {
-	Name      string
-	Type      JobType
-	NonStrict bool
-	Status    JobStatus
-	Attrs     Attrs
-	Prev      []string
-	Post      []string
-	Vars      map[string]string
+	Name   string
+	Type   JobType
+	Status JobStatus
+	Attrs  Attrs
+	Prev   []string
+	Post   []string
+	Vars   map[string]string
 }
 
 func NewJob() *Job {
 	return &Job{
-		NonStrict: false,
-		Attrs:     NewAttrs(),
-		Prev:      []string{},
-		Post:      []string{},
-		Vars:      make(map[string]string),
+		Attrs: NewAttrs(),
+		Prev:  []string{},
+		Post:  []string{},
+		Vars:  make(map[string]string),
 	}
 }
 

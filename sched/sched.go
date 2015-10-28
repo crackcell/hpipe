@@ -218,10 +218,15 @@ func (this *Sched) updateDependences(job *dag.Job, d *dag.DAG) {
 		if in == 0 {
 			continue
 		}
-		if job.Status == dag.Finished || (job.Status == dag.Failed &&
-			d.Jobs[post].NonStrict &&
-			this.tracker.Fails[job.Name] >= config.MaxRetry) {
+
+		if job.Status == dag.Finished {
 			d.InDegrees[post] = in - 1
+		} else {
+			relation, ok := d.Relations[job.Name][post]
+			if ok && relation.NonStrict && job.Status == dag.Failed &&
+				this.tracker.Fails[job.Name] >= config.MaxRetry {
+				d.InDegrees[post] = in - 1
+			}
 		}
 	}
 }

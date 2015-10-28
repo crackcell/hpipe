@@ -20,26 +20,33 @@ package dag
 
 import (
 	"fmt"
-	//"github.com/crackcell/hpipe/config"
 	"github.com/crackcell/hpipe/dag/symbol"
-	//"github.com/crackcell/hpipe/dag/symbol/ast"
 	"github.com/crackcell/hpipe/log"
-	//"github.com/crackcell/hpipe/util/time"
 	"io/ioutil"
 	"regexp"
 	"strings"
-	//stdtime "time"
 )
 
 //===================================================================
 // Public APIs
 //===================================================================
 
+type Relation struct {
+	NonStrict bool
+}
+
+func NewRelation() *Relation {
+	return &Relation{
+		NonStrict: false,
+	}
+}
+
 type DAG struct {
 	Name      string
 	Builtins  *Builtins
 	Jobs      map[string]*Job
 	InDegrees map[string]int
+	Relations map[string]map[string]*Relation
 }
 
 type Serializer interface {
@@ -53,6 +60,7 @@ func NewDAG(name string) *DAG {
 		Builtins:  NewBuiltins(),
 		Jobs:      make(map[string]*Job),
 		InDegrees: make(map[string]int),
+		Relations: make(map[string]map[string]*Relation),
 	}
 }
 

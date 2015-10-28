@@ -23,6 +23,7 @@ import (
 	dot "github.com/awalterschulze/gographviz"
 	dotparser "github.com/awalterschulze/gographviz/parser"
 	"github.com/crackcell/hpipe/log"
+	"github.com/crackcell/hpipe/util"
 	"strings"
 )
 
@@ -77,7 +78,24 @@ func (this *DotSerializer) Deserialize(data []byte) (*DAG, error) {
 			} else {
 				p.InDegrees[dest] = orig + 1
 			}
+		}
+	}
 
+	for _, edge := range graph.Edges.Edges {
+		if v, ok := edge.Attrs["nonstrict"]; ok {
+			nonstrict, err := util.StringToBool(strings.Trim(v, "\""))
+			if err != nil {
+				log.Error(err)
+				return nil, err
+			}
+			if len(edge.Src) != 0 && len(edge.Dst) != 0 {
+				r := NewRelation()
+				r.NonStrict = nonstrict
+				if _, ok := p.Relations[edge.Src]; !ok {
+					p.Relations[edge.Src] = make(map[string]*Relation)
+				}
+				p.Relations[edge.Src][edge.Dst] = r
+			}
 		}
 	}
 
@@ -105,12 +123,6 @@ func dotToDAGJob(node *dot.Node) (*Job, error) {
 	p := NewJob()
 	p.Name = node.Name
 	p.Attrs = dotToDAGAttrs(node.Attrs)
-	if v, ok := p.Attrs["nonstrict"]; ok {
-		var err error
-		if p.NonStrict, err = parseBoolString(v); err != nil {
-			return nil, err
-		}
-	}
 	p.Type = getJobTypeFromAttrs(p.Attrs)
 	if p.Type == UnknownJob {
 		err := fmt.Errorf("unknown job type: %s for %s", p.Attrs["type"], p.Name)
