@@ -35,3 +35,11 @@ click-through-rate prediction for online advertising.
 ### deb
 
 > make deb
+
+### rpm
+
+> make rpm
+
+## More Documentation
+
+[Readthedoc](http://hpipe.readthedocs.org/zh_CN/latest/)
