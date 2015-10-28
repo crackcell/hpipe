@@ -94,7 +94,7 @@ vars
 使用变量
 """"""""
 
-在其它配置项里面使用变量，如``output``，``script``等里面。
+在其它配置项里面使用变量，如 ``output`` ， ``script`` 等里面。
 
 例如：
 
@@ -132,7 +132,7 @@ HiveQL文件。
 option
 """"""
 
-Hive选项，例如：``hive.exec.dynamic.partition.mode=nonstrict``。
+Hive选项，例如： ``hive.exec.dynamic.partition.mode=nonstrict`` 。
 
 script
 ^^^^^^
@@ -140,7 +140,7 @@ script
 interpreter
 """""""""""
 
-解释器，例如：``perl``，``bash``。可以只写出在系统变量``$PATH``内命令，也可以写完整的路径。
+解释器，例如： ``perl`` ， ``bash`` 。可以只写出在系统变量 ``$PATH`` 内命令，也可以写完整的路径。
 
 script
 """"""
@@ -161,7 +161,7 @@ gmtdate
 bizdate
 """""""
 
-脚本运行前一天的日期。可以在启动hpipe的时候用``--bizdate``指定日期，这个选项会同时更新``gmtdate``。
+脚本运行前一天的日期。可以在启动hpipe的时候用 ``--bizdate`` 指定日期，这个选项会同时更新 ``gmtdate`` 。
 
 job_report
 """"""""""
@@ -178,7 +178,7 @@ nonstrict
 
 非强制依赖。默认依赖，若上游节点失败，不会继续执行，非强制依赖表示可以无视上游节点状态，继续执行。
 
-具体例子可以参考``examples/email``::
+具体例子可以参考 ``examples/email`` ::
 
    digraph email {
        dummy -> script

@@ -18,7 +18,6 @@ Hpipe是一个面向离线计算的工作流引擎。它具有一下功能：
    quickstart
    commandline
    configuration
-   jobtracking
 
 索引
 ====
