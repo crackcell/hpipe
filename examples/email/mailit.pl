@@ -15,8 +15,34 @@ use JSON;
 
 #------------------- main -------------------
 
-print "args: ", $ARGV[0], " ", $ARGV[1], "\n";
+my $mail_recv = 'tanmenglong@gmail.com';
+
+my @finished = ();
+my @failed = ();
+
 my $obj = from_json($ARGV[1]);
 foreach my $key (keys %{$obj}) {
-	print $key, ": ", $obj->{$key}, "\n";
+	if ($obj->{$key} eq "failed") {
+		push(@failed, $key)
+	} elsif ($obj->{$key} eq "finished") {
+		push(@finished, $key)
+	}
 }
+
+my $mail_body = "";
+
+$mail_body = $mail_body . "finished: ";
+foreach my $job (@finished) {
+	$mail_body = $mail_body . $job . ", ";
+}
+$mail_body = $mail_body . '\\n';
+
+$mail_body = $mail_body . "failed: ";
+foreach my $job (@failed) {
+	$mail_body = $mail_body . $job . ", ";
+}
+$mail_body = $mail_body . '\\n';
+
+print "failed jobs: ", $mail_body, "\n";
+print "echo `$mail_body` | mail -s 'Task Report' $mail_recv\n";
+#system("echo `$mail_body` | mail -s 'Task Report' $mail_recv");
