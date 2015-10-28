@@ -17,7 +17,7 @@ click-through-rate prediction for online advertising.
 ## Features
 
 - Integrate various types of jobs into a uniformed workflow.
-- Job status tracking mechanism: record job status and auto-resume from break point.
+- Job status tracking mechanism: keep job status and auto-resume from breakpoints.
 - Workflow descriptive language based on [Graphviz](http://graphviz.org/) being easy to edit and visualize.
 
 ##  Documentation
