@@ -46,4 +46,5 @@ output
 *.deb
 /dist/deb/usr/
 docs/_build/
-
+/db
+/status.db
