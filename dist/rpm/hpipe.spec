@@ -24,6 +24,7 @@ Hpipe is a workflow engine supporting hybrid workflows with built-in support for
 
 %build
 pushd $OLDPWD/../..
+make clean
 make deps
 make
 popd
