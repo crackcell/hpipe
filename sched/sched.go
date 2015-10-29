@@ -25,7 +25,6 @@ import (
 	"github.com/crackcell/hpipe/exec"
 	"github.com/crackcell/hpipe/log"
 	"github.com/crackcell/hpipe/status"
-	"github.com/crackcell/hpipe/util"
 	"strings"
 	"sync"
 )
@@ -76,7 +75,6 @@ func (this *Sched) Run(d *dag.DAG) error {
 
 	d.Builtins.SetBizdate(config.Bizdate)
 
-	// normal queue
 	queue := this.genRunQueue(d)
 	for len(queue) != 0 {
 
@@ -92,18 +90,7 @@ func (this *Sched) Run(d *dag.DAG) error {
 		queue = this.genRunQueue(d)
 	}
 
-	// nonstrict queue
-	queue = this.genRunQueueNonStrict(d)
-	log.Debugf("nonstrict queue: %v", queue)
-	if err := this.runQueue(queue, d); err != nil {
-		return err
-	}
-	for _, job := range queue {
-		this.updateFails(job)
-		this.updateDependences(job, d)
-	}
-
-	util.LogLines(strings.Trim(this.tracker.String(), "\n"), log.Info)
+	this.logSummary()
 
 	if len(this.tracker.Fails) == 0 {
 		log.Info("All jobs done")
@@ -133,31 +120,6 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 		if this.tracker.Fails[job.Name] >= config.MaxRetry {
 			log.Errorf("job %s reaches max retry times: %d",
 				job.Name, config.MaxRetry)
-		}
-	}
-	return queue
-}
-
-func (this *Sched) genRunQueueNonStrict(d *dag.DAG) []*dag.Job {
-	queue := []*dag.Job{}
-	for _, job := range d.Jobs {
-		if job.Status != dag.NotStarted {
-			continue
-		}
-		run := true
-		for _, prev := range job.Prev {
-			if prevJob, ok := d.Jobs[prev]; ok {
-				if prevJob.Status == dag.Finished {
-					continue
-				}
-				relation, ok := d.Relations[prevJob.Name][job.Name]
-				if !ok || !relation.NonStrict {
-					run = false
-				}
-			}
-		}
-		if run {
-			queue = append(queue, job)
 		}
 	}
 	return queue
@@ -276,4 +238,13 @@ func (this *Sched) checkDAG(d *dag.DAG) error {
 		}
 	}
 	return nil
+}
+
+func (this *Sched) logSummary() {
+	for _, line := range strings.Split(strings.Trim(this.tracker.String(), "\n"), "\n") {
+		if len(line) == 0 {
+			line = " "
+		}
+		log.Info(line)
+	}
 }

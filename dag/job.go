@@ -145,7 +145,7 @@ type Job struct {
 
 func NewJob() *Job {
 	return &Job{
-		Status: NotStarted,
+		Status: UnknownStatus,
 		Attrs:  NewAttrs(),
 		Prev:   []string{},
 		Post:   []string{},

@@ -56,6 +56,11 @@ func (this *StatusTracker) String() string {
 	return tabulator.Tabulate(table)
 }
 
+func (this *StatusTracker) IsJobTracked(job *dag.Job) bool {
+	_, ok := this.status[job.Name]
+	return ok
+}
+
 func (this *StatusTracker) ToJson() string {
 	table := map[string]string{}
 	for _, name := range this.order {
