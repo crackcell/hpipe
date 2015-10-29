@@ -75,7 +75,7 @@ func (this *OdpsExec) Setup() error {
 }
 
 func (this *OdpsExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"script", "output"}) {
+	if !job.ValidateAttr([]string{"script", "output"}) {
 		msg := "invalid job"
 		log.Error(msg)
 		return fmt.Errorf(msg)

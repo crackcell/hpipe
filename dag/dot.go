@@ -120,27 +120,23 @@ func dotNameToDAGJob(graph *dot.Graph, name string) *Job {
 }
 
 func dotToDAGJob(node *dot.Node) (*Job, error) {
-	p := NewJob()
-	p.Name = node.Name
-	p.Attrs = dotToDAGAttrs(node.Attrs)
-	p.Type = getJobTypeFromAttrs(p.Attrs)
-	if p.Type == UnknownJob {
-		err := fmt.Errorf("unknown job type: %s for %s", p.Attrs["type"], p.Name)
-		log.Error(err)
-		return nil, err
-	}
-	return p, nil
-}
+	job := NewJob()
+	job.Name = node.Name
 
-func parseBoolString(str string) (bool, error) {
-	switch strings.ToLower(str) {
-	case "true":
-		return true, nil
-	case "false":
-		return false, nil
-	default:
-		return false, fmt.Errorf("invalid bool value: %s", str)
+	job.Attrs = dotToDAGAttrs(node.Attrs)
+	if !job.ValidateAttr([]string{"type"}) {
+		return nil, log.ErrorErrf(
+			"invalid job '%s', attributes missing: %v",
+			job.Name,
+			[]string{"type"})
 	}
+
+	job.Type = ParseJobType(job.Attrs["type"])
+	if job.Type == UnknownJob {
+		return nil, log.ErrorErrf("unknown job type: %s for %s", job.Attrs["type"], job.Name)
+	}
+
+	return job, nil
 }
 
 func dotToDAGAttrs(attrs dot.Attrs) Attrs {
@@ -149,12 +145,4 @@ func dotToDAGAttrs(attrs dot.Attrs) Attrs {
 		p.Set(k, strings.Trim(v, "\""))
 	}
 	return p
-}
-
-func getJobTypeFromAttrs(attrs Attrs) JobType {
-	if val, ok := attrs["type"]; !ok {
-		return UnknownJob
-	} else {
-		return ParseJobType(val)
-	}
 }

@@ -19,6 +19,7 @@
 package log
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -47,17 +48,17 @@ const (
 
 type LevelLogger interface {
 	Debug(v ...interface{})
-	Debugf(fmt string, v ...interface{})
+	Debugf(format string, v ...interface{})
 	Trace(v ...interface{})
-	Tracef(fmt string, v ...interface{})
+	Tracef(format string, v ...interface{})
 	Info(v ...interface{})
-	Infof(fmt string, v ...interface{})
+	Infof(format string, v ...interface{})
 	Warn(v ...interface{})
-	Warnf(fmt string, v ...interface{})
+	Warnf(format string, v ...interface{})
 	Error(v ...interface{})
-	Errorf(fmt string, v ...interface{})
+	Errorf(format string, v ...interface{})
 	Fatal(v ...interface{})
-	Fatalf(fmt string, v ...interface{})
+	Fatalf(format string, v ...interface{})
 }
 
 func New(writer io.Writer, prefix string, logLevel int) LevelLogger {
@@ -82,17 +83,17 @@ func NewDefault(writer io.Writer, prefix string, logLevel int) LevelLogger {
 
 type underlayLogger interface {
 	Print(v ...interface{})
-	Printf(fmt string, v ...interface{})
+	Printf(format string, v ...interface{})
 	Fatal(v ...interface{})
-	Fatalf(fmt string, v ...interface{})
+	Fatalf(format string, v ...interface{})
 }
 
 type nullLogger struct{}
 
-func (this *nullLogger) Print(v ...interface{})              {}
-func (this *nullLogger) Printf(fmt string, v ...interface{}) {}
-func (this *nullLogger) Fatal(v ...interface{})              {}
-func (this *nullLogger) Fatalf(fmt string, v ...interface{}) {}
+func (this *nullLogger) Print(v ...interface{})                 {}
+func (this *nullLogger) Printf(format string, v ...interface{}) {}
+func (this *nullLogger) Fatal(v ...interface{})                 {}
+func (this *nullLogger) Fatalf(format string, v ...interface{}) {}
 
 type levelLogger struct {
 	mu         sync.Mutex
@@ -148,112 +149,130 @@ func (this *levelLogger) print(level int, verbose bool, v ...interface{}) {
 	l.Print(v...)
 }
 
-func (this *levelLogger) printf(level int, verbose bool, fmt string, v ...interface{}) {
+func (this *levelLogger) printf(level int, verbose bool, format string, v ...interface{}) {
 	l := this.getLogger(level)
 	this.mu.Lock()
 	defer this.mu.Unlock()
 	if verbose {
-		fmt = getCallerMoreInfo(this.callerpath) + ": " + fmt
+		format = getCallerMoreInfo(this.callerpath) + ": " + format
 	} else {
-		fmt = getCallerInfo(this.callerpath) + ": " + fmt
+		format = getCallerInfo(this.callerpath) + ": " + format
 	}
-	l.Printf(fmt, v...)
+	l.Printf(format, v...)
 }
 
 func Debug(v ...interface{}) {
 	StdLogger.Debug(v...)
 }
 
-func Debugf(fmt string, v ...interface{}) {
-	StdLogger.Debugf(fmt, v...)
+func Debugf(format string, v ...interface{}) {
+	StdLogger.Debugf(format, v...)
 }
 
 func Trace(v ...interface{}) {
 	StdLogger.Trace(v...)
 }
 
-func Tracef(fmt string, v ...interface{}) {
-	StdLogger.Tracef(fmt, v...)
+func Tracef(format string, v ...interface{}) {
+	StdLogger.Tracef(format, v...)
 }
 
 func Info(v ...interface{}) {
 	StdLogger.Info(v...)
 }
 
-func Infof(fmt string, v ...interface{}) {
-	StdLogger.Infof(fmt, v...)
+func Infof(format string, v ...interface{}) {
+	StdLogger.Infof(format, v...)
 }
 
 func Warn(v ...interface{}) {
 	StdLogger.Warn(v...)
 }
 
-func Warnf(fmt string, v ...interface{}) {
-	StdLogger.Warnf(fmt, v...)
+func Warnf(format string, v ...interface{}) {
+	StdLogger.Warnf(format, v...)
+}
+
+func WarnErrf(format string, v ...interface{}) error {
+	err := fmt.Errorf(format, v)
+	StdLogger.Warn(err)
+	return err
 }
 
 func Error(v ...interface{}) {
 	StdLogger.Error(v...)
 }
 
-func Errorf(fmt string, v ...interface{}) {
-	StdLogger.Errorf(fmt, v...)
+func Errorf(format string, v ...interface{}) {
+	StdLogger.Errorf(format, v...)
+}
+
+func ErrorErrf(format string, v ...interface{}) error {
+	err := fmt.Errorf(format, v)
+	StdLogger.Error(err)
+	return err
 }
 
 func Fatal(v ...interface{}) {
 	StdLogger.Fatal(v...)
 }
 
-func Fatalf(fmt string, v ...interface{}) {
-	StdLogger.Fatalf(fmt, v...)
+func Fatalf(format string, v ...interface{}) {
+	StdLogger.Fatalf(format, v...)
+}
+
+func FatalErrf(format string, v ...interface{}) error {
+	err := fmt.Errorf(format, v)
+	StdLogger.Fatal(err)
+	return err
 }
 
 func (this *levelLogger) Debug(v ...interface{}) {
 	this.print(LOG_LEVEL_DEBUG, true, v...)
 }
 
-func (this *levelLogger) Debugf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_DEBUG, true, fmt, v...)
+func (this *levelLogger) Debugf(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_DEBUG, true, format, v...)
 }
 
 func (this *levelLogger) Trace(v ...interface{}) {
 	this.print(LOG_LEVEL_TRACE, true, v...)
 }
 
-func (this *levelLogger) Tracef(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_TRACE, true, fmt, v...)
+func (this *levelLogger) Tracef(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_TRACE, true, format, v...)
 }
 
 func (this *levelLogger) Info(v ...interface{}) {
 	this.print(LOG_LEVEL_INFO, false, v...)
 }
 
-func (this *levelLogger) Infof(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_INFO, false, fmt, v...)
+func (this *levelLogger) Infof(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_INFO, false, format, v...)
 }
 
 func (this *levelLogger) Warn(v ...interface{}) {
 	this.print(LOG_LEVEL_WARN, true, v...)
 }
 
-func (this *levelLogger) Warnf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_WARN, true, fmt, v...)
+func (this *levelLogger) Warnf(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_WARN, true, format, v...)
 }
 
 func (this *levelLogger) Error(v ...interface{}) {
 	this.print(LOG_LEVEL_ERROR, true, v...)
 }
 
-func (this *levelLogger) Errorf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_ERROR, true, fmt, v...)
+func (this *levelLogger) Errorf(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_ERROR, true, format, v...)
 }
 
 func (this *levelLogger) Fatal(v ...interface{}) {
 	this.print(LOG_LEVEL_FATAL, true, v...)
 }
 
-func (this *levelLogger) Fatalf(fmt string, v ...interface{}) {
-	this.printf(LOG_LEVEL_FATAL, true, fmt, v...)
+func (this *levelLogger) Fatalf(format string, v ...interface{}) {
+	this.printf(LOG_LEVEL_FATAL, true, format, v...)
 }
 
 func getCallerInfo(callpath int) string {

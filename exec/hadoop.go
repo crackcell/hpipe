@@ -62,7 +62,7 @@ func (this *HadoopExec) Setup() error {
 }
 
 func (this *HadoopExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"mapper", "input", "output"}) {
+	if !job.ValidateAttr([]string{"mapper", "input", "output"}) {
 		msg := "invalid job"
 		log.Error(msg)
 		return fmt.Errorf(msg)

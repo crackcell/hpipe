@@ -1,24 +1,23 @@
 digraph email {
-    dummy -> script
-    script -> mailitsh [nonstrict="true"]
-    mailitsh -> mailitpl
+    dummy -> failed1 -> failed2
+    failed2 -> mailitpl [nonstrict="true"]
     dummy [
         name="dummy"
         type="dummy"
         ]
-    script [
-        name="script"
+    failed1 [
+        name="failed1"
         type="script"
         interpreter="bash"
-        output="/tmp/hpipe/examples/email/output/${bizdate}/script"
-        script="script.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh ${job_report}"
+        output="/tmp/hpipe/examples/email/output/${bizdate}/failed1"
+        script="failed.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh ${job_report}"
         ]
-    mailitsh [
-        name="mailit.sh"
+    failed2 [
+        name="failed2"
         type="script"
         interpreter="bash"
-        output="/tmp/hpipe/examples/email/output/${bizdate}/mailit.sh"
-        script="mailit.sh ${bizdate} ${job_report}"
+        output="/tmp/hpipe/examples/email/output/${bizdate}/failed2"
+        script="failed.sh ${bizdate} 'space and' 'XX YY' xxx-asdf_rr.sh ${job_report}"
         ]
     mailitpl [
         name="mailit.pl"

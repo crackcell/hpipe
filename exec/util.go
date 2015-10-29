@@ -31,20 +31,6 @@ import (
 // Private
 //===================================================================
 
-func isInMap(key string, m dag.Attrs) bool {
-	_, ok := m[key]
-	return ok
-}
-
-func checkJobAttr(job *dag.Job, keys []string) bool {
-	for _, key := range keys {
-		if !isInMap(key, job.Attrs) {
-			return false
-		}
-	}
-	return true
-}
-
 func getProp(key string, m dag.Attrs) string {
 	v, ok := m[key]
 	if !ok {

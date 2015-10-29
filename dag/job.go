@@ -20,6 +20,7 @@ package dag
 
 import (
 	"fmt"
+	"github.com/crackcell/hpipe/util"
 	"strings"
 )
 
@@ -144,16 +145,16 @@ type Job struct {
 
 func NewJob() *Job {
 	return &Job{
-		Attrs: NewAttrs(),
-		Prev:  []string{},
-		Post:  []string{},
-		Vars:  make(map[string]string),
+		Status: NotStarted,
+		Attrs:  NewAttrs(),
+		Prev:   []string{},
+		Post:   []string{},
+		Vars:   make(map[string]string),
 	}
 }
 
 func (this *Job) String() string {
-	return fmt.Sprintf("Job{name=%s,attrs=%v,prev=%v,post=%v}",
-		this.Name, this.Attrs, this.Prev, this.Post)
+	return fmt.Sprintf("Job{name=%s}", this.Name)
 }
 
 func (this *Job) AddPrev(name string) {
@@ -172,6 +173,10 @@ func (this *Job) AddPost(name string) {
 		}
 	}
 	this.Post = append(this.Post, name)
+}
+
+func (this *Job) ValidateAttr(keys []string) bool {
+	return util.IsInMap(keys, this.Attrs)
 }
 
 //===================================================================

@@ -43,7 +43,7 @@ func (this *ScriptExec) Setup() error {
 }
 
 func (this *ScriptExec) Run(job *dag.Job) error {
-	if !checkJobAttr(job, []string{"output", "script", "interpreter"}) {
+	if !job.ValidateAttr([]string{"output", "script", "interpreter"}) {
 		msg := "invalid job: missing output, script or interpreter"
 		log.Error(msg)
 		return fmt.Errorf(msg)

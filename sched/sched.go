@@ -74,20 +74,33 @@ func (this *Sched) Run(d *dag.DAG) error {
 		return err
 	}
 
+	d.Builtins.SetBizdate(config.Bizdate)
+
+	// normal queue
 	queue := this.genRunQueue(d)
 	for len(queue) != 0 {
 
 		if err := this.runQueue(queue, d); err != nil {
-			log.Fatalf("runQueue failed: %v", err)
 			return err
 		}
 
 		for _, job := range queue {
-			this.updateFailCount(job)
+			this.updateFails(job)
 			this.updateDependences(job, d)
 		}
 
 		queue = this.genRunQueue(d)
+	}
+
+	// nonstrict queue
+	queue = this.genRunQueueNonStrict(d)
+	log.Debugf("nonstrict queue: %v", queue)
+	if err := this.runQueue(queue, d); err != nil {
+		return err
+	}
+	for _, job := range queue {
+		this.updateFails(job)
+		this.updateDependences(job, d)
 	}
 
 	util.LogLines(strings.Trim(this.tracker.String(), "\n"), log.Info)
@@ -125,24 +138,46 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 	return queue
 }
 
+func (this *Sched) genRunQueueNonStrict(d *dag.DAG) []*dag.Job {
+	queue := []*dag.Job{}
+	for _, job := range d.Jobs {
+		if job.Status != dag.NotStarted {
+			continue
+		}
+		run := true
+		for _, prev := range job.Prev {
+			if prevJob, ok := d.Jobs[prev]; ok {
+				if prevJob.Status == dag.Finished {
+					continue
+				}
+				relation, ok := d.Relations[prevJob.Name][job.Name]
+				if !ok || !relation.NonStrict {
+					run = false
+				}
+			}
+		}
+		if run {
+			queue = append(queue, job)
+		}
+	}
+	return queue
+}
+
 func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 	var wg sync.WaitGroup
 	for _, job := range queue {
 		wg.Add(1)
-		go func(job *dag.Job) {
+		go func(job *dag.Job, d *dag.DAG) {
 			// !!! All shared objects need to be thread-safe !!!
 			defer wg.Done()
 
 			log.Infof("run job: %s", job.Name)
 
-			d.Builtins.SetBizdate(config.Bizdate)
-
 			if err := d.ResolveJob(job); err != nil {
 				log.Error(err)
 
 				job.Status = dag.Failed
-				this.tracker.SetStatus(job)
-				d.Builtins.SetJobReport(this.tracker.ToJson())
+				this.updateJobStatus(job, d)
 
 				return
 			}
@@ -171,20 +206,16 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 				}
 
 				job.Status = dag.Started
-				this.tracker.SetStatus(job)
-				d.Builtins.SetJobReport(this.tracker.ToJson())
-
+				this.updateJobStatus(job, d)
 				if err = jexec.Run(job); err != nil {
 					log.Error(err)
 					job.Status = dag.Failed
 				}
-
-				this.tracker.SetStatus(job)
-				d.Builtins.SetJobReport(this.tracker.ToJson())
+				this.updateJobStatus(job, d)
 
 				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 			}
-		}(job)
+		}(job, d)
 	}
 	wg.Wait()
 	return nil
@@ -198,7 +229,12 @@ func (this *Sched) getExec(job *dag.Job) (exec.Exec, error) {
 	}
 }
 
-func (this *Sched) updateFailCount(job *dag.Job) {
+func (this *Sched) updateJobStatus(job *dag.Job, d *dag.DAG) {
+	this.tracker.SetStatus(job)
+	d.Builtins.SetJobReport(this.tracker.ToJson())
+}
+
+func (this *Sched) updateFails(job *dag.Job) {
 	switch job.Status {
 	case dag.Failed:
 		log.Errorf("job %s failed", job.Name)
