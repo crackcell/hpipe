@@ -90,7 +90,7 @@ func (this *Sched) Run(d *dag.DAG) error {
 		queue = this.genRunQueue(d)
 	}
 
-	this.logSummary()
+	this.Summary()
 
 	if len(this.tracker.Fails) == 0 {
 		log.Info("All jobs done")
@@ -240,7 +240,7 @@ func (this *Sched) checkDAG(d *dag.DAG) error {
 	return nil
 }
 
-func (this *Sched) logSummary() {
+func (this *Sched) Summary() {
 	for _, line := range strings.Split(strings.Trim(this.tracker.String(), "\n"), "\n") {
 		if len(line) == 0 {
 			line = " "
