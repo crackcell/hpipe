@@ -16,10 +16,13 @@ hpipe
    
        -p, --path         Working path
        -f, --flow         Entry filename of workflow
+
        --max-retry        Max retry times of failed jobs, default: 3
        --start            Start from a specific job
        --end              End at a specific job
-   
+       --rerun            Rerun finished jobs, default: false
+       --force            Run job even if already marked started, default: false
+
        --status-saver     Method to track job status
                           default: sqlite
                           available: hdfs, sqlite
