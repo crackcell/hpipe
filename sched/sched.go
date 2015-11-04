@@ -112,14 +112,41 @@ func (this *Sched) genRunQueue(d *dag.DAG) []*dag.Job {
 		if !ok {
 			panic(fmt.Errorf("panic: no corresponding job"))
 		}
-		if in == 0 && job.Status != dag.Finished &&
-			job.Status != dag.Started &&
-			this.tracker.Fails[job.Name] < config.MaxRetry {
-			queue = append(queue, job)
+
+		if s, err := this.tracker.GetStatus(job); err != nil {
+			panic(err)
+		} else {
+			job.Status = s
 		}
-		if this.tracker.Fails[job.Name] >= config.MaxRetry {
-			log.Errorf("job %s reaches max retry times: %d",
-				job.Name, config.MaxRetry)
+		log.Debugf("check job status: %s -> %s", job.Name, job.Status)
+
+		switch job.Status {
+		case dag.Finished:
+			if config.ReRun {
+				if this.tracker.HasReRan(job) {
+					continue
+				}
+				log.Infof("job is already finished, rerun: %s", job.Name)
+				this.tracker.SetReRan(job)
+			} else {
+				log.Infof("job is already finished, skip: %s", job.Name)
+				continue
+			}
+		case dag.Started:
+			if config.Force {
+				log.Warnf("job is already started, run still: %s", job.Name)
+			} else {
+				log.Warnf("job is already started, skip: %s", job.Name)
+				continue
+			}
+		}
+
+		fails := this.tracker.Fails[job.Name]
+		if in == 0 && fails < config.MaxRetry {
+			queue = append(queue, job)
+		} else if fails >= config.MaxRetry {
+			log.Errorf("job %s failed %d times, reaches max retry times: %d",
+				job.Name, this.tracker.Fails[job.Name], config.MaxRetry)
 		}
 	}
 	return queue
@@ -146,25 +173,11 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 
 			if job.Type == dag.DummyJob {
 				job.Status = dag.Finished
+				this.updateJobStatus(job, d)
 			} else {
 				jexec, err := this.getExec(job)
 				if err != nil {
 					panic(err)
-				}
-				if s, err := this.tracker.GetStatus(job); err != nil {
-					panic(err)
-				} else {
-					job.Status = s
-				}
-				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
-
-				switch job.Status {
-				case dag.Finished:
-					log.Infof("job is already finished, skip: %s", job.Name)
-					return
-				case dag.Started:
-					log.Warnf("job is already started: %s", job.Name)
-					return
 				}
 
 				job.Status = dag.Started
@@ -174,8 +187,6 @@ func (this *Sched) runQueue(queue []*dag.Job, d *dag.DAG) error {
 					job.Status = dag.Failed
 				}
 				this.updateJobStatus(job, d)
-
-				log.Debugf("check job status: %s -> %s", job.Name, job.Status)
 			}
 		}(job, d)
 	}

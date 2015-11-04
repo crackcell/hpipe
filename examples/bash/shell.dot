@@ -3,6 +3,7 @@ digraph shell {
     dummy [
            name="dummy"
            type="dummy"
+           output="/tmp/hpipe/examples/shell/output/${bizdate}/dummy"
            ]
     script [
            name="script"

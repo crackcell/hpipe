@@ -1,4 +1,10 @@
 digraph hive {
+    dummy -> step1 -> step2
+    dummy [
+           name="dummy"
+           type="dummy"
+           output="/tmp/hpipe/examples/hive/output/${bizdate}/dummy"
+           ]
     step1 [
            name="step1"
            type="hive"
@@ -13,9 +19,4 @@ digraph hive {
            output="/tmp/hpipe/examples/hive/output/${bizdate}/step1"
            hql="select * from tb_game where date='${bizdate}'"
            ]
-    dummy [
-           name="dummy"
-           type="dummy"
-           ]
-    dummy -> step1 -> step2
 }

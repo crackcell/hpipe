@@ -4,6 +4,7 @@ digraph email {
     dummy [
         name="dummy"
         type="dummy"
+        output="/tmp/hpipe/examples/email/output/${bizdate}/dummy"
         ]
     failed1 [
         name="failed1"

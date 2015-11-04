@@ -124,7 +124,7 @@ func dotToDAGJob(node *dot.Node) (*Job, error) {
 	job.Name = node.Name
 
 	job.Attrs = dotToDAGAttrs(node.Attrs)
-	if !job.ValidateAttr([]string{"type"}) {
+	if !job.ValidateAttr([]string{"type", "output"}) {
 		return nil, log.ErrorErrf(
 			"invalid job '%s', attributes missing: %v",
 			job.Name,
