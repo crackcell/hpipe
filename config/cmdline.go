@@ -130,6 +130,7 @@ Options:
     --end              Stop flow after finishing a specific job
     --rerun            Rerun finished jobs, default: false
     --force            Run job even if already marked started, default: false
+    --bizdate          Set variable $bizdate in YYYYMMDD format
 
     --status-saver     Method to track job status
                        default: sqlite
@@ -148,8 +149,6 @@ Options:
     --odps-access-key  ODPS access key
 
     --hive             Enable Hive job
-
-    --bizdate          Set variable $bizdate in YYYYMMDD format
 
     --less-log         Less log output
 `

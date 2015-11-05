@@ -7,6 +7,7 @@
 # Hpipe
 [![Build Status](https://travis-ci.org/crackcell/hpipe.svg?branch=master)](https://travis-ci.org/crackcell/hpipe)
 [![Coverage Status](https://coveralls.io/repos/crackcell/hpipe/badge.svg?branch=master&service=github)](https://coveralls.io/github/crackcell/hpipe?branch=master)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crackcell/hpipe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Hpipe is a workflow engine supporting hybrid workflows with built-in support for
 Hadoop Streaming and Hive.

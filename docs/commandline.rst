@@ -17,11 +17,12 @@ hpipe
        -p, --path         Working path
        -f, --flow         Entry filename of workflow
 
-       --max-retry        Max retry times of failed jobs, default: 3
        --start            Start from a specific job
        --end              End at a specific job
        --rerun            Rerun finished jobs, default: false
        --force            Run job even if already marked started, default: false
+       --max-retry        Max retry times of failed jobs, default: 3
+       --bizdate          Set variable $bizdate in YYYYMMDD format
 
        --status-saver     Method to track job status
                           default: sqlite
@@ -41,8 +42,6 @@ hpipe
    
        --hive             Enable Hive job
    
-       --bizdate          Set variable $bizdate in YYYYMMDD format
-   
        --less-log         Less log output
 
 任务配置
@@ -51,12 +50,12 @@ hpipe
 * ``-p`` 或者 ``--path`` ：工作路径，配置项中的文件路径会被加上此前缀
 * ``-f`` 或者 ``--flow`` ：任务流入口文件
 
-* ``--max-retry`` ：任务失败会被重新执行，此参数指定任务最大执行次数
 * ``--start`` ：从某个任务节点开始执行
 * ``--end`` ：执行到某个任务节点结束
-* ``--bizdate`` ：指定内置变量 ``$bizdate`` ，设定此值会同时更新 ``$gmtdate``
 * ``--rerun`` : 重跑已被标记为finished的任务
 * ``--force`` : 强制重跑标记为started的任务
+* ``--max-retry`` ：任务失败会被重新执行，此参数指定任务最大执行次数
+* ``--bizdate`` ：指定内置变量 ``$bizdate`` ，设定此值会同时更新 ``$gmtdate``
 
 任务状态记录
 ------------
