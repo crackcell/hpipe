@@ -24,4 +24,13 @@ click-through-rate prediction for online advertising.
 
 ##  Documentation
 
-* [zh_CN](http://hpipe.readthedocs.org/zh_CN/latest/)
+- [zh_CN](http://hpipe.readthedocs.org/zh_CN/latest/)
+
+## Screencasts
+
+- [Data join](http://playterm.org/r/hpipedemojoin-1392022317)
+
+## Contacts
+
+- Email: tanmenglong##gmail.com
+- Weibo: http://weibo.com/crackcell
